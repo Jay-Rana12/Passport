@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Global Visa Solutions</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        .contact-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--color-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(10, 25, 47, 0.1);
+        }
+
+        .form-control.valid {
+            border-color: var(--color-success);
+        }
+
+        .form-control.invalid {
+            border-color: #ef4444;
+        }
+
+        .btn-submit {
+            width: 100%;
+        }
+
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(212, 175, 55, 0.2);
+            color: var(--color-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        iframe {
+            width: 100%;
+            height: 300px;
+            border: 0;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="earth-container">
+            <div class="earth-globe">
+                <div class="passport-inner"></div>
+                <div class="passport-cover"></div>
+            </div>
+        </div>
+        <div class="loading-text">Global Visa Solutions</div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo"><img src="images/logo.png" alt="Global Visa Solutions Logo"
+                    style="height: 40px;"> Global Visa <span>Solutions</span></a>
+            <div class="hamburger"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Services <i class="fas fa-chevron-down"
+                            style="font-size: 0.8rem; margin-left: 5px;"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="visa.html" class="dropdown-link">Visa Services</a></li>
+                        <li><a href="passport.html" class="dropdown-link">Passport Services</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="countries.html" class="nav-link">Countries</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <a href="contact.html" class="btn btn-primary btn-nav">Get Started</a>
+        </div>
+    </nav>
+
+    <header class="section page-header header-contact">
+        <div class="container text-center">
+            <h1>Contact Us</h1>
+            <p>Get in touch with our experts today.</p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div class="contact-container">
+                <!-- Info Side -->
+                <div>
+                    <h2 class="text-primary" style="margin-bottom: 2rem;">Get In Touch</h2>
+
+                    <div class="contact-info-item">
+                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div>
+                            <h4>Head Office</h4>
+                            <p class="text-light">123 Business Park, Tower A,<br>City Center, New York, NY 10001</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                        <div>
+                            <h4>Phone Number</h4>
+                            <p class="text-light">+1 (555) 123-4567<br>+1 (555) 987-6543</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div>
+                            <h4>Email Address</h4>
+                            <p class="text-light">info@globalvisasolutions.com<br>support@globalvisasolutions.com</p>
+                        </div>
+                    </div>
+
+                    <!-- Embed Map -->
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.1583091352!2d-74.11976373946229!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1650000000000!5m2!1sen!2s"
+                        loading="lazy"></iframe>
+
+                </div>
+
+                <!-- Form Side -->
+                <div>
+                    <form class="contact-form" id="consultationForm">
+                        <h3 class="text-primary" style="margin-bottom: 2rem;">Send us a message</h3>
+
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" class="form-control" placeholder="John Doe" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" class="form-control" placeholder="john@example.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" class="form-control" placeholder="+1 234 567 8900">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="service">Service Interested In</label>
+                            <select id="service" class="form-control">
+                                <option value="tourist">Tourist Visa</option>
+                                <option value="business">Business Visa</option>
+                                <option value="student">Student Visa</option>
+                                <option value="work">Work Visa</option>
+                                <option value="passport">Passport Services</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" rows="4" class="form-control" placeholder="How can we help you?"
+                                required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-submit">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2026 Global Visa Solutions.</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Form Validation Animation
+        const form = document.getElementById('consultationForm');
+        const inputs = form.querySelectorAll('.form-control');
+
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                if (input.checkValidity()) {
+                    input.classList.add('valid');
+                    input.classList.remove('invalid');
+                } else {
+                    input.classList.add('invalid');
+                    input.classList.remove('valid');
+                }
+            });
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Simulate submission
+            const btn = form.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = 'Sending...';
+            btn.style.opacity = '0.7';
+
+            setTimeout(() => {
+                btn.innerText = 'Message Sent!';
+                btn.style.backgroundColor = 'var(--color-success)';
+                btn.style.opacity = '1';
+                form.reset();
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = '';
+                }, 3000);
+            }, 1500);
+        });
+    </script>
+</body>
+
+</html>

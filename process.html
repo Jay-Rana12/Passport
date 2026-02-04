@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Process - Global Visa Solutions</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--color-light-gray);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+            box-sizing: border-box;
+            opacity: 0;
+            /* JS Animation */
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-item::after {
+            content: '\f5af';
+            /* fa-plane-departure */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            right: -20px;
+            background: var(--color-accent);
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 5;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+            font-size: 1.3rem;
+            animation: iconPulse 2s infinite ease-in-out;
+            border: 2px solid #ffffff;
+        }
+
+        @keyframes iconPulse {
+            0% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            }
+
+            50% {
+                transform: scale(1.15) rotate(10deg);
+                box-shadow: 0 0 25px rgba(212, 175, 55, 0.7);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            }
+        }
+
+        .left {
+            left: 0;
+        }
+
+        .right {
+            left: 50%;
+        }
+
+        .left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent white;
+        }
+
+        .right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent white transparent transparent;
+        }
+
+        .right::after {
+            left: -20px;
+        }
+
+        .timeline-content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 6px;
+            box-shadow: var(--shadow-md);
+        }
+
+        @media screen and (max-width: 600px) {
+            .timeline::after {
+                left: 31px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+
+            .timeline-item::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+
+            .left::after,
+            .right::after {
+                left: 21px;
+            }
+
+            .right {
+                left: 0%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="earth-container">
+            <div class="earth-globe">
+                <div class="passport-inner"></div>
+                <div class="passport-cover"></div>
+            </div>
+        </div>
+        <div class="loading-text">Global Visa Solutions</div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo"><img src="images/logo.png" alt="Global Visa Solutions Logo"
+                    style="height: 40px;"> Global Visa <span>Solutions</span></a>
+            <div class="hamburger"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Services <i class="fas fa-chevron-down"
+                            style="font-size: 0.8rem; margin-left: 5px;"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="visa.html" class="dropdown-link">Visa Services</a></li>
+                        <li><a href="passport.html" class="dropdown-link">Passport Services</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="countries.html" class="nav-link">Countries</a></li>
+                <li class="nav-item"><a href="process.html" class="nav-link">Process</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="section page-header header-process">
+        <div class="container text-center">
+            <h1>Our Process</h1>
+            <p>From consultation to approval, we are with you every step of the way.</p>
+        </div>
+    </header>
+
+    <section class="section" style="background-color: #f9f9f9;">
+        <div class="container">
+            <div class="timeline">
+                <div class="timeline-item left fade-in">
+                    <div class="timeline-content">
+                        <h3 class="text-primary"><i class="fas fa-comments text-accent"></i> 1. Consultation</h3>
+                        <p>We assess your profile, travel history, and goals to recommend the best visa category for
+                            you.</p>
+                    </div>
+                </div>
+                <div class="timeline-item right fade-in">
+                    <div class="timeline-content">
+                        <h3 class="text-primary"><i class="fas fa-file-alt text-accent"></i> 2. Documentation</h3>
+                        <p>Our team helps you gather and verify all necessary documents, ensuring they meet embassy
+                            standards.</p>
+                    </div>
+                </div>
+                <div class="timeline-item left fade-in">
+                    <div class="timeline-content">
+                        <h3 class="text-primary"><i class="fas fa-laptop-code text-accent"></i> 3. Application Filing
+                        </h3>
+                        <p>We accurately fill out your visa application forms and schedule your embassy appointment.</p>
+                    </div>
+                </div>
+                <div class="timeline-item right fade-in">
+                    <div class="timeline-content">
+                        <h3 class="text-primary"><i class="fas fa-search text-accent"></i> 4. Verification Check</h3>
+                        <p>A final thorough review of your entire application package to minimize rejection risks.</p>
+                    </div>
+                </div>
+                <div class="timeline-item left fade-in">
+                    <div class="timeline-content">
+                        <h3 class="text-primary"><i class="fas fa-check-circle text-accent"></i> 5. Approval & Flight
+                        </h3>
+                        <p>Once approved, collect your passport with the visa stamp and get ready to fly!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Specific Timeline Animation Trigger
+        const timelineObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            timelineObserver.observe(item);
+        });
+    </script>
+</body>
+
+</html>

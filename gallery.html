@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Global Visa Solutions</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            cursor: pointer;
+            height: 300px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay i {
+            color: white;
+            font-size: 2rem;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="earth-container">
+            <div class="earth-globe">
+                <div class="passport-inner"></div>
+                <div class="passport-cover"></div>
+            </div>
+        </div>
+        <div class="loading-text">Global Visa Solutions</div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo"><img src="images/logo.png" alt="Global Visa Solutions Logo"
+                    style="height: 40px;"> Global Visa <span>Solutions</span></a>
+            <div class="hamburger"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Services <i class="fas fa-chevron-down"
+                            style="font-size: 0.8rem; margin-left: 5px;"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="visa.html" class="dropdown-link">Visa Services</a></li>
+                        <li><a href="passport.html" class="dropdown-link">Passport Services</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="countries.html" class="nav-link">Countries</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link active">Gallery</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <a href="contact.html" class="btn btn-primary btn-nav">Get Started</a>
+        </div>
+    </nav>
+
+    <header class="section page-header header-gallery">
+        <div class="container text-center">
+            <h1>Our Gallery</h1>
+            <p>A glimpse into our world and success stories.</p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div class="gallery-grid">
+                <div class="gallery-item reveal">
+                    <img src="images/hero-bg.png" alt="Travel Concepts">
+                    <div class="gallery-overlay"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="gallery-item reveal reveal-delay-1">
+                    <img src="images/about-office.png" alt="Our Office">
+                    <div class="gallery-overlay"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="gallery-item reveal reveal-delay-2">
+                    <img src="images/meeting.png" alt="Client Consultation">
+                    <div class="gallery-overlay"><i class="fas fa-plus"></i></div>
+                </div>
+                <!-- Reuse images for demo -->
+                <div class="gallery-item reveal reveal-delay-3">
+                    <img src="images/about-office.png" alt="Team Discussion">
+                    <div class="gallery-overlay"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="gallery-item reveal reveal-delay-1">
+                    <img src="images/meeting.png" alt="Happy Client">
+                    <div class="gallery-overlay"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="gallery-item reveal reveal-delay-2">
+                    <img src="images/hero-bg.png" alt="Success">
+                    <div class="gallery-overlay"><i class="fas fa-plus"></i></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="lightbox" id="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img src="" alt="Zoomed Image" class="lightbox-img">
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Lightbox Script
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = lightbox.querySelector('img');
+        const closeBtn = document.querySelector('.close-lightbox');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const imgSrc = item.querySelector('img').src;
+                lightboxImg.src = imgSrc;
+                lightbox.classList.add('active');
+            });
+        });
+
+        closeBtn.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+        });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passport Services - Global Visa Solutions</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .service-row {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .service-row:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .service-image {
+            flex: 1;
+            height: 300px;
+            background-color: #e5e7eb;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            color: var(--color-primary);
+        }
+
+        .service-info {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+
+            .service-row,
+            .service-row:nth-child(even) {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+                margin-bottom: 3rem;
+            }
+
+            .service-image {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo"><img src="images/logo.png" alt="Global Visa Solutions Logo"
+                    style="height: 40px;"> Global Visa <span>Solutions</span></a>
+            <div class="hamburger"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Services <i class="fas fa-chevron-down"
+                            style="font-size: 0.8rem; margin-left: 5px;"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="visa.html" class="dropdown-link">Visa Services</a></li>
+                        <li><a href="passport.html" class="dropdown-link">Passport Services</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="countries.html" class="nav-link">Countries</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <a href="contact.html" class="btn btn-primary btn-nav">Get Started</a>
+        </div>
+    </nav>
+
+    <header class="section page-header header-passport">
+        <div class="container text-center">
+            <h1>Passport Services</h1>
+            <p>Fast and reliable passport assistance for all your needs.</p>
+        </div>
+    </header>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="earth-container">
+            <div class="earth-globe">
+                <div class="passport-inner"></div>
+                <div class="passport-cover"></div>
+            </div>
+        </div>
+        <div class="loading-text">Global Visa Solutions</div>
+    </div>
+
+    <section class="section">
+        <div class="container">
+
+            <div class="service-row reveal">
+                <div class="service-image">
+                    <img src="images/banner-world.png" alt="New Passport"
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                </div>
+                <div class="service-info">
+                    <h2 class="text-primary">New Passport Application</h2>
+                    <p style="margin-bottom: 1rem;">Applying for a passport for the first time? We guide you through the
+                        entire process, from document collection to appointment scheduling.</p>
+                    <ul style="list-style-type: none;">
+                        <li><i class="fas fa-check text-accent"></i> Form Filling Assistance</li>
+                        <li><i class="fas fa-check text-accent"></i> Document Verification</li>
+                        <li><i class="fas fa-check text-accent"></i> Slot Booking</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="service-row reveal reveal-delay-1">
+                <div class="service-image">
+                    <img src="images/banner-consult.png" alt="Passport Renewal"
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                </div>
+                <div class="service-info">
+                    <h2 class="text-primary">Passport Renewal</h2>
+                    <p>Passport expiring or pages exhausted? We help you renew your passport quickly to ensure your
+                        travel plans are not disrupted.</p>
+                </div>
+            </div>
+
+            <div class="service-row reveal reveal-delay-2">
+                <div class="service-image">
+                    <img src="images/banner-travel.png" alt="Tatkal Services"
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                </div>
+                <div class="service-info">
+                    <h2 class="text-primary">Tatkal Services</h2>
+                    <p>Need a passport urgently? Our Tatkal service assistance ensures you get your passport in the
+                        shortest possible time.</p>
+                </div>
+            </div>
+
+            <div class="service-row reveal reveal-delay-3">
+                <div class="service-image">
+                    <img src="images/meeting.png" alt="Correction Services"
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                </div>
+                <div class="service-info">
+                    <h2 class="text-primary">Name/Address Correction</h2>
+                    <p>We assist in correcting or updating personal details in your existing passport with the correct
+                        legal procedure.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="container text-center">
+            <p>&copy; 2026 Global Visa Solutions.</p>
+        </div>
+    </footer>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

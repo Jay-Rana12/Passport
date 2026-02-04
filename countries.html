@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countries - Global Visa Solutions</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .filter-btns {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            position: relative;
+            padding: 12px 35px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: #ffffff;
+            color: var(--color-primary);
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* Slide Animation Background */
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: var(--color-primary);
+            transition: all 0.4s ease;
+            z-index: -1;
+            border-radius: 50px;
+        }
+
+        .filter-btn:hover {
+            color: white;
+            box-shadow: 0 10px 25px rgba(10, 25, 47, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .filter-btn:hover::before {
+            width: 100%;
+        }
+
+        .filter-btn.active {
+            background: var(--color-primary);
+            color: var(--color-accent);
+            box-shadow: 0 8px 20px rgba(10, 25, 47, 0.3);
+            transform: scale(1.05);
+        }
+
+        .filter-btn.active::before {
+            width: 100%;
+        }
+
+        .country-card {
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .country-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(10, 25, 47, 0.95) 0%, rgba(10, 25, 47, 0.4) 50%, transparent 100%);
+            z-index: 1;
+        }
+
+        .country-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+            padding: 1.5rem;
+            width: 100%;
+        }
+
+        .card-content h3 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-content p {
+            margin: 0.5rem 0 0;
+            font-size: 0.95rem;
+            color: var(--color-accent);
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Country Specific Backgrounds */
+        .card-usa {
+            background-image: url('images/bg_usa.png');
+        }
+
+        .card-canada {
+            background-image: url('images/bg_canada.png');
+        }
+
+        .card-uk {
+            background-image: url('images/bg_uk.png');
+        }
+
+        .card-france {
+            background-image: url('images/bg_eu.png');
+        }
+
+        .card-germany {
+            background-image: url('images/bg_eu.png');
+        }
+
+        .card-uae {
+            background-image: url('images/bg_uae.png');
+        }
+
+        .card-singapore {
+            background-image: url('images/bg_japan.png');
+        }
+
+        .card-japan {
+            background-image: url('images/bg_japan.png');
+        }
+
+        .card-australia {
+            background-image: url('images/bg_australia.png');
+        }
+
+        .card-nz {
+            background-image: url('images/bg_australia.png');
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="earth-container">
+            <div class="earth-globe">
+                <div class="passport-inner"></div>
+                <div class="passport-cover"></div>
+            </div>
+        </div>
+        <div class="loading-text">Global Visa Solutions</div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo"><img src="images/logo.png" alt="Global Visa Solutions Logo"
+                    style="height: 40px;"> Global Visa <span>Solutions</span></a>
+            <div class="hamburger"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Services <i class="fas fa-chevron-down"
+                            style="font-size: 0.8rem; margin-left: 5px;"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="visa.html" class="dropdown-link">Visa Services</a></li>
+                        <li><a href="passport.html" class="dropdown-link">Passport Services</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="countries.html" class="nav-link">Countries</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <a href="contact.html" class="btn btn-primary btn-nav">Get Started</a>
+        </div>
+    </nav>
+
+    <header class="section page-header header-countries">
+        <div class="container text-center">
+            <h1>Destinations</h1>
+            <p>We serve over 100+ countries worldwide.</p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+
+            <div class="filter-btns">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="americas">Americas</button>
+                <button class="filter-btn" data-filter="europe">Europe</button>
+                <button class="filter-btn" data-filter="asia">Asia</button>
+                <button class="filter-btn" data-filter="oceania">Oceania</button>
+            </div>
+
+            <div class="card-grid" id="countries-grid">
+                <!-- Americas -->
+                <div class="country-card reveal card-usa" data-region="americas">
+                    <div class="card-content">
+                        <h3>USA</h3>
+                        <p>Tourist, Student, H1B</p>
+                    </div>
+                </div>
+                <div class="country-card reveal reveal-delay-1 card-canada" data-region="americas">
+                    <div class="card-content">
+                        <h3>Canada</h3>
+                        <p>Express Entry, Study, Visitor</p>
+                    </div>
+                </div>
+
+                <!-- Europe -->
+                <div class="country-card reveal reveal-delay-2 card-uk" data-region="europe">
+                    <div class="card-content">
+                        <h3>United Kingdom</h3>
+                        <p>Standard Visitor, Tier 4, Work</p>
+                    </div>
+                </div>
+                <div class="country-card reveal reveal-delay-3 card-france" data-region="europe">
+                    <div class="card-content">
+                        <h3>France (Schengen)</h3>
+                        <p>Tourist, long-stay</p>
+                    </div>
+                </div>
+                <div class="country-card card-germany" data-region="europe">
+                    <div class="card-content">
+                        <h3>Germany</h3>
+                        <p>Job Seeker, Student, Tourist</p>
+                    </div>
+                </div>
+
+                <!-- Asia -->
+                <div class="country-card card-uae" data-region="asia">
+                    <div class="card-content">
+                        <h3>UAE (Dubai)</h3>
+                        <p>Tourist, Work, Gold Visa</p>
+                    </div>
+                </div>
+                <div class="country-card card-singapore" data-region="asia">
+                    <div class="card-content">
+                        <h3>Singapore</h3>
+                        <p>Employment Pass, Tourist</p>
+                    </div>
+                </div>
+                <div class="country-card card-japan" data-region="asia">
+                    <div class="card-content">
+                        <h3>Japan</h3>
+                        <p>Tourist, Work</p>
+                    </div>
+                </div>
+
+                <!-- Oceania -->
+                <div class="country-card card-australia" data-region="oceania">
+                    <div class="card-content">
+                        <h3>Australia</h3>
+                        <p>Subclass 600, PR, Student</p>
+                    </div>
+                </div>
+                <div class="country-card card-nz" data-region="oceania">
+                    <div class="card-content">
+                        <h3>New Zealand</h3>
+                        <p>Visitor, Work, Study</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Filter Script
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.country-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.getAttribute('data-filter');
+
+                cards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-region') === filter) {
+                        card.style.display = 'block';
+                        // Add fade in effect
+                        card.style.opacity = '0';
+                        setTimeout(() => card.style.opacity = '1', 10);
+                        card.style.transition = 'opacity 0.3s';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

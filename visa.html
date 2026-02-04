@@ -7,79 +7,21 @@
     <title>Visa Services - Global Visa Solutions</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .visa-type {
-            background: white;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-sm);
-            overflow: hidden;
-        }
-
-        .visa-header {
-            padding: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            background-color: white;
-            transition: background-color 0.3s;
-        }
-
-        .visa-header:hover {
-            background-color: #f9fafb;
-        }
-
-        .visa-header h3 {
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .visa-content {
-            padding: 0 1.5rem;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out, padding 0.3s ease;
-            background-color: #fbfbfb;
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .visa-content.active {
-            padding: 1.5rem;
-            max-height: 1000px;
-            /* Arbitrary large number */
-        }
-
-        .visa-icon {
-            color: var(--color-accent);
-            font-size: 1.5rem;
-        }
-
-        .toggle-icon {
-            transition: transform 0.3s ease;
-        }
-
-        .visa-header.active .toggle-icon {
-            transform: rotate(180deg);
-        }
-
-        .doc-list li {
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .doc-list li i {
-            color: var(--color-success);
-            font-size: 0.8rem;
-        }
-    </style>
+</head>
 </head>
 
 <body>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="earth-container">
+            <div class="earth-globe">
+                <div class="passport-inner"></div>
+                <div class="passport-cover"></div>
+            </div>
+        </div>
+        <div class="loading-text">Global Visa Solutions</div>
+    </div>
 
     <nav class="navbar">
         <div class="container nav-container">
@@ -138,16 +80,7 @@
                 </div>
             </div>
 
-            <!-- Preloader -->
-            <div id="preloader">
-                <div class="earth-container">
-                    <div class="earth-globe">
-                        <div class="passport-inner"></div>
-                        <div class="passport-cover"></div>
-                    </div>
-                </div>
-                <div class="loading-text">Global Visa Solutions</div>
-            </div>
+
 
             <!-- Business Visa -->
             <div class="visa-type reveal reveal-delay-1">

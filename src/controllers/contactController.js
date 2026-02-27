@@ -7,15 +7,18 @@ exports.sendContactEmail = async (req, res) => {
         // Create transporter
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
-            port: 465,
-            secure: true, // Use SSL
+            port: 587,
+            secure: false, // Use STARTTLS
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
             },
             tls: {
-                rejectUnauthorized: false // Helps in some environments
-            }
+                rejectUnauthorized: false
+            },
+            connectionTimeout: 10000,
+            greetingTimeout: 5000,
+            socketTimeout: 15000
         });
 
         const mailOptions = {

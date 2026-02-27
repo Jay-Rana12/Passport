@@ -6,8 +6,10 @@ const sendEmail = async (options) => {
         service: 'gmail',
         auth: {
             user: process.env.EMAIL_USER.trim(),
-            pass: process.env.EMAIL_PASS.replace(/\s+/g, ''), // Spaces remove karke safe banaya
-        }
+            pass: process.env.EMAIL_PASS.replace(/\s+/g, ''),
+        },
+        connectionTimeout: 5000, // 5 seconds max
+        socketTimeout: 5000,     // 5 seconds max
     });
 
     const mailOptions = {

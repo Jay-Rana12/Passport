@@ -47,24 +47,37 @@ exports.sendOtp = async (req, res) => {
         );
 
         const message = `Your BorderBridge verification code is: ${otp}. Valid for 5 minutes.`;
+        let emailSent = false;
+        let smsSent = false;
 
-        // Send Email
+        // Try Email
         try {
             await sendEmail({
                 email: email,
                 subject: 'Verification Code - BorderBridge',
                 message: message
             });
+            emailSent = true;
+        } catch (emailErr) {
+            console.error('Email failed, trying SMS...');
+        }
 
+        // Try SMS if phone is provided
+        const { phone } = req.body;
+        if (phone) {
+            smsSent = await sendSMS(phone, message);
+        }
+
+        if (emailSent || smsSent) {
             res.status(200).json({
                 success: true,
-                message: 'Verification code sent to your email'
+                message: emailSent ? 'Verification code sent to email' : 'Verification code sent via SMS',
+                otp: process.env.NODE_ENV === 'development' ? otp : undefined // Local testing
             });
-        } catch (emailErr) {
-            console.error('Email error:', emailErr.message);
+        } else {
             res.status(500).json({
                 success: false,
-                message: 'Failed to send verification email. Please check your email settings.'
+                message: 'Failed to send verification code. Please check email/phone.'
             });
         }
     } catch (error) {

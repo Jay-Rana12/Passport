@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const res = await fetch(`${apiBaseUrl}/send-otp`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, type: 'register' })
+                    body: JSON.stringify({ email, phone, type: 'register' })
                 });
 
                 const data = await res.json();

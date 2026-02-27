@@ -2,13 +2,21 @@ const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
     // Standard SMTP transporter for Gmail
+    const emailUser = (process.env.EMAIL_USER || "").trim();
+    const emailPass = (process.env.EMAIL_PASS || "").replace(/\s+/g, '');
+
+    if (!emailUser || !emailPass) {
+        console.error("[EMAIL] Error: EMAIL_USER or EMAIL_PASS environment variables are missing!");
+        throw new Error("Email credentials not configured on server.");
+    }
+
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
         secure: true,
         auth: {
-            user: process.env.EMAIL_USER.trim(),
-            pass: process.env.EMAIL_PASS.replace(/\s+/g, ''),
+            user: emailUser,
+            pass: emailPass,
         }
     });
 

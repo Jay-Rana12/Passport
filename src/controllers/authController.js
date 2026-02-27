@@ -46,6 +46,10 @@ exports.sendOtp = async (req, res) => {
             { upsert: true, new: true }
         );
 
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            return res.status(500).json({ success: false, message: 'Server configuration error: Email credentials missing' });
+        }
+
         const message = `Your BorderBridge verification code is: ${otp}. Valid for 5 minutes.`;
 
         // Send Email
@@ -64,12 +68,13 @@ exports.sendOtp = async (req, res) => {
             console.error('Email error:', emailErr.message);
             res.status(500).json({
                 success: false,
-                message: 'Failed to send verification email. Please check your email settings.'
+                message: 'Email failed: ' + emailErr.message,
+                debug: 'Check if App Password is correct and 2FA is ON'
             });
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, message: 'Server error' });
+        res.status(500).json({ success: false, message: 'Server error: ' + error.message });
     }
 };
 

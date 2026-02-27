@@ -30,13 +30,13 @@ const documentRoutes = require('./src/routes/documentRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 
 // Routes
-app.use('https://passport-ia5r.onrender.com/api/auth', authRoutes);
-app.use('https://passport-ia5r.onrender.com/api/profile', profileRoutes);
-app.use('https://passport-ia5r.onrender.com/api/contact', contactRoutes);
-app.use('https://passport-ia5r.onrender.com/api/visa', visaRoutes);
-app.use('https://passport-ia5r.onrender.com/api/passport', passportRoutes);
-app.use('https://passport-ia5r.onrender.com/api/documents', documentRoutes);
-app.use('https://passport-ia5r.onrender.com/api/admin', adminRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/visa', visaRoutes);
+app.use('/api/passport', passportRoutes);
+app.use('/api/documents', documentRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use('/uploads', express.static('uploads'));
 

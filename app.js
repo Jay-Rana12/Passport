@@ -19,7 +19,7 @@ const app = express();
 // Connect to Database
 connectDB();
 
-// Middleware
+// 1. JSON & CORS Middleware (MUST BE FIRST)
 app.use(express.json());
 app.use(cors({
   origin: '*',
@@ -27,7 +27,13 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
-// Routes
+// Logging middleware to debug requests
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
+// 2. API Routes (MUST BE BEFORE STATIC FILES)
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/contact', contactRoutes);
@@ -36,10 +42,10 @@ app.use('/api/passport', passportRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Static files
-app.use(express.static('.', { extensions: ['html'] }));
-app.use('/admin', express.static(path.join(__dirname, 'admin')));
+// 3. Static files and Uploads
 app.use('/uploads', express.static('uploads'));
+app.use('/admin', express.static(path.join(__dirname, 'admin')));
+app.use(express.static('.', { extensions: ['html'] }));
 
 // Admin redirect
 app.get('/admin', (req, res) => {
@@ -48,11 +54,16 @@ app.get('/admin', (req, res) => {
 
 // Health Check
 app.get('/', (req, res) => {
-  res.send('API is running...');
+  res.send('BorderBridge API is Live and Running!');
+});
+
+// 404 Handler for API
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ success: false, message: `API Route ${req.originalUrl} not found` });
 });
 
 const PORT = process.env.PORT || 10000;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });

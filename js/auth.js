@@ -1,6 +1,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
-    const apiBaseUrl = 'https://passport-ia5r.onrender.com/api/auth';
+    const apiBaseUrl = 'https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/auth';
 
     // Helper functions for UI
     const showError = (msg) => {

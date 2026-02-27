@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    const API_BASE = 'https://passport-ia5r.onrender.com/api/profile';
+    const API_BASE = 'https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/profile';
     const profileForm = document.getElementById('profile-form');
     const errorMsg = document.getElementById('error-msg');
     const successMsg = document.getElementById('success-msg');
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const loadProfile = async () => {
         try {
             // Fetch User Basic Info
-            const userRes = await fetch('https://passport-ia5r.onrender.com/api/auth/profile', {
+            const userRes = await fetch('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/auth/profile', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const userData = await userRes.json();

@@ -2,7 +2,7 @@ const Profile = require('../models/Profile');
 const User = require('../models/User');
 
 // @desc    Get current user profile
-// @route   GET /api/profile/me
+// @route   GET https://passport-ia5r.onrender.com/api/profile/me
 // @access  Private
 exports.getProfile = async (req, res) => {
     try {
@@ -62,7 +62,7 @@ exports.getProfile = async (req, res) => {
 };
 
 // @desc    Create or update user profile
-// @route   PUT /api/profile/update
+// @route   PUT https://passport-ia5r.onrender.com/api/profile/update
 // @access  Private
 exports.updateProfile = async (req, res) => {
     const {
@@ -182,7 +182,7 @@ exports.updateProfile = async (req, res) => {
 };
 
 // @desc    Upload Profile Photo
-// @route   POST /api/profile/upload-photo
+// @route   POST https://passport-ia5r.onrender.com/api/profile/upload-photo
 // @access  Private
 exports.uploadProfilePhoto = async (req, res) => {
     try {
@@ -220,7 +220,7 @@ exports.uploadProfilePhoto = async (req, res) => {
 };
 
 // @desc    Upload Digital Signature
-// @route   POST /api/profile/upload-signature
+// @route   POST https://passport-ia5r.onrender.com/api/profile/upload-signature
 // @access  Private
 exports.uploadSignature = async (req, res) => {
     try {
@@ -255,7 +255,7 @@ exports.uploadSignature = async (req, res) => {
 };
 
 // @desc    Upload Generic Document
-// @route   POST /api/profile/upload-document
+// @route   POST https://passport-ia5r.onrender.com/api/profile/upload-document
 // @access  Private
 exports.uploadDocument = async (req, res) => {
     try {
@@ -289,7 +289,7 @@ exports.uploadDocument = async (req, res) => {
 };
 
 // @desc    Verify User Profile (Admin only)
-// @route   PUT /api/profile/admin/verify/:userId
+// @route   PUT https://passport-ia5r.onrender.com/api/profile/admin/verify/:userId
 // @access  Private/Admin
 exports.verifyProfile = async (req, res) => {
     try {

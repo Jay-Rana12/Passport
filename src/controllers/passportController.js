@@ -15,7 +15,7 @@ const generateApplicationId = (typeCode = '') => {
 };
 
 // @desc    Create new Passport Application
-// @route   POST /api/passport/create
+// @route   POST https://passport-ia5r.onrender.com/api/passport/create
 // @access  Private
 exports.createPassportApplication = async (req, res) => {
     try {
@@ -125,7 +125,7 @@ exports.createPassportApplication = async (req, res) => {
 };
 
 // @desc    Get all passport applications for logged in user
-// @route   GET /api/passport/my
+// @route   GET https://passport-ia5r.onrender.com/api/passport/my
 // @access  Private
 exports.getMyPassportApplications = async (req, res) => {
     try {

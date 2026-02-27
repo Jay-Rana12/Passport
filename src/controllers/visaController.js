@@ -16,7 +16,7 @@ const generateApplicationId = () => {
 };
 
 // @desc    Create or Update Visa Application (Draft / Submit)
-// @route   POST /api/visa/create
+// @route   POST https://passport-ia5r.onrender.com/api/visa/create
 // @access  Private
 exports.createVisaApplication = async (req, res) => {
     try {
@@ -121,7 +121,7 @@ exports.createVisaApplication = async (req, res) => {
 };
 
 // @desc    Get all visa applications for logged in user
-// @route   GET /api/visa/my
+// @route   GET https://passport-ia5r.onrender.com/api/visa/my
 // @access  Private
 exports.getMyVisaApplications = async (req, res) => {
     try {
@@ -141,7 +141,7 @@ exports.getMyVisaApplications = async (req, res) => {
 };
 
 // @desc    Get single visa application by ID
-// @route   GET /api/visa/:id
+// @route   GET https://passport-ia5r.onrender.com/api/visa/:id
 // @access  Private
 exports.getVisaApplicationById = async (req, res) => {
     try {

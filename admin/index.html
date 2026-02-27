@@ -541,7 +541,7 @@
 
             // Set Admin details
             document.getElementById('admin-name').innerText = user.fullName;
-            document.getElementById('admin-avatar').src = user.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&background=3b82f6&color=fff&rounded=true`;
+            document.getElementById('admin-avatar').src = user.profilePhoto || `https://ui-avatars.comhttps://passport-ia5r.onrender.com/api/?name=${encodeURIComponent(user.fullName)}&background=3b82f6&color=fff&rounded=true`;
 
             // Logout Logic
             document.getElementById('adminLogout').addEventListener('click', () => {
@@ -569,11 +569,11 @@
                 const headers = { 'Authorization': `Bearer ${token}` };
 
                 // Fetch Apps
-                const appsRes = await fetch('https://passport-ia5r.onrender.com/api/admin/applications', { headers });
+                const appsRes = await fetch('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/admin/applications', { headers });
                 const appsData = await appsRes.json();
 
                 // Fetch Users
-                const usersRes = await fetch('https://passport-ia5r.onrender.com/api/admin/users', { headers });
+                const usersRes = await fetch('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/admin/users', { headers });
                 const usersData = await usersRes.json();
 
                 if (appsData.success && usersData.success) {
@@ -662,7 +662,7 @@
             document.getElementById('all-users-tbody').innerHTML = users.map(u => `
                 <tr>
                     <td><div style="display:flex; align-items:center; gap:10px;">
-                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(u.fullName)}&rounded=true&size=32" />
+                        <img src="https://ui-avatars.comhttps://passport-ia5r.onrender.com/api/?name=${encodeURIComponent(u.fullName)}&rounded=true&size=32" />
                         <strong>${u.fullName}</strong>
                     </div></td>
                     <td>${u.email}</td>
@@ -679,7 +679,7 @@
 
             const token = localStorage.getItem('token');
             try {
-                const res = await fetch(`/api/admin/application/status/${id}`, {
+                const res = await fetch(`https://passport-ia5r.onrender.com/api/admin/application/status/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

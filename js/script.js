@@ -231,7 +231,7 @@ function initAuth() {
             profileItem.className = 'nav-item dropdown profile-dropdown';
             const userName = user.fullName || 'User';
             const userFirstName = userName.split(' ')[0];
-            const profilePic = user.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=ff8c00&color=fff&rounded=true`;
+            const profilePic = user.profilePhoto || `https://ui-avatars.comhttps://passport-ia5r.onrender.com/api/?name=${encodeURIComponent(userName)}&background=ff8c00&color=fff&rounded=true`;
 
             profileItem.innerHTML = `
                 <a href="profile.html" style="display: flex; align-items: center; gap: 10px; padding: 6px 16px; background: rgba(255, 255, 255, 0.1); border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s; text-decoration: none;">

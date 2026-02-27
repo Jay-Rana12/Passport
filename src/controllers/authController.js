@@ -19,7 +19,7 @@ const generateToken = (id) => {
 
 
 // @desc    Send OTP to Email
-// @route   POST /api/auth/send-otp
+// @route   POST https://passport-ia5r.onrender.com/api/auth/send-otp
 // @access  Public
 exports.sendOtp = async (req, res) => {
     const { email, type } = req.body;
@@ -74,7 +74,7 @@ exports.sendOtp = async (req, res) => {
 };
 
 // @desc    Verify OTP
-// @route   POST /api/auth/verify-otp
+// @route   POST https://passport-ia5r.onrender.com/api/auth/verify-otp
 // @access  Public
 exports.verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
@@ -96,7 +96,7 @@ exports.verifyOtp = async (req, res) => {
 };
 
 // @desc    Register user
-// @route   POST /api/auth/register
+// @route   POST https://passport-ia5r.onrender.com/api/auth/register
 // @access  Public
 exports.register = async (req, res) => {
     const errors = validationResult(req);
@@ -156,7 +156,7 @@ exports.register = async (req, res) => {
 };
 
 // @desc    Login user
-// @route   POST /api/auth/login
+// @route   POST https://passport-ia5r.onrender.com/api/auth/login
 // @access  Public
 exports.login = async (req, res) => {
     const { email, password, otp } = req.body;
@@ -220,7 +220,7 @@ exports.login = async (req, res) => {
 };
 
 // @desc    Get current logged in user
-// @route   GET /api/auth/profile
+// @route   GET https://passport-ia5r.onrender.com/api/auth/profile
 // @access  Private
 exports.getMe = async (req, res) => {
     try {
@@ -233,7 +233,7 @@ exports.getMe = async (req, res) => {
 };
 
 // @desc    Forgot Password (Send OTP)
-// @route   POST /api/auth/forgot-password
+// @route   POST https://passport-ia5r.onrender.com/api/auth/forgot-password
 // @access  Public
 exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
@@ -279,7 +279,7 @@ exports.forgotPassword = async (req, res) => {
 };
 
 // @desc    Reset Password
-// @route   POST /api/auth/reset-password
+// @route   POST https://passport-ia5r.onrender.com/api/auth/reset-password
 // @access  Public
 exports.resetPassword = async (req, res) => {
     const { email, otp, newPassword } = req.body;

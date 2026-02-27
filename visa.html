@@ -4,10 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visa Services - Global Visa Solutions</title>
+    <title>Visa Services - BorderBridge</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
+    <script>
+        (function () {
+            var nav = window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType('navigation')[0];
+            if (nav && nav.type !== 'reload' && document.referrer.includes(window.location.hostname)) {
+                document.documentElement.classList.add('no-preloader');
+            }
+        })();
+    </script>
 </head>
 
 <body>
@@ -20,13 +27,13 @@
                 <div class="passport-cover"></div>
             </div>
         </div>
-        <div class="loading-text">Global Visa Solutions</div>
+        <div class="loading-text">BorderBridge</div>
     </div>
 
     <nav class="navbar">
         <div class="container nav-container">
-            <a href="index.html" class="logo"><img src="images/logo.png" alt="Global Visa Solutions Logo"
-                    style="height: 40px;"> Global Visa <span>Solutions</span></a>
+            <a href="index.html" class="logo"><i class="fas fa-plane-departure logo-icon"></i> Border
+                <span>Bridge</span></a>
             <div class="hamburger">
                 <span class="bar"></span><span class="bar"></span><span class="bar"></span>
             </div>
@@ -45,7 +52,7 @@
                 <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
                 <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
             </ul>
-            <a href="contact.html" class="btn btn-primary btn-nav">Get Started</a>
+            <a href="login.html" class="btn btn-primary btn-nav">Login</a>
         </div>
     </nav>
 
@@ -69,13 +76,16 @@
                     <p class="mb-4">Designed for individuals visiting foreign countries for leisure, sightseeing, or
                         meeting friends and family. Service includes application review, itinerary planning, and
                         interview preparation.</p>
-                    <div style="margin-top: 1rem;">
+                    <div style="margin-top: 1.5rem;">
                         <h4>Eligibility:</h4>
                         <ul class="doc-list">
                             <li><i class="fas fa-check"></i> Valid passport with 6 months validity</li>
                             <li><i class="fas fa-check"></i> Proof of financial means</li>
                             <li><i class="fas fa-check"></i> Return flight tickets</li>
                         </ul>
+                    </div>
+                    <div style="margin-top: 2rem; text-align: left;">
+                        <a href="apply-tourist.html" class="btn btn-primary">Apply for Tourist Visa</a>
                     </div>
                 </div>
             </div>
@@ -91,13 +101,16 @@
                 <div class="visa-content">
                     <p>For professionals attending meetings, conferences, or exploring business opportunities. We ensure
                         your application highlights the commercial nature of your visit clearly.</p>
-                    <div style="margin-top: 1rem;">
+                    <div style="margin-top: 1.5rem;">
                         <h4>Documents Required:</h4>
                         <ul class="doc-list">
                             <li><i class="fas fa-check"></i> Business invitation letter</li>
                             <li><i class="fas fa-check"></i> Company bank statements</li>
                             <li><i class="fas fa-check"></i> Chamber of Commerce recommendation</li>
                         </ul>
+                    </div>
+                    <div style="margin-top: 2rem; text-align: left;">
+                        <a href="apply-business.html" class="btn btn-primary">Apply for Business Visa</a>
                     </div>
                 </div>
             </div>
@@ -111,6 +124,9 @@
                 <div class="visa-content">
                     <p>Guidance for students pursuing higher education abroad. We assist with university admission
                         letters and financial documentation to prove student status.</p>
+                    <div style="margin-top: 2rem; text-align: left;">
+                        <a href="apply-student.html" class="btn btn-primary">Apply for Student Visa</a>
+                    </div>
                 </div>
             </div>
 
@@ -123,6 +139,9 @@
                 <div class="visa-content">
                     <p>For skilled professionals with a valid job offer. We help navigate work permit regulations for
                         various countries including USA (H1B), UK (Tier 2), and Canada.</p>
+                    <div style="margin-top: 2rem; text-align: left;">
+                        <a href="apply-work.html" class="btn btn-primary">Apply for Work Visa</a>
+                    </div>
                 </div>
             </div>
 
@@ -135,6 +154,9 @@
                 <div class="visa-content">
                     <p>Reunite with your loved ones. We handle spouse visas, parent visas, and dependent child visas
                         with care and attention to detail.</p>
+                    <div style="margin-top: 2rem; text-align: left;">
+                        <a href="apply-family.html" class="btn btn-primary">Apply for Family Visa</a>
+                    </div>
                 </div>
             </div>
 
@@ -148,7 +170,7 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <h4>Global Visa Solutions</h4>
+                    <h4>BorderBridge</h4>
                     <p style="opacity: 0.8;">Your trusted partner for international travel documentation and immigration
                         services.</p>
                 </div>
@@ -164,19 +186,19 @@
                 <div class="footer-col">
                     <h4>Contact Info</h4>
                     <ul class="footer-links">
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Business Park, City Center</li>
-                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
-                        <li><i class="fas fa-envelope"></i> info@globalvisasolutions.com</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 401, Gitanjali Complex, Palanpur</li>
+                        <li><i class="fas fa-phone"></i> +91 8200306075 / 8128344519</li>
+                        <li><i class="fas fa-envelope"></i> j.r818430@gmail.com</li>
                     </ul>
                 </div>
             </div>
             <div class="copyright">
-                &copy; 2026 Global Visa Solutions. All Rights Reserved.
+                &copy; 2026 BorderBridge. All Rights Reserved.
             </div>
         </div>
     </footer>
 
-    <script src="js/script.js"></script>
+    <script src="js/script.js?v=1772162207381"></script>
     <script>
         // Simple Accordion Script
         document.querySelectorAll('.visa-header').forEach(header => {

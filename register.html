@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - BorderBridge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/auth-modern.css">
+</head>
+
+<body class="auth-page">
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <a href="index.html" class="auth-logo">
+                <i class="fas fa-plane-departure"></i>
+                Border<span>Bridge</span>
+            </a>
+
+            <div class="auth-header">
+                <h1>Create Account</h1>
+                <p>Join us for seamless travel services</p>
+            </div>
+
+            <div id="error-msg" class="error-message"></div>
+            <div id="success-msg" class="success-message"></div>
+
+            <!-- Registration Step 1: Details -->
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="fullName" placeholder="John Doe" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="john@example.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="phone" placeholder="+1 234 567 890">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Min. 6 characters" required minlength="6">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="register-btn">
+                    <span>Send Verification Code</span>
+                    <i class="fas fa-paper-plane" style="margin-left: 8px;"></i>
+                </button>
+            </form>
+
+            <!-- Registration Step 2: OTP Verification -->
+            <div id="otp-section" class="otp-section">
+                <div class="auth-header">
+                    <h2>Verify Email</h2>
+                    <p>Enter the 6-digit code sent to<br><strong id="user-email"></strong></p>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <i class="fas fa-key"></i>
+                        <input type="text" id="otp-input" placeholder="000000" maxlength="6"
+                            style="text-align: center; letter-spacing: 8px; font-size: 1.5rem; font-weight: 700;">
+                    </div>
+                </div>
+
+                <button id="verify-register-btn" class="btn-primary">Verify & Complete Signup</button>
+
+                <div class="auth-footer" style="justify-content: center;">
+                    <p style="color: var(--text-muted);">Didn't receive code? <a href="#" id="resend-otp">Resend</a></p>
+                </div>
+
+                <button id="back-to-register" class="btn-secondary" style="margin-top: 20px;">
+                    <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Change Details
+                </button>
+            </div>
+
+            <div class="auth-footer"
+                style="justify-content: center; margin-top: 32px; border-top: 1px solid var(--glass-border); padding-top: 24px;">
+                <p style="color: var(--text-muted);">Already have an account? <a href="login.html"
+                        style="margin-left: 5px; font-weight: 600;">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+
+</html>

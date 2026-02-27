@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Passport Services - BorderBridge</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .application-form-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-premium);
+            margin-top: -5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Step Progress Bar */
+        .step-progressbar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .step-progressbar::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #e5e7eb;
+            z-index: 1;
+        }
+
+        .step-progressbar .progress-line {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            height: 3px;
+            background: var(--color-accent-gradient);
+            z-index: 2;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        .step-item {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 20%;
+        }
+
+        .step-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid #e5e7eb;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .step-item.active .step-circle {
+            border-color: var(--color-accent);
+            background: var(--color-accent);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
+        }
+
+        .step-item.completed .step-circle {
+            border-color: var(--color-success);
+            background: var(--color-success);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.8rem;
+            text-align: center;
+            font-weight: 600;
+            color: #6b7280;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .step-item.active .step-label {
+            color: var(--color-primary);
+        }
+
+        .form-section-title {
+            border-left: 4px solid var(--color-accent);
+            padding-left: 1rem;
+            margin: 2rem 0 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .application-form-container {
+                padding: 1.5rem;
+                margin-top: -2rem;
+            }
+
+            .step-label {
+                display: none;
+            }
+
+            /* Hide labels on mobile to save space */
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--color-text-main);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--color-light-gray);
+            border-radius: 8px;
+            font-family: var(--font-body);
+            transition: var(--transition-fast);
+            background: #fdfdfd;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.15);
+            background: white;
+        }
+
+        .form-step {
+            display: none;
+            animation: slideIn 0.4s ease forwards;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 2rem;
+            align-items: center;
+        }
+
+        /* Declaration Box */
+        .declaration-box {
+            background: rgba(255, 193, 7, 0.05);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .declaration-box label {
+            display: flex;
+            gap: 10px;
+            cursor: pointer;
+            align-items: flex-start;
+        }
+
+        .declaration-box input[type="checkbox"] {
+            margin-top: 4px;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="earth-container">
+            <div class="earth-globe">
+                <div class="passport-inner"></div>
+                <div class="passport-cover"></div>
+            </div>
+        </div>
+        <div class="loading-text">BorderBridge</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo"><i class="fas fa-plane-departure logo-icon"></i> Border
+                <span>Bridge</span></a>
+            <div class="hamburger"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Services <i class="fas fa-chevron-down"
+                            style="font-size: 0.8rem; margin-left: 5px;"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="visa.html" class="dropdown-link">Visa Services</a></li>
+                        <li><a href="passport.html" class="dropdown-link">Passport Services</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="countries.html" class="nav-link">Countries</a></li>
+                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <a href="login.html" class="btn btn-primary btn-nav">Login</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="section page-header header-visa">
+        <div class="container text-center">
+            <h1>Apply for Passport Services</h1>
+            <p>Your journey begins here. Submit your application securely.</p>
+        </div>
+    </header>
+
+    <!-- Application Form Section -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container" style="max-width: 1000px;">
+            <div class="application-form-container reveal">
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2>Complete Application</h2>
+                    <span id="saveStatus" style="color: #6b7280; font-size: 0.9rem; font-weight: 500;">Draft Saved: Just
+                        now</span>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="step-progressbar">
+                    <div class="progress-line" id="progressLine"></div>
+                    <div class="step-item active" data-step="1">
+                        <div class="step-circle"><i class="fas fa-passport"></i></div>
+                        <div class="step-label">Service <br> Type</div>
+                    </div>
+                    <div class="step-item" data-step="2">
+                        <div class="step-circle"><i class="fas fa-user"></i></div>
+                        <div class="step-label">Applicant <br> Details</div>
+                    </div>
+                    <div class="step-item" data-step="3">
+                        <div class="step-circle"><i class="fas fa-users"></i></div>
+                        <div class="step-label">Family <br> Details</div>
+                    </div>
+                    <div class="step-item" data-step="4">
+                        <div class="step-circle"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="step-label">Address &amp; <br> Contact</div>
+                    </div>
+                    <div class="step-item" data-step="5">
+                        <div class="step-circle"><i class="fas fa-file-signature"></i></div>
+                        <div class="step-label">Old Pass &amp; <br> Police</div>
+                    </div>
+                    <div class="step-item" data-step="6">
+                        <div class="step-circle"><i class="fas fa-check-double"></i></div>
+                        <div class="step-label">Verify &amp; <br> Submit</div>
+                    </div>
+                </div>
+
+                <form id="visaForm">
+                    <!-- Step 1: Service Type -->
+                    <div class="form-step active" id="step1">
+                        <h3 class="form-section-title">Step 1: Passport Service Type</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Service Type *</label>
+                                <select class="form-control" name="passportType" id="passportTypeSelect" required>
+                                    <option value="New">New Passport</option>
+                                    <option value="Renewal">Passport Renewal</option>
+                                    <option value="Tatkal">Tatkal Service</option>
+                                    <option value="Correction">Name/Address Correction</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Applicant Details -->
+                    <div class="form-step" id="step2">
+                        <h3 class="form-section-title">Step 2: Applicant Details</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Given Name (First Name) *</label>
+                                <input type="text" class="form-control" name="givenName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Surname</label>
+                                <input type="text" class="form-control" name="surname">
+                            </div>
+                            <div class="form-group">
+                                <label>Date of Birth *</label>
+                                <input type="date" class="form-control" name="dob" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Place of Birth (Village/Town/City) *</label>
+                                <input type="text" class="form-control" name="placeOfBirth" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Gender *</label>
+                                <select class="form-control" name="gender" required>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Marital Status</label>
+                                <select class="form-control" name="maritalStatus">
+                                    <option value="Single">Single</option>
+                                    <option value="Married">Married</option>
+                                    <option value="Divorced">Divorced</option>
+                                    <option value="Widowed">Widowed</option>
+                                    <option value="Separated">Separated</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Employment Type</label>
+                                <select class="form-control" name="employmentType">
+                                    <option value="Private">Private</option>
+                                    <option value="Government">Government</option>
+                                    <option value="Self Employed">Self Employed</option>
+                                    <option value="Student">Student</option>
+                                    <option value="Homemaker">Homemaker</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Educational Qualification</label>
+                                <select class="form-control" name="educationalQualification">
+                                    <option value="5th pass or less">5th pass or less</option>
+                                    <option value="Between 6th and 9th standard">Between 6th and 9th standard</option>
+                                    <option value="10th pass and above">10th pass and above</option>
+                                    <option value="Graduate and above">Graduate and above</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Aadhaar Number</label>
+                                <input type="text" class="form-control" name="aadhaarNumber">
+                            </div>
+                            <div class="form-group">
+                                <label>PAN Number</label>
+                                <input type="text" class="form-control" name="panNumber"
+                                    style="text-transform: uppercase;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Family Details -->
+                    <div class="form-step" id="step3">
+                        <h3 class="form-section-title">Step 3: Family Details</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Father's Name (Given Name + Surname) *</label>
+                                <input type="text" class="form-control" name="fatherName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Mother's Name (Given Name + Surname) *</label>
+                                <input type="text" class="form-control" name="motherName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Spouse's Name (If Married)</label>
+                                <input type="text" class="form-control" name="spouseName">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Address Details -->
+                    <div class="form-step" id="step4">
+                        <h3 class="form-section-title">Step 4: Present Residential Address & Emergency Contact</h3>
+                        <div class="form-grid">
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label>House No. and Street Name *</label>
+                                <textarea class="form-control" name="houseNo" rows="2" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Village / Town / City *</label>
+                                <input type="text" class="form-control" name="villageTownCity" required>
+                            </div>
+                            <div class="form-group">
+                                <label>State *</label>
+                                <input type="text" class="form-control" name="state" required>
+                            </div>
+                            <div class="form-group">
+                                <label>District *</label>
+                                <input type="text" class="form-control" name="district" required>
+                            </div>
+                            <div class="form-group">
+                                <label>PIN Code *</label>
+                                <input type="text" class="form-control" name="pincode" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Mobile Number *</label>
+                                <input type="text" class="form-control" name="mobileNumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email ID</label>
+                                <input type="email" class="form-control" name="email">
+                            </div>
+
+                            <div class="form-group" style="grid-column: 1 / -1; margin-top: 1rem;">
+                                <h4 style="color: var(--color-primary); margin-bottom: 0.5rem; font-size: 1.1rem;">
+                                    Emergency Contact</h4>
+                                <hr style="border-top: 1px solid #e5e7eb; margin-bottom: 1rem;">
+                            </div>
+                            <div class="form-group">
+                                <label>Name & Address *</label>
+                                <textarea class="form-control" name="emergencyNameAddress" rows="2" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Mobile Number *</label>
+                                <input type="text" class="form-control" name="emergencyMobile" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Old Passport & Police Details -->
+                    <div class="form-step" id="step5">
+                        <div id="oldPassportSection" style="display: none;">
+                            <h3 class="form-section-title">Step 5: Previous Passport Details</h3>
+                            <p style="color: #6b7280; font-size:0.9rem; margin-bottom: 1.5rem;">For Renewal, Tatkal, or
+                                Correction only.</p>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Old Passport Number</label>
+                                    <input type="text" class="form-control" name="oldPassportNumber"
+                                        style="text-transform: uppercase;">
+                                </div>
+                                <div class="form-group">
+                                    <label>Place of Issue</label>
+                                    <input type="text" class="form-control" name="placeOfIssue">
+                                </div>
+                                <div class="form-group">
+                                    <label>Date of Issue</label>
+                                    <input type="date" class="form-control" name="issueDate">
+                                </div>
+                                <div class="form-group">
+                                    <label>Date of Expiry</label>
+                                    <input type="date" class="form-control" name="expiryDate">
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="form-section-title">Police Verification Details</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Is Police Verification Required? *</label>
+                                <select class="form-control" name="isRequired">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No (Only for specific renewals/minors)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Nearest Police Station *</label>
+                                <input type="text" class="form-control" name="nearestPoliceStation"
+                                    placeholder="E.g. Palanpur City Police Station" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 6: Declaration & Submit -->
+                    <div class="form-step" id="step6">
+                        <h3 class="form-section-title">Step 6: Uploads &amp; Declaration</h3>
+                        <div class="form-grid" style="margin-bottom:20px;">
+                            <div class="form-group">
+                                <label>Applicant Photo (Passport Size) *</label>
+                                <input type="file" id="applicantPhoto" class="form-control" accept="image/*" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Applicant Signature *</label>
+                                <input type="file" id="applicantSignature" class="form-control" accept="image/*"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="declaration-box">
+                            <label>
+                                <input type="checkbox" name="isAccepted" id="declarationCheck">
+                                <span>I hereby declare that all the information provided above is true to the best of my
+                                    knowledge. I understand that processing of my passport application is subject to the
+                                    rules of the issuing authority, and BorderBridge acts only as a facilitator. I owe
+                                    allegiance to the sovereignty of my country.</span>
+                            </label>
+                        </div>
+                        <div
+                            style="background: #f9fafb; padding: 1.5rem; border-radius: 8px; border: 1px solid #e5e7eb;">
+                            <h4 style="margin-bottom: 0.5rem; color: var(--color-primary);"><i
+                                    class="fas fa-info-circle text-accent"></i> Final Submit Note</h4>
+                            <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0;">By clicking Final Submit,
+                                you will be prompted to pay the passport processing fee. Your dashboard will then update
+                                with PDF tracking.</p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <div>
+                            <button type="button" class="btn btn-outline" id="prevBtn"
+                                style="display: none;">Back</button>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="btn btn-outline" id="draftBtn"
+                                style="border-color: #6b7280; color: #6b7280;"><i class="fas fa-save"></i> Save
+                                Draft</button>
+                            <button type="button" class="btn btn-primary" id="nextBtn">Next Step</button>
+                            <button type="submit" class="btn btn-primary" id="submitBtn"
+                                style="display: none; background: var(--color-success); border-color: var(--color-success);"><i
+                                    class="fas fa-paper-plane"></i> Final Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>BorderBridge</h4>
+                    <p style="opacity: 0.8;">Your trusted partner for international travel documentation and immigration
+                        services.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="visa.html">Visa Services</a></li>
+                        <li><a href="contact.html">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">&copy; 2026 BorderBridge. All Rights Reserved.</div>
+        </div>
+    </footer>
+
+    <script src="js/script.js?v=2"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Guard: Check if User is Logged In
+            const user = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            if (!user || !token) {
+                // Save redirect intent so after login they come back here
+                localStorage.setItem('redirectAfterLogin', 'apply-passport.html');
+                alert("Please login to start your Visa Application");
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Elements
+            const steps = document.querySelectorAll('.form-step');
+            const progressItems = document.querySelectorAll('.step-item');
+            const progressLine = document.getElementById('progressLine');
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const draftBtn = document.getElementById('draftBtn');
+            const saveStatus = document.getElementById('saveStatus');
+
+            let currentStep = 0;
+            const totalSteps = steps.length;
+
+            // Pre-fill from URL param if available
+            const urlParams = new URLSearchParams(window.location.search);
+            const serviceParam = urlParams.get('service');
+            if (serviceParam && document.getElementById('passportTypeSelect')) {
+                document.getElementById('passportTypeSelect').value = serviceParam;
+            }
+
+            // Navigation functions
+            function updateFormSteps() {
+                // Update views
+                steps.forEach((step, index) => {
+                    step.classList.toggle('active', index === currentStep);
+                });
+
+                // Update UI ProgressBar
+                progressItems.forEach((item, index) => {
+                    if (index === currentStep) {
+                        item.classList.add('active');
+                        item.classList.remove('completed');
+                    } else if (index < currentStep) {
+                        item.classList.remove('active');
+                        item.classList.add('completed');
+                        item.querySelector('.step-circle').innerHTML = '<i class="fas fa-check"></i>';
+                    } else {
+                        item.classList.remove('active', 'completed');
+                        // Restore original icons
+                        const icons = ['fa-passport', 'fa-user', 'fa-users', 'fa-map-marker-alt', 'fa-file-signature', 'fa-check-double'];
+                        item.querySelector('.step-circle').innerHTML = `<i class="fas ${icons[index]}"></i>`;
+                    }
+                });
+
+                // Calculate width for the connection line
+                const progressWidth = (currentStep / (totalSteps - 1)) * 100;
+                progressLine.style.width = `calc(${progressWidth}% - 10px)`; // adjust for circle widths
+
+                // Update Buttons
+                if (currentStep === 0) {
+                    prevBtn.style.display = 'none';
+                } else {
+                    prevBtn.style.display = 'block';
+                }
+
+                if (currentStep === totalSteps - 1) {
+                    nextBtn.style.display = 'none';
+                    submitBtn.style.display = 'block';
+                } else {
+                    nextBtn.style.display = 'block';
+                    submitBtn.style.display = 'none';
+                }
+            }
+
+            // Click Handlers
+            nextBtn.addEventListener('click', () => {
+                // Validation for current step
+                const currentStepElement = steps[currentStep];
+                const inputs = currentStepElement.querySelectorAll('input[required], select[required], textarea[required]');
+                let isValid = true;
+
+                // Show standard HTML5 validation messages
+                for (let input of inputs) {
+                    if (!input.checkValidity()) {
+                        input.reportValidity();
+                        isValid = false;
+                        break; // Stop at first invalid input and show its message
+                    }
+                }
+
+                if (!isValid) return; // Prevent next step if invalid
+
+                if (currentStep < totalSteps - 1) {
+                    currentStep++;
+                    updateFormSteps();
+                    saveDraft(); // Auto-save draft on Next
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateFormSteps();
+                }
+            });
+
+            draftBtn.addEventListener('click', () => {
+                draftBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                saveDraft().then(() => {
+                    setTimeout(() => {
+                        draftBtn.innerHTML = '<i class="fas fa-check"></i> Saved';
+                        draftBtn.style.borderColor = 'var(--color-success)';
+                        draftBtn.style.color = 'var(--color-success)';
+                        saveStatus.innerText = 'Draft Saved: Just now';
+
+                        // Reset button UI after 2 sec
+                        setTimeout(() => {
+                            draftBtn.innerHTML = '<i class="fas fa-save"></i> Save Draft';
+                            draftBtn.style.borderColor = '#6b7280';
+                            draftBtn.style.color = '#6b7280';
+                        }, 2000);
+                    }, 800);
+                });
+            });
+
+            // Function to collect form data into JSON matching Backend Schema
+            function collectFormData() {
+                const form = document.getElementById('visaForm');
+                const fd = new FormData(form);
+                const data = Object.fromEntries(fd.entries());
+
+                return {
+                    passportType: data.passportType,
+                    applicantDetails: {
+                        givenName: data.givenName,
+                        surname: data.surname,
+                        dob: data.dob,
+                        placeOfBirth: data.placeOfBirth,
+                        gender: data.gender,
+                        maritalStatus: data.maritalStatus,
+                        employmentType: data.employmentType,
+                        educationalQualification: data.educationalQualification,
+                        aadhaarNumber: data.aadhaarNumber,
+                        panNumber: data.panNumber?.toUpperCase(),
+                        voterId: data.voterId
+                    },
+                    familyDetails: {
+                        fatherName: data.fatherName,
+                        motherName: data.motherName,
+                        spouseName: data.spouseName
+                    },
+                    presentAddress: {
+                        houseNo: data.houseNo,
+                        villageTownCity: data.villageTownCity,
+                        state: data.state,
+                        district: data.district,
+                        pincode: data.pincode,
+                        mobileNumber: data.mobileNumber,
+                        email: data.email
+                    },
+                    emergencyContact: {
+                        name: data.emergencyNameAddress,
+                        address: data.emergencyNameAddress,
+                        mobileNumber: data.emergencyMobile
+                    },
+                    previousPassportDetails: {
+                        oldPassportNumber: data.oldPassportNumber?.toUpperCase(),
+                        issueDate: data.issueDate,
+                        expiryDate: data.expiryDate,
+                        placeOfIssue: data.placeOfIssue
+                    },
+                    policeVerification: {
+                        nearestPoliceStation: data.nearestPoliceStation,
+                        isRequired: data.isRequired
+                    },
+                    declaration: {
+                        isAccepted: document.getElementById('declarationCheck').checked
+                    },
+                    status: 'Draft' // Always draft unless FinalSubmit is pressed
+                };
+            }
+
+            // Handle Old Passport Visiblity Toggle
+            const typeSelect = document.getElementById('passportTypeSelect');
+            const oldPassSection = document.getElementById('oldPassportSection');
+            typeSelect.addEventListener('change', (e) => {
+                if (e.target.value === 'New') {
+                    oldPassSection.style.display = 'none';
+                } else {
+                    oldPassSection.style.display = 'block';
+                }
+            });
+
+            // Save Draft and Connect to API
+            async function saveDraft() {
+                const payload = collectFormData();
+                localStorage.setItem('passportDraft', JSON.stringify(payload));
+
+                try {
+                    const token = localStorage.getItem('token');
+                    const response = await fetch('/api/passport/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const resData = await response.json();
+                    if (resData.success && resData.data.applicationId) {
+                        const appId = resData.data.applicationId;
+                        localStorage.setItem('passportDraftAppId', appId);
+                        document.querySelector('.form-section-title').innerHTML += ` <span style="font-size:0.8rem; background:#e0e7ff; color:#3730a3; padding:4px 8px; border-radius:5px; margin-left:10px;">ID: ${appId}</span>`;
+                    }
+                } catch (e) {
+                    console.log('API save draft failed', e);
+                }
+
+                return Promise.resolve(true);
+            }
+
+            // Check if draft exists and prefill
+            async function loadDraft() {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+
+                let data = null;
+
+                try {
+                    // Try fetching from Server first
+                    const res = await fetch('/api/passport/my', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const resData = await res.json();
+                    if (resData.success && resData.data.length > 0) {
+                        const draft = resData.data.find(app => (app.status === 'Draft' || app.status === 'Pending'));
+                        if (draft) {
+                            data = draft;
+                            document.querySelector('.form-section-title').innerHTML += ` <span style="font-size:0.8rem; background:#e0e7ff; color:#3730a3; padding:4px 8px; border-radius:5px; margin-left:10px;">ID: ${draft.applicationId}</span>`;
+                        }
+                    }
+
+                    // Fallback to Profile to fast fill
+                    if (!data) {
+                        const profRes = await fetch('/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } });
+                        const profData = await profRes.json();
+                        // Only auto-fill if profile is reasonably complete (>70%)
+                        if (profData.success && profData.data.personalInfo && profData.data.completionPercentage > 70) {
+                            const p = profData.data;
+                            data = {
+                                applicantDetails: {
+                                    givenName: p.personalInfo.fullName,
+                                    dob: p.personalInfo.dateOfBirth,
+                                    placeOfBirth: p.personalInfo.placeOfBirth,
+                                    gender: p.personalInfo.gender,
+                                    maritalStatus: p.personalInfo.maritalStatus,
+                                    aadhaarNumber: p.govtIdInfo?.aadhaarNumber,
+                                    panNumber: p.govtIdInfo?.panNumber
+                                },
+                                presentAddress: {
+                                    email: p.contactInfo?.email,
+                                    mobileNumber: p.contactInfo?.phone,
+                                    villageTownCity: p.contactInfo?.currentAddress
+                                },
+                                emergencyContact: p.emergencyContact,
+                                previousPassportDetails: {
+                                    oldPassportNumber: p.passportInfo?.passportNumber,
+                                    issueDate: p.passportInfo?.issueDate,
+                                    expiryDate: p.passportInfo?.expiryDate,
+                                    placeOfIssue: p.passportInfo?.placeOfIssue
+                                }
+                            };
+                        }
+                    }
+                } catch (e) { console.log(e); }
+
+                if (!data) {
+                    const saved = localStorage.getItem('passportDraft');
+                    if (saved) data = JSON.parse(saved);
+                }
+
+                if (data) {
+                    const form = document.getElementById('visaForm');
+
+                    if (data.passportType) {
+                        form.elements['passportType'].value = data.passportType;
+                        if (data.passportType === 'New') {
+                            oldPassSection.style.display = 'none';
+                        } else {
+                            oldPassSection.style.display = 'block';
+                        }
+                    }
+
+                    if (data.applicantDetails) {
+                        if (data.applicantDetails.givenName) form.elements['givenName'].value = data.applicantDetails.givenName;
+                        if (data.applicantDetails.surname) form.elements['surname'].value = data.applicantDetails.surname;
+                        if (data.applicantDetails.dob) form.elements['dob'].value = data.applicantDetails.dob.split('T')[0];
+                        if (data.applicantDetails.placeOfBirth) form.elements['placeOfBirth'].value = data.applicantDetails.placeOfBirth;
+                        if (data.applicantDetails.gender) form.elements['gender'].value = data.applicantDetails.gender;
+                        if (data.applicantDetails.maritalStatus) form.elements['maritalStatus'].value = data.applicantDetails.maritalStatus;
+                        if (data.applicantDetails.employmentType) form.elements['employmentType'].value = data.applicantDetails.employmentType;
+                        if (data.applicantDetails.educationalQualification) form.elements['educationalQualification'].value = data.applicantDetails.educationalQualification;
+                        if (data.applicantDetails.aadhaarNumber) form.elements['aadhaarNumber'].value = data.applicantDetails.aadhaarNumber;
+                        if (data.applicantDetails.panNumber) form.elements['panNumber'].value = data.applicantDetails.panNumber;
+                    }
+
+                    if (data.familyDetails) {
+                        if (data.familyDetails.fatherName) form.elements['fatherName'].value = data.familyDetails.fatherName;
+                        if (data.familyDetails.motherName) form.elements['motherName'].value = data.familyDetails.motherName;
+                        if (data.familyDetails.spouseName) form.elements['spouseName'].value = data.familyDetails.spouseName;
+                    }
+
+                    if (data.presentAddress) {
+                        if (data.presentAddress.houseNo) form.elements['houseNo'].value = data.presentAddress.houseNo;
+                        if (data.presentAddress.villageTownCity) form.elements['villageTownCity'].value = data.presentAddress.villageTownCity;
+                        if (data.presentAddress.state) form.elements['state'].value = data.presentAddress.state;
+                        if (data.presentAddress.district) form.elements['district'].value = data.presentAddress.district;
+                        if (data.presentAddress.pincode) form.elements['pincode'].value = data.presentAddress.pincode;
+                        if (data.presentAddress.mobileNumber) form.elements['mobileNumber'].value = data.presentAddress.mobileNumber;
+                        if (data.presentAddress.email) form.elements['email'].value = data.presentAddress.email;
+                    }
+
+                    if (data.emergencyContact) {
+                        if (data.emergencyContact.name) form.elements['emergencyNameAddress'].value = data.emergencyContact.name;
+                        if (data.emergencyContact.mobileNumber) form.elements['emergencyMobile'].value = data.emergencyContact.mobileNumber;
+                    }
+
+                    if (data.previousPassportDetails) {
+                        if (data.previousPassportDetails.oldPassportNumber) form.elements['oldPassportNumber'].value = data.previousPassportDetails.oldPassportNumber;
+                        if (data.previousPassportDetails.placeOfIssue) form.elements['placeOfIssue'].value = data.previousPassportDetails.placeOfIssue;
+                        if (data.previousPassportDetails.issueDate) form.elements['issueDate'].value = data.previousPassportDetails.issueDate.split('T')[0];
+                        if (data.previousPassportDetails.expiryDate) form.elements['expiryDate'].value = data.previousPassportDetails.expiryDate.split('T')[0];
+                    }
+                    if (data.policeVerification) {
+                        if (data.policeVerification.isRequired) form.elements['isRequired'].value = data.policeVerification.isRequired;
+                        if (data.policeVerification.nearestPoliceStation) form.elements['nearestPoliceStation'].value = data.policeVerification.nearestPoliceStation;
+                    }
+                    saveStatus.innerText = 'Draft / Profile Pre-filled';
+                } else if (serviceParam) {
+                    typeSelect.value = serviceParam;
+                    if (serviceParam === 'New') oldPassSection.style.display = 'none';
+                    else oldPassSection.style.display = 'block';
+                }
+            }
+
+            // Fake Payment Modal HTML Injection
+            const paymentModalHTML = `
+            <div id="paymentModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+                <div style="background:white; padding:30px; border-radius:15px; width:400px; max-width:90%; text-align:center;">
+                    <i class="fas fa-lock" style="font-size:3rem; color:#10b981; margin-bottom:15px;"></i>
+                    <h3>Secure Payment Gateway</h3>
+                    <p style="color:#64748b; font-size:0.9rem;">Passport Fee: <strong>$150.00</strong></p>
+                    <div style="margin:20px 0; text-align:left;">
+                        <label>Card Number</label>
+                        <input type="text" value="XXXX-XXXX-XXXX-XXXX" class="form-control" disabled>
+                        <div style="display:flex; gap:10px; margin-top:10px;">
+                            <div><label>Expiry</label><input type="text" value="12/28" class="form-control" disabled></div>
+                            <div><label>CVV</label><input type="text" value="***" class="form-control" disabled></div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.8rem; color:#ef4444; margin-bottom:15px;">This is a simulation. No real money will be deducted.</p>
+                    <button id="payNowBtn" class="btn btn-primary" style="width:100%;">Pay $150.00 & Submit</button>
+                    <button type="button" onclick="document.getElementById('paymentModal').style.display='none'; document.getElementById('submitBtn').disabled=false; document.getElementById('submitBtn').innerHTML='<i class=\\\'fas fa-paper-plane\\\'></i> Final Submit';" class="btn" style="width:100%; margin-top:10px; background:#f1f5f9; color:#0a192f; border:none;">Cancel</button>
+                </div>
+            </div>`;
+            document.body.insertAdjacentHTML('beforeend', paymentModalHTML);
+
+            // Form Submit (FINAL SUBMIT)
+            document.getElementById('visaForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const isAccepted = document.getElementById('declarationCheck').checked;
+                if (!isAccepted) {
+                    alert('You must accept the declaration to submit the application.');
+                    return;
+                }
+
+                // Show modal first
+                document.getElementById('paymentModal').style.display = 'flex';
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            });
+
+            // Handle Actual Pay & Submit
+            document.getElementById('payNowBtn').addEventListener('click', async () => {
+                const payBtn = document.getElementById('payNowBtn');
+                payBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Payment...';
+                payBtn.disabled = true;
+
+                const token = localStorage.getItem('token');
+
+                try {
+                    // Upload files to document Vault (Applicant Photo & Signature)
+                    const photoInput = document.getElementById('applicantPhoto');
+                    const sigInput = document.getElementById('applicantSignature');
+
+                    if (photoInput.files.length > 0) {
+                        const fd1 = new FormData();
+                        fd1.append('document', photoInput.files[0]);
+                        fd1.append('fieldName', 'profilePhoto');
+                        await fetch('/api/profile/upload-document', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd1 });
+                    }
+                    if (sigInput.files.length > 0) {
+                        const fd2 = new FormData();
+                        fd2.append('document', sigInput.files[0]);
+                        fd2.append('fieldName', 'digitalSignature');
+                        await fetch('/api/profile/upload-document', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd2 });
+                    }
+
+                    // Proceed to Final Form Submission
+                    const payload = collectFormData();
+                    payload.status = 'Submitted';
+
+                    const res = await fetch('/api/passport/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const responseData = await res.json();
+
+                    if (responseData.success) {
+                        localStorage.removeItem('passportDraft'); // clear draft
+                        document.getElementById('paymentModal').style.display = 'none';
+                        alert(`Passport Application Submitted & Payment Successful!\nApplication Number: ${responseData.data.applicationId}\nA PDF receipt has been sent to your email.`);
+                        window.location.href = 'profile.html?tab=applications&success=PASS_SUBMITTED';
+                    } else {
+                        alert(responseData.message || "Something went wrong.");
+                        document.getElementById('paymentModal').style.display = 'none';
+                        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Final Submit';
+                        submitBtn.disabled = false;
+                        payBtn.innerHTML = 'Pay $150.00 & Submit';
+                        payBtn.disabled = false;
+                    }
+                } catch (e) {
+                    alert("Network error, please try again");
+                    document.getElementById('paymentModal').style.display = 'none';
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Final Submit';
+                    submitBtn.disabled = false;
+                    payBtn.innerHTML = 'Pay $150.00 & Submit';
+                    payBtn.disabled = false;
+                }
+            });
+
+            // Init
+            updateFormSteps();
+            loadDraft();
+        });
+    </script>
+</body>
+
+</html>

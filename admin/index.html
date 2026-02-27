@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - BorderBridge</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        /* Admin specific styles */
+        :root {
+            --admin-primary: #1e293b;
+            --admin-secondary: #0f172a;
+            --admin-accent: #3b82f6;
+            --font-main: 'Outfit', sans-serif;
+            --color-success: #10b981;
+            --color-danger: #ef4444;
+            --color-warning: #f59e0b;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: #f8fafc;
+            margin: 0;
+            color: #334155;
+        }
+
+        /* Sidebar Administration Layout */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            width: 280px;
+            background: var(--admin-secondary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-sidebar-header h2 {
+            margin: 0;
+            font-weight: 800;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .admin-sidebar-header h2 span {
+            color: var(--admin-accent);
+        }
+
+        .admin-nav {
+            padding: 20px 0;
+            flex-grow: 1;
+        }
+
+        .admin-nav-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+        }
+
+        .admin-nav-item:hover,
+        .admin-nav-item.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border-left-color: var(--admin-accent);
+        }
+
+        .admin-nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .admin-main {
+            flex-grow: 1;
+            margin-left: 280px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .admin-topbar {
+            background: white;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+
+        .admin-content {
+            padding: 30px;
+            flex-grow: 1;
+            background: #f1f5f9;
+        }
+
+        .content-tab {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .content-tab.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--admin-primary);
+        }
+
+        .stat-card p {
+            margin: 5px 0 0;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h3 {
+            margin: 0;
+            font-weight: 700;
+            color: var(--admin-primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px 25px;
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 15px 25px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-Submitted {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-Pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-Processing {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .status-Approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-Rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-Draft {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .action-btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .action-btn:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .action-btn.approve {
+            color: var(--color-success);
+            border-color: currentcolor;
+        }
+
+        .action-btn.approve:hover {
+            background: #d1fae5;
+        }
+
+        .action-btn.reject {
+            color: var(--color-danger);
+            border-color: currentcolor;
+        }
+
+        .action-btn.reject:hover {
+            background: #fee2e2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <h2><i class="fas fa-shield-halved"></i> Border<span>Admin</span></h2>
+            </div>
+            <nav class="admin-nav">
+                <div class="admin-nav-item active" data-tab="dashboard">
+                    <i class="fas fa-chart-pie"></i> Dashboard Overview
+                </div>
+                <div class="admin-nav-item" data-tab="visa">
+                    <i class="fas fa-passport"></i> Visa Applications
+                </div>
+                <div class="admin-nav-item" data-tab="passport">
+                    <i class="fas fa-book"></i> Passport Applications
+                </div>
+                <div class="admin-nav-item" data-tab="users">
+                    <i class="fas fa-users"></i> Registered Users
+                </div>
+            </nav>
+            <div style="padding: 20px;">
+                <button id="adminLogout"
+                    style="width:100%; padding:12px; background:rgba(239, 68, 68, 0.1); color:#ef4444; border:none; border-radius:10px; font-weight:700; cursor:pointer;">
+                    <i class="fas fa-sign-out-alt"></i> Logout Admin
+                </button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <div class="admin-topbar">
+                <div style="font-size: 1.2rem; font-weight: 600;">Control Panel</div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="text-align: right;">
+                        <div id="admin-name" style="font-weight: 700;">Admin User</div>
+                        <div style="font-size: 0.75rem; color: #64748b;">System Administrator</div>
+                    </div>
+                    <img id="admin-avatar" src="/images/default-avatar.png"
+                        style="width: 40px; height: 40px; border-radius: 50%;">
+                </div>
+            </div>
+
+            <div class="admin-content">
+
+                <!-- TAB: DASHBOARD -->
+                <div id="tab-dashboard" class="content-tab active">
+                    <div style="margin-bottom: 25px;">
+                        <h1 style="margin: 0; font-size: 1.8rem;">Dashboard Overview</h1>
+                        <p style="margin: 5px 0 0; color: #64748b;">Welcome back. Here's what's happening today.</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div>
+                                <h3 id="stat-users">0</h3>
+                                <p>Total Users</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #fef08a; color: #a16207;">
+                                <i class="fas fa-file-invoice"></i>
+                            </div>
+                            <div>
+                                <h3 id="stat-visa">0</h3>
+                                <p>Total Visa Apps</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #bbf7d0; color: #166534;">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div>
+                                <h3 id="stat-passport">0</h3>
+                                <p>Total Passport Apps</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #fed7aa; color: #c2410c;">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h3 id="stat-pending">0</h3>
+                                <p>Pending Actions</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Apps Table Preview -->
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Recent Visa Applications</h3>
+                            <button class="action-btn"
+                                onclick="document.querySelector('[data-tab=\'visa\']').click()">View All</button>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Application ID</th>
+                                        <th>Applicant</th>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-visa-tbody">
+                                    <tr>
+                                        <td colspan="5" style="text-align:center;">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: VISA APPLICATIONS -->
+                <div id="tab-visa" class="content-tab">
+                    <div style="margin-bottom: 25px;">
+                        <h1 style="margin: 0; font-size: 1.8rem;">Visa Applications</h1>
+                        <p style="margin: 5px 0 0; color: #64748b;">Manage and update all visa submissions.</p>
+                    </div>
+
+                    <div class="table-container">
+                        <div style="overflow-x: auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Application ID</th>
+                                        <th>Applicant Info</th>
+                                        <th>Type / Dest</th>
+                                        <th>Date Submitted</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="all-visa-tbody">
+                                    <tr>
+                                        <td colspan="6" style="text-align:center;">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: PASSPORT APPLICATIONS -->
+                <div id="tab-passport" class="content-tab">
+                    <div style="margin-bottom: 25px;">
+                        <h1 style="margin: 0; font-size: 1.8rem;">Passport Applications</h1>
+                        <p style="margin: 5px 0 0; color: #64748b;">Manage and update all passport submissions.</p>
+                    </div>
+
+                    <div class="table-container">
+                        <div style="overflow-x: auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Application ID</th>
+                                        <th>Applicant Info</th>
+                                        <th>Passport Type</th>
+                                        <th>Date Submitted</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="all-passport-tbody">
+                                    <tr>
+                                        <td colspan="6" style="text-align:center;">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: USERS -->
+                <div id="tab-users" class="content-tab">
+                    <div style="margin-bottom: 25px;">
+                        <h1 style="margin: 0; font-size: 1.8rem;">Registered Users</h1>
+                        <p style="margin: 5px 0 0; color: #64748b;">Manage portal users and their access.</p>
+                    </div>
+
+                    <div class="table-container">
+                        <div style="overflow-x: auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Role</th>
+                                        <th>Joined At</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="all-users-tbody">
+                                    <tr>
+                                        <td colspan="5" style="text-align:center;">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Script for Admin Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            const adminEmail = 'j.r818430@gmail.com';
+            if (!token || !user || user.role !== 'admin' || user.email !== adminEmail) {
+                alert("Unauthorized! Only the primary admin can access this page.");
+                window.location.href = '/login';
+                return;
+            }
+
+            // Set Admin details
+            document.getElementById('admin-name').innerText = user.fullName;
+            document.getElementById('admin-avatar').src = user.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&background=3b82f6&color=fff&rounded=true`;
+
+            // Logout Logic
+            document.getElementById('adminLogout').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            });
+
+            // Tab Switching
+            document.querySelectorAll('.admin-nav-item').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const tabId = btn.getAttribute('data-tab');
+                    document.querySelectorAll('.content-tab').forEach(t => t.classList.remove('active'));
+                    document.getElementById(`tab-${tabId}`).classList.add('active');
+                });
+            });
+
+            fetchDashboardData(token);
+        });
+
+        async function fetchDashboardData(token) {
+            try {
+                const headers = { 'Authorization': `Bearer ${token}` };
+
+                // Fetch Apps
+                const appsRes = await fetch('/api/admin/applications', { headers });
+                const appsData = await appsRes.json();
+
+                // Fetch Users
+                const usersRes = await fetch('/api/admin/users', { headers });
+                const usersData = await usersRes.json();
+
+                if (appsData.success && usersData.success) {
+                    renderDashboard(appsData.data, usersData.data);
+                } else {
+                    alert("Failed to load backend info.");
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert("Server connection error");
+            }
+        }
+
+        function renderDashboard(apps, users) {
+            const visaApps = apps.visa || [];
+            const passportApps = apps.passport || [];
+
+            // Counters
+            document.getElementById('stat-users').innerText = users.length;
+            document.getElementById('stat-visa').innerText = visaApps.length;
+            document.getElementById('stat-passport').innerText = passportApps.length;
+
+            const pendingVisa = visaApps.filter(a => a.status === 'Submitted' || a.status === 'Pending').length;
+            const pendingPassport = passportApps.filter(a => a.status === 'Submitted' || a.status === 'Pending').length;
+            document.getElementById('stat-pending').innerText = pendingVisa + pendingPassport;
+
+            // Render Recent Visa in Dashboard
+            const recentVisa = visaApps.slice(0, 5);
+            document.getElementById('recent-visa-tbody').innerHTML = recentVisa.map(app => `
+                <tr>
+                    <td><strong>${app.applicationId || 'N/A'}</strong></td>
+                    <td>${app.user ? app.user.fullName : 'Unknown'}</td>
+                    <td>${app.visaType}</td>
+                    <td>${new Date(app.createdAt).toLocaleDateString()}</td>
+                    <td><span class="status-badge status-${app.status}">${app.status}</span></td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" style="text-align:center;">No recent application</td></tr>`;
+
+            // Render ALL Visa Apps Tab
+            document.getElementById('all-visa-tbody').innerHTML = visaApps.map(app => `
+                <tr>
+                    <td><strong>${app.applicationId || 'N/A'}</strong></td>
+                    <td>
+                        <div style="font-weight:600;">${app.user ? app.user.fullName : 'Unknown'}</div>
+                        <div style="font-size:0.8rem; color:#64748b;">${app.user ? app.user.email : ''}</div>
+                    </td>
+                    <td>${app.visaType} <br><small style="color:#64748b">${app.travelDetails?.destinationCountry || ''}</small></td>
+                    <td>${new Date(app.createdAt).toLocaleDateString()}</td>
+                    <td><span class="status-badge status-${app.status}">${app.status}</span></td>
+                    <td>
+                        <select onchange="updateAppStatus('${app._id}', 'Visa', this.value)" style="padding: 5px; border-radius: 5px; border: 1px solid #cbd5e1;">
+                            <option value="">Change Status...</option>
+                            <option value="Processing">Mark Processing</option>
+                            <option value="Approved">Approve</option>
+                            <option value="Rejected">Reject</option>
+                        </select>
+                        ${app.pdfUrl ? `<br><a href="${app.pdfUrl}" target="_blank" style="font-size:0.8rem; color:var(--admin-accent); text-decoration:none;"><i class="fas fa-file-pdf"></i> View PDF</a>` : ''}
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="6" style="text-align:center;">No applications</td></tr>`;
+
+            // Render ALL Passport Apps Tab
+            document.getElementById('all-passport-tbody').innerHTML = passportApps.map(app => `
+                <tr>
+                    <td><strong>${app.applicationId || 'N/A'}</strong></td>
+                    <td>
+                        <div style="font-weight:600;">${app.user ? app.user.fullName : 'Unknown'}</div>
+                        <div style="font-size:0.8rem; color:#64748b;">${app.user ? app.user.email : ''}</div>
+                    </td>
+                    <td>${app.passportType || 'Standard'}</td>
+                    <td>${new Date(app.createdAt).toLocaleDateString()}</td>
+                    <td><span class="status-badge status-${app.status}">${app.status}</span></td>
+                    <td>
+                        <select onchange="updateAppStatus('${app._id}', 'Passport', this.value)" style="padding: 5px; border-radius: 5px; border: 1px solid #cbd5e1;">
+                            <option value="">Change Status...</option>
+                            <option value="Processing">Mark Processing</option>
+                            <option value="Approved">Approve</option>
+                            <option value="Rejected">Reject</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="6" style="text-align:center;">No applications</td></tr>`;
+
+            // Render Users Tab
+            document.getElementById('all-users-tbody').innerHTML = users.map(u => `
+                <tr>
+                    <td><div style="display:flex; align-items:center; gap:10px;">
+                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(u.fullName)}&rounded=true&size=32" />
+                        <strong>${u.fullName}</strong>
+                    </div></td>
+                    <td>${u.email}</td>
+                    <td>${u.phone || 'N/A'}</td>
+                    <td><span class="status-badge status-${u.role === 'admin' ? 'Approved' : 'Draft'}">${u.role.toUpperCase()}</span></td>
+                    <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" style="text-align:center;">No users</td></tr>`;
+        }
+
+        async function updateAppStatus(id, type, newStatus) {
+            if (!newStatus) return;
+            if (!confirm(`Are you sure you want to mark this application as ${newStatus}?`)) return;
+
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`/api/admin/application/status/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ status: newStatus, applicationType: type })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert("Status updated successfully.");
+                    fetchDashboardData(token); // Refresh UI
+                } else {
+                    alert(data.message || "Failed to update status");
+                }
+            } catch (e) {
+                alert("Error updating status");
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BorderBridge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/auth-modern.css">
+</head>
+
+<body class="auth-page">
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <a href="index.html" class="auth-logo">
+                <i class="fas fa-plane-departure"></i>
+                Border<span>Bridge</span>
+            </a>
+
+            <div class="auth-header">
+                <h1>Welcome Back</h1>
+                <p>Login to your account to continue</p>
+            </div>
+
+            <div id="error-msg" class="error-message"></div>
+            <div id="success-msg" class="success-message"></div>
+
+            <!-- Login Form Section -->
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="john@example.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <div class="auth-footer" style="margin-top: 0; margin-bottom: 20px;">
+                    <a href="forgot-password.html">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn-primary" id="login-btn">
+                    <span>Continue</span>
+                    <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                </button>
+            </form>
+
+            <!-- OTP Verification Section -->
+            <div id="otp-section" class="otp-section">
+                <div class="auth-header">
+                    <h2>Verify Email</h2>
+                    <p>Enter the code sent to <br><strong id="user-email"></strong></p>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <i class="fas fa-key"></i>
+                        <input type="text" id="otp-input" placeholder="Enter 6-digit OTP" maxlength="6"
+                            style="padding-left: 48px; text-align: center; letter-spacing: 4px; font-weight: 700;">
+                    </div>
+                </div>
+
+                <button id="verify-otp-btn" class="btn-primary">Verify & Login</button>
+                <div class="auth-footer" style="justify-content: center;">
+                    <p style="color: var(--text-muted);">Didn't receive code? <a href="#" id="resend-otp"
+                            style="margin-left: 5px;">Resend</a></p>
+                </div>
+                <button id="back-to-login" class="btn-secondary" style="margin-top: 20px;">
+                    <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Back to Login
+                </button>
+            </div>
+
+            <div class="auth-footer"
+                style="justify-content: center; margin-top: 32px; border-top: 1px solid var(--glass-border); padding-top: 24px;">
+                <p style="color: var(--text-muted);">New to BorderBridge? <a href="register.html"
+                        style="margin-left: 5px; font-weight: 600;">Create Account</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Smooth transitions for OTP section handled by auth.js
+    </script>
+</body>
+
+</html>

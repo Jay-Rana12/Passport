@@ -1,4 +1,4 @@
-// Global Visa Solutions - Main Script
+// BorderBridge - Main Script
 
 document.addEventListener('DOMContentLoaded', () => {
     initPreloader();
@@ -7,18 +7,31 @@ document.addEventListener('DOMContentLoaded', () => {
     initStatsCounter();
     initTimelineAnimation();
     initMobileMenu();
+    initAuth();
 });
 
 // Preloader
 function initPreloader() {
     const preloader = document.getElementById('preloader');
-    if (preloader) {
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                preloader.classList.add('preloader-hidden');
-            }, 600); // Minimum view time set to 0.6 seconds
-        });
+    if (!preloader) return;
+
+    // Detect navigation type
+    const perfEntries = window.performance.getEntriesByType('navigation');
+    const isReload = perfEntries.length > 0 && perfEntries[0].type === 'reload';
+    const isInternal = document.referrer && document.referrer.includes(window.location.hostname);
+
+    // Only show preloader on reload or when entering the site from an external source
+    // If it's internal navigation (link click) and NOT a reload, hide it immediately
+    if (!isReload && isInternal) {
+        preloader.style.display = 'none';
+        return;
     }
+
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            preloader.classList.add('preloader-hidden');
+        }, 600); // Minimum view time set to 0.6 seconds
+    });
 }
 
 // Sticky Navbar & Active Link
@@ -81,7 +94,7 @@ function initMobileMenu() {
         });
 
         // Close menu when clicking a direct link (excluding dropdown toggles)
-        document.querySelectorAll('.nav-link:not(#), .dropdown-link').forEach(n => n.addEventListener('click', () => {
+        document.querySelectorAll('.nav-link:not([href="#"]), .dropdown-link').forEach(n => n.addEventListener('click', () => {
             if (!n.closest('.dropdown') || n.classList.contains('dropdown-link')) {
                 hamburger.classList.remove('active');
                 navMenu.classList.remove('active');
@@ -196,3 +209,61 @@ function initTimelineAnimation() {
         timelineObserver.observe(item);
     });
 }
+// Auth State Management
+// Auth State Management
+function initAuth() {
+    let user = null;
+    try {
+        user = JSON.parse(localStorage.getItem('user'));
+    } catch (e) {
+        console.error('Failed to parse user from localStorage');
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+    }
+    const token = localStorage.getItem('token');
+
+    if (token && user) {
+        // Find existing Get Started button
+        const getStartedBtn = document.querySelector('.btn-nav');
+        if (getStartedBtn) {
+            // Create Profile Item
+            const profileItem = document.createElement('li');
+            profileItem.className = 'nav-item dropdown profile-dropdown';
+            const userName = user.fullName || 'User';
+            const userFirstName = userName.split(' ')[0];
+            const profilePic = user.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=ff8c00&color=fff&rounded=true`;
+
+            profileItem.innerHTML = `
+                <a href="profile.html" style="display: flex; align-items: center; gap: 10px; padding: 6px 16px; background: rgba(255, 255, 255, 0.1); border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s; text-decoration: none;">
+                    <div class="nav-avatar-wrapper" style="position: relative; display: flex; align-items: center;">
+                        <img src="${profilePic}" alt="${userName}" class="nav-avatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #ff8c00; background: white; flex-shrink: 0;">
+                        <span class="status-online-dot" style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; background: #10b981; border: 1.5px solid #0a192f; border-radius: 50%;"></span>
+                    </div>
+                    <span class="user-name-nav" style="font-weight: 600; font-family: 'Outfit', sans-serif; color: white; font-size: 0.95rem; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;">${userFirstName}</span>
+                </a>
+            `;
+
+            // Replace button with profile link
+            const navMenu = document.querySelector('.nav-menu');
+            if (navMenu) {
+                // If the ul has a specific structure preventing proper layout, let's append adjacent to container if possible
+                // OR we just append to the end of the menu but ensure flex layout is ok
+                navMenu.appendChild(profileItem);
+                getStartedBtn.remove();
+            }
+        }
+
+        // Handle Logout for all possible buttons (e.g. Navigation & Profile sidebar)
+        setTimeout(() => {
+            document.querySelectorAll('#logoutBtn, .logout-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                });
+            });
+        }, 300);
+    }
+}
+

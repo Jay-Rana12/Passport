@@ -1,30 +1,13 @@
-const nodemailer = require('nodemailer');
+const sendEmail = require('../utils/sendEmail');
 
 exports.sendContactEmail = async (req, res) => {
     const { name, email, phone, service, message } = req.body;
 
     try {
-        // Create transporter
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false, // Use STARTTLS
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            },
-            tls: {
-                rejectUnauthorized: false
-            },
-            connectionTimeout: 10000,
-            greetingTimeout: 5000,
-            socketTimeout: 15000
-        });
-
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: process.env.EMAIL_USER,
+        await sendEmail({
+            email: process.env.EMAIL_USER, // Admin ko mail bhejna hai
             subject: `New Contact Form Submission from ${name}`,
+            message: `New Consultation Request\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\nService: ${service}\nMessage: ${message}`,
             html: `
                 <h3>New Consultation Request</h3>
                 <p><strong>Name:</strong> ${name}</p>
@@ -34,9 +17,7 @@ exports.sendContactEmail = async (req, res) => {
                 <p><strong>Message:</strong></p>
                 <p>${message}</p>
             `
-        };
-
-        await transporter.sendMail(mailOptions);
+        });
 
         res.status(200).json({
             success: true,

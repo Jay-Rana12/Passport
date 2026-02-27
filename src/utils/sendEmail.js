@@ -11,18 +11,16 @@ const sendEmail = async (options) => {
     }
 
     const transporter = nodemailer.createTransport({
-        host: 'smtp.googlemail.com', // Alternative Google host
-        port: 465,
-        secure: true, // Use SSL
+        host: 'smtp.gmail.com',
+        port: 2525, // Fallback port often left open by hosts
+        secure: false,
         auth: {
             user: emailUser,
             pass: emailPass,
         },
-        tls: {
-            rejectUnauthorized: false // bypass SSL verification issues
-        },
-        connectionTimeout: 15000, // 15 seconds
-        socketTimeout: 15000
+        requireTLS: true,
+        connectionTimeout: 20000,
+        socketTimeout: 20000
     });
 
     const mailOptions = {

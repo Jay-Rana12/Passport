@@ -52,9 +52,16 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin', 'index.html'));
 });
 
+const mongoose = require('mongoose');
+
 // Health Check
 app.get('/', (req, res) => {
-  res.send('BorderBridge API is Live and Running!');
+  const dbStatus = mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected';
+  res.json({
+    status: 'Live',
+    message: 'BorderBridge API is Running!',
+    database: dbStatus
+  });
 });
 
 // 404 Handler for API

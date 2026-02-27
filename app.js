@@ -4,7 +4,15 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const connectDB = require('./src/config/db');
+
+// Route imports
 const authRoutes = require('./src/routes/authRoutes');
+const profileRoutes = require('./src/routes/profileRoutes');
+const contactRoutes = require('./src/routes/contactRoutes');
+const visaRoutes = require('./src/routes/visaRoutes');
+const passportRoutes = require('./src/routes/passportRoutes');
+const documentRoutes = require('./src/routes/documentRoutes');
+const adminRoutes = require('./src/routes/adminRoutes');
 
 const app = express();
 
@@ -13,21 +21,11 @@ connectDB();
 
 // Middleware
 app.use(express.json());
-// Enable CORS for all origins
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
-app.use(express.static('.', { extensions: ['html'] }));
-app.use('/admin', express.static(path.join(__dirname, 'admin')));
-
-const profileRoutes = require('./src/routes/profileRoutes');
-const contactRoutes = require('./src/routes/contactRoutes');
-const visaRoutes = require('./src/routes/visaRoutes');
-const passportRoutes = require('./src/routes/passportRoutes');
-const documentRoutes = require('./src/routes/documentRoutes');
-const adminRoutes = require('./src/routes/adminRoutes');
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -38,9 +36,12 @@ app.use('/api/passport', passportRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/admin', adminRoutes);
 
+// Static files
+app.use(express.static('.', { extensions: ['html'] }));
+app.use('/admin', express.static(path.join(__dirname, 'admin')));
 app.use('/uploads', express.static('uploads'));
 
-// Ensure /admin and /admin/ point to the admin panel
+// Admin redirect
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin', 'index.html'));
 });
@@ -50,9 +51,8 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-

@@ -12,12 +12,16 @@ const sendEmail = async (options) => {
 
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
+        port: 587,
+        secure: false, // Port 587 use STARTTLS
         auth: {
             user: emailUser,
             pass: emailPass,
-        }
+        },
+        logger: true,
+        debug: true,
+        connectionTimeout: 10000,
+        socketTimeout: 10000
     });
 
     const mailOptions = {

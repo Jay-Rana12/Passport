@@ -921,7 +921,7 @@
             document.getElementById('dobInput').setAttribute('max', today);
 
             // Fetch profile data if any exists (to prepopulate)
-            fetch('/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })
+            fetch('https://passport-ia5r.onrender.com/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })
                 .then(res => res.json())
                 .then(data => {
                     if (data.success && data.data) {
@@ -965,8 +965,8 @@
         async function fetchApplications(token) {
             try {
                 const [visaRes, passRes] = await Promise.all([
-                    fetch('/api/visa/my', { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch('/api/passport/my', { headers: { 'Authorization': `Bearer ${token}` } })
+                    fetch('https://passport-ia5r.onrender.com/api/visa/my', { headers: { 'Authorization': `Bearer ${token}` } }),
+                    fetch('https://passport-ia5r.onrender.com/api/passport/my', { headers: { 'Authorization': `Bearer ${token}` } })
                 ]);
 
                 const visaData = await visaRes.json();
@@ -1181,7 +1181,7 @@
             formData.append('profilePhoto', file);
 
             try {
-                const res = await fetch('/api/profile/upload-photo', {
+                const res = await fetch('https://passport-ia5r.onrender.com/api/profile/upload-photo', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
@@ -1235,7 +1235,7 @@
             formData.append('fieldName', docType);
 
             try {
-                const res = await fetch('/api/profile/upload-document', {
+                const res = await fetch('https://passport-ia5r.onrender.com/api/profile/upload-document', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
@@ -1381,7 +1381,7 @@
                         const formData = new FormData();
                         formData.append('document', fileInput.files[0]);
                         formData.append('fieldName', docTypes[i]);
-                        await fetch('/api/profile/upload-document', {
+                        await fetch('https://passport-ia5r.onrender.com/api/profile/upload-document', {
                             method: 'POST',
                             headers: { 'Authorization': `Bearer ${token}` },
                             body: formData
@@ -1391,7 +1391,7 @@
                 }
 
                 // Update text profile
-                const res = await fetch('/api/profile/update', {
+                const res = await fetch('https://passport-ia5r.onrender.com/api/profile/update', {
                     method: 'PUT',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)

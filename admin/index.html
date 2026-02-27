@@ -569,11 +569,11 @@
                 const headers = { 'Authorization': `Bearer ${token}` };
 
                 // Fetch Apps
-                const appsRes = await fetch('/api/admin/applications', { headers });
+                const appsRes = await fetch('https://passport-ia5r.onrender.com/api/admin/applications', { headers });
                 const appsData = await appsRes.json();
 
                 // Fetch Users
-                const usersRes = await fetch('/api/admin/users', { headers });
+                const usersRes = await fetch('https://passport-ia5r.onrender.com/api/admin/users', { headers });
                 const usersData = await usersRes.json();
 
                 if (appsData.success && usersData.success) {

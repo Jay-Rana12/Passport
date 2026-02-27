@@ -302,7 +302,7 @@
             prevBtn.addEventListener('click', () => { currentStep--; updateUI(); });
 
             async function loadData() {
-                const profRes = await (await fetch('/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })).json();
+                const profRes = await (await fetch('https://passport-ia5r.onrender.com/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })).json();
                 if (profRes.success && profRes.data.completionPercentage > 70) {
                     const p = profRes.data;
                     const f = document.getElementById('visaForm');

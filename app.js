@@ -64,6 +64,19 @@ app.get('/', (req, res) => {
   });
 });
 
+// Network Debug Route
+app.get('/api/debug-email-connection', async (req, res) => {
+  const net = require('net');
+  const s = new net.Socket();
+  s.setTimeout(5000);
+  s.on('timeout', () => { s.destroy(); res.json({ success: false, message: 'Timeout: Render is blocking smtp.googlemail.com:465' }); });
+  s.on('error', (e) => { s.destroy(); res.json({ success: false, message: 'Error: ' + e.message }); });
+  s.connect(465, 'smtp.googlemail.com', () => {
+    s.destroy();
+    res.json({ success: true, message: 'Success! Render can reach Google SMTP server' });
+  });
+});
+
 // 404 Handler for API
 app.use('/api/*', (req, res) => {
   res.status(404).json({ success: false, message: `API Route ${req.originalUrl} not found` });

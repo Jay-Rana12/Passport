@@ -30,13 +30,13 @@ const documentRoutes = require('./src/routes/documentRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 
 // Routes
-app.use('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/auth', authRoutes);
-app.use('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/profile', profileRoutes);
-app.use('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/contact', contactRoutes);
-app.use('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/visa', visaRoutes);
-app.use('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/passport', passportRoutes);
-app.use('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/documents', documentRoutes);
-app.use('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/admin', adminRoutes);
+app.use('https://passport-ia5r.onrender.com/api/auth', authRoutes);
+app.use('https://passport-ia5r.onrender.com/api/profile', profileRoutes);
+app.use('https://passport-ia5r.onrender.com/api/contact', contactRoutes);
+app.use('https://passport-ia5r.onrender.com/api/visa', visaRoutes);
+app.use('https://passport-ia5r.onrender.com/api/passport', passportRoutes);
+app.use('https://passport-ia5r.onrender.com/api/documents', documentRoutes);
+app.use('https://passport-ia5r.onrender.com/api/admin', adminRoutes);
 
 app.use('/uploads', express.static('uploads'));
 
@@ -55,3 +55,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+

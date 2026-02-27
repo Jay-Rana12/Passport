@@ -40,3 +40,4 @@ const sendSMS = async (phone, message) => {
 };
 
 module.exports = sendSMS;
+

@@ -217,3 +217,4 @@ exports.generatePassportPDF = async (application, user, profile = null) => {
         } catch (error) { reject(error); }
     });
 };
+

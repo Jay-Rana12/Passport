@@ -48,3 +48,4 @@ exports.admin = (req, res, next) => {
         res.status(403).json({ success: false, message: 'Unauthorized. Only the Super Admin can access this panel.' });
     }
 };
+

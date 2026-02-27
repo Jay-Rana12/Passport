@@ -795,7 +795,7 @@
 
                 try {
                     const token = localStorage.getItem('token');
-                    const response = await fetch('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/visa/create', {
+                    const response = await fetch('https://passport-ia5r.onrender.com/api/visa/create', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -827,7 +827,7 @@
 
                 try {
                     // Try fetching existing draft from Server first
-                    const res = await fetch('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/visa/my', {
+                    const res = await fetch('https://passport-ia5r.onrender.com/api/visa/my', {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     const resData = await res.json();
@@ -842,7 +842,7 @@
 
                     // Fallback to Profile Data to fast-fill
                     if (!data) {
-                        const profRes = await fetch('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } });
+                        const profRes = await fetch('https://passport-ia5r.onrender.com/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } });
                         const profData = await profRes.json();
                         // Only auto-fill if profile is reasonably complete (>70%)
                         if (profData.success && profData.data.personalInfo && profData.data.completionPercentage > 70) {
@@ -985,20 +985,20 @@
                         const fd1 = new FormData();
                         fd1.append('document', photoInput.files[0]);
                         fd1.append('fieldName', 'profilePhoto');
-                        await fetch('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/profile/upload-document', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd1 });
+                        await fetch('https://passport-ia5r.onrender.com/api/profile/upload-document', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd1 });
                     }
                     if (sigInput.files.length > 0) {
                         const fd2 = new FormData();
                         fd2.append('document', sigInput.files[0]);
                         fd2.append('fieldName', 'digitalSignature');
-                        await fetch('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/profile/upload-document', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd2 });
+                        await fetch('https://passport-ia5r.onrender.com/api/profile/upload-document', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd2 });
                     }
 
                     // Proceed to Final Form Submission
                     const payload = collectFormData();
                     payload.status = 'Submitted';
 
-                    const res = await fetch('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/visa/create', {
+                    const res = await fetch('https://passport-ia5r.onrender.com/api/visa/create', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1040,3 +1040,4 @@
 </body>
 
 </html>
+

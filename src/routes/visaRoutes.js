@@ -12,3 +12,4 @@ router.get('/my', protect, getMyVisaApplications);
 router.get('/:id', protect, getVisaApplicationById);
 
 module.exports = router;
+

@@ -595,7 +595,7 @@
 
             async function saveDraft() {
                 const payload = collectFormData();
-                await fetch('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/visa/create', {
+                await fetch('https://passport-ia5r.onrender.com/api/visa/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify(payload)
@@ -603,7 +603,7 @@
             }
 
             async function loadData() {
-                const profRes = await (await fetch('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })).json();
+                const profRes = await (await fetch('https://passport-ia5r.onrender.com/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })).json();
                 if (profRes.success && profRes.data.completionPercentage > 70) {
                     const p = profRes.data;
                     const f = document.getElementById('visaForm');
@@ -621,7 +621,7 @@
                 const payload = collectFormData();
                 payload.status = 'Submitted';
                 // Trigger file uploads and final submit
-                await fetch('https://passport-ia5r.onrender.comhttps://passport-ia5r.onrender.com/api/visa/create', {
+                await fetch('https://passport-ia5r.onrender.com/api/visa/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify(payload)
@@ -637,3 +637,4 @@
 </body>
 
 </html>
+

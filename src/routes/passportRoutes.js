@@ -10,3 +10,4 @@ router.post('/create', protect, createPassportApplication);
 router.get('/my', protect, getMyPassportApplications);
 
 module.exports = router;
+

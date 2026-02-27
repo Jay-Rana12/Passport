@@ -14,3 +14,4 @@ router.put('/application/status/:id', protect, admin, updateApplicationStatus);
 router.put('/profile/verify/:userId', protect, admin, verifyProfile);
 
 module.exports = router;
+

@@ -116,3 +116,4 @@ VisaApplicationSchema.pre('save', function (next) {
 });
 
 module.exports = mongoose.model('VisaApplication', VisaApplicationSchema);
+

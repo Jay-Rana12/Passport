@@ -31,3 +31,4 @@ router.post('/upload-document', protect, upload.single('document'), profileContr
 router.put('/admin/verify/:userId', protect, admin, profileController.verifyProfile);
 
 module.exports = router;
+

@@ -5,3 +5,4 @@ const contactController = require('../controllers/contactController');
 router.post('/send', contactController.sendContactEmail);
 
 module.exports = router;
+

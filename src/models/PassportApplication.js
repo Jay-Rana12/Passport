@@ -118,3 +118,4 @@ PassportApplicationSchema.pre('save', function (next) {
 });
 
 module.exports = mongoose.model('PassportApplication', PassportApplicationSchema);
+

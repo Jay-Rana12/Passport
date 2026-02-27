@@ -11,3 +11,4 @@ router.post('/upload', protect, upload.single('document'), uploadDocument);
 router.get('/my', protect, getMyDocuments);
 
 module.exports = router;
+

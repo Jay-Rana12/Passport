@@ -1,34 +1,25 @@
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 
 const sendEmail = async (options) => {
-    // Standard SMTP transporter for Gmail
-    const emailUser = (process.env.EMAIL_USER || "").trim();
-    const emailPass = (process.env.EMAIL_PASS || "").replace(/\s+/g, '');
+    // BREVO API Configuration (HTTP based - bypasses SMTP blocks)
+    const BREVO_API_KEY = process.env.BREVO_API_KEY;
+    const SENDER_EMAIL = process.env.EMAIL_USER?.trim() || 'j.r818430@gmail.com';
 
-    if (!emailUser || !emailPass) {
-        console.error("[EMAIL] Error: EMAIL_USER or EMAIL_PASS environment variables are missing!");
-        throw new Error("Email credentials not configured on server.");
+    if (!BREVO_API_KEY) {
+        console.error("[BREVO API] Error: BREVO_API_KEY environment variable is missing!");
+        throw new Error("Email service is not configured correctly on server.");
     }
 
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 2525, // Fallback port often left open by hosts
-        secure: false,
-        auth: {
-            user: emailUser,
-            pass: emailPass,
+    const data = {
+        sender: {
+            name: "BorderBridge Support",
+            email: SENDER_EMAIL
         },
-        requireTLS: true,
-        connectionTimeout: 20000,
-        socketTimeout: 20000
-    });
-
-    const mailOptions = {
-        from: `"BorderBridge Support" <${process.env.EMAIL_USER}>`,
-        to: options.email,
+        to: [{
+            email: options.email
+        }],
         subject: options.subject,
-        text: options.message,
-        html: options.html || `
+        htmlContent: options.html || `
             <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 500px;">
                 <h2 style="color: #4f46e5;">Message</h2>
                 <p>Hello,</p>
@@ -36,19 +27,27 @@ const sendEmail = async (options) => {
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
                 <p style="font-size: 12px; color: #999;">&copy; 2026 BorderBridge Travel Services</p>
             </div>
-        `,
-        attachments: options.attachments || [] // Add attachments support
+        `
     };
 
     try {
-        console.log(`[EMAIL] Attempting to send email to: ${options.email}`);
-        await transporter.sendMail(mailOptions);
-        console.log(`[EMAIL] Success! Sent to: ${options.email}`);
+        console.log(`[BREVO API] Attempting to send email to: ${options.email}`);
+
+        const response = await axios.post('https://api.brevo.com/v3/smtp/email', data, {
+            headers: {
+                'accept': 'application/json',
+                'api-key': BREVO_API_KEY,
+                'content-type': 'application/json'
+            }
+        });
+
+        console.log(`[BREVO API] Success! Message ID: ${response.data.messageId}`);
+        return response.data;
+
     } catch (error) {
-        console.error('[EMAIL] CRITICAL FAILURE:', error);
-        throw error;
+        console.error('[BREVO API] CRITICAL FAILURE:', error.response ? error.response.data : error.message);
+        throw new Error(error.response ? error.response.data.message : 'Failed to send email via Brevo API');
     }
 };
 
 module.exports = sendEmail;
-

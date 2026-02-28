@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const connectDB = require('./src/config/db');
+const mongoose = require('mongoose');
 
 // Route imports
 const authRoutes = require('./src/routes/authRoutes');
@@ -19,7 +20,7 @@ const app = express();
 // Connect to Database
 connectDB();
 
-// 1. JSON & CORS Middleware (MUST BE FIRST)
+// 1. JSON & CORS Middleware
 app.use(express.json());
 app.use(cors({
   origin: '*',
@@ -27,13 +28,13 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
-// Logging middleware to debug requests
+// Logging middleware
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
 
-// 2. API Routes (MUST BE BEFORE STATIC FILES)
+// 2. API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/contact', contactRoutes);
@@ -42,17 +43,15 @@ app.use('/api/passport', passportRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/admin', adminRoutes);
 
-// 3. Static files and Uploads
-app.use('/uploads', express.static('uploads'));
-app.use('/admin', express.static(path.join(__dirname, 'admin')));
-app.use(express.static('.', { extensions: ['html'] }));
-
-// Admin redirect
+// 3. Static files and Admin Panel
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin', 'index.html'));
 });
+app.use('/admin', express.static(path.join(__dirname, 'admin')));
 
-const mongoose = require('mongoose');
+// General static files
+app.use(express.static('.', { extensions: ['html'] }));
+app.use('/uploads', express.static('uploads'));
 
 // Health Check
 app.get('/', (req, res) => {

@@ -25,6 +25,14 @@
             --color-warning: #f59e0b;
         }
 
+        .mobile-toggle {
+            display: none;
+            cursor: pointer;
+            padding: 10px;
+            font-size: 1.5rem;
+            color: var(--admin-primary);
+        }
+
         body {
             font-family: var(--font-main);
             background-color: #f8fafc;
@@ -312,11 +320,78 @@
         .action-btn.reject:hover {
             background: #fee2e2;
         }
+
+        /* Responsive Admin Sidebar */
+        @media (max-width: 991px) {
+            .admin-sidebar {
+                left: -280px;
+                transition: transform 0.4s ease;
+                z-index: 2000;
+            }
+
+            .admin-sidebar.active {
+                transform: translateX(280px);
+            }
+
+            .admin-main {
+                margin-left: 0;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .admin-topbar {
+                left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-content {
+                padding: 15px;
+            }
+
+            .admin-topbar {
+                padding: 0 15px;
+            }
+
+            #admin-name {
+                display: none;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 800px;
+            }
+
+            /* Sidebar Overlay */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1500;
+                backdrop-filter: blur(4px);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
     </style>
 </head>
 
 <body>
 
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="admin-layout">
         <aside class="admin-sidebar">
             <div class="admin-sidebar-header">
@@ -346,7 +421,12 @@
 
         <main class="admin-main">
             <div class="admin-topbar">
-                <div style="font-size: 1.2rem; font-weight: 600;">Control Panel</div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="mobile-toggle" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                    <div style="font-size: 1.2rem; font-weight: 600;">Control Panel</div>
+                </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <div style="text-align: right;">
                         <div id="admin-name" style="font-weight: 700;">Admin User</div>
@@ -561,6 +641,35 @@
                 });
             });
 
+            // Mobile Toggle Logic
+            const sidebar = document.querySelector('.admin-sidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                });
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            }
+
+            // Close sidebar when clicking menu items on mobile
+            document.querySelectorAll('.admin-nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    if (window.innerWidth <= 991) {
+                        sidebar.classList.remove('active');
+                        overlay.classList.remove('active');
+                    }
+                });
+            });
+
             fetchDashboardData(token);
         });
 
@@ -703,4 +812,3 @@
 </body>
 
 </html>
-

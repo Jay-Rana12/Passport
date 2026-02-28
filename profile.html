@@ -15,6 +15,25 @@
             --shadow-premium: 0 20px 50px rgba(0, 0, 0, 0.1);
         }
 
+        .profile-mobile-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            color: white;
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 25px rgba(255, 140, 0, 0.4);
+            cursor: pointer;
+            border: none;
+        }
+
         body {
             background-color: #f8fafc;
             color: #1e293b;
@@ -353,6 +372,47 @@
             background: #fef3c7;
             color: #92400e;
         }
+
+        /* Profile Response Fixes */
+        @media (max-width: 991px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .sidebar-card {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                height: 100vh;
+                margin: 0;
+                width: 280px;
+                z-index: 1500;
+                border-radius: 0 25px 25px 0;
+                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .sidebar-card.active {
+                left: 0;
+            }
+
+            .profile-mobile-toggle {
+                display: flex;
+            }
+
+            .premium-card {
+                padding: 1.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.4rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
@@ -398,6 +458,10 @@
             <a href="login.html" class="btn btn-primary btn-nav">Login</a>
         </div>
     </nav>
+
+    <button class="profile-mobile-toggle" id="profileSidebarToggle">
+        <i class="fas fa-user-gear"></i>
+    </button>
 
     <div class="dashboard-container">
         <!-- Sidebar -->
@@ -1420,8 +1484,22 @@
             }, 3000);
         });
 
+        // Mobile Sidebar Toggle
+        const profileToggle = document.getElementById('profileSidebarToggle');
+        const sidebar = document.querySelector('.sidebar-card');
+        if (profileToggle) {
+            profileToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+
+        // Close when clicking nav but only on mobile
+        document.querySelectorAll('.nav-item-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (window.innerWidth <= 991) sidebar.classList.remove('active');
+            });
+        });
     </script>
 </body>
 
 </html>
-

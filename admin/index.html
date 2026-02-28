@@ -321,52 +321,77 @@
             background: #fee2e2;
         }
 
-        /* Responsive Admin Sidebar */
+        /* Robust Responsive Admin UI */
         @media (max-width: 991px) {
             .admin-sidebar {
-                left: -280px;
-                transition: transform 0.4s ease;
+                transform: translateX(-100%);
+                left: 0;
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                 z-index: 2000;
+                width: 260px;
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
             }
 
             .admin-sidebar.active {
-                transform: translateX(280px);
+                transform: translateX(0);
             }
 
             .admin-main {
                 margin-left: 0;
+                width: 100%;
+                overflow-x: hidden;
             }
 
             .mobile-toggle {
-                display: block;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .admin-topbar {
-                left: 0;
+                padding: 0 15px;
+                height: 60px;
+            }
+
+            .admin-topbar .avatar-text {
+                display: none;
+                /* Hide admin name/role on small screens */
             }
 
             .stats-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
 
             .admin-content {
                 padding: 15px;
             }
 
-            .admin-topbar {
-                padding: 0 15px;
+            .stat-card {
+                padding: 15px;
+                gap: 15px;
             }
 
-            #admin-name {
-                display: none;
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.4rem;
             }
 
             .table-container {
+                margin: 0 -15px;
+                /* Pull table to edges on mobile */
+                border-radius: 0;
                 overflow-x: auto;
             }
 
             table {
-                min-width: 800px;
+                min-width: 700px;
+            }
+
+            th,
+            td {
+                padding: 12px 15px;
             }
 
             /* Sidebar Overlay */
@@ -377,13 +402,33 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0, 0, 0, 0.5);
+                background: rgba(10, 25, 47, 0.6);
                 z-index: 1500;
                 backdrop-filter: blur(4px);
+                opacity: 0;
+                transition: opacity 0.3s ease;
             }
 
             .sidebar-overlay.active {
                 display: block;
+                opacity: 1;
+            }
+
+            .content-tab h1 {
+                font-size: 1.4rem !important;
+            }
+        }
+
+        /* Adjustment for very small screens */
+        @media (max-width: 400px) {
+
+            .admin-topbar h3,
+            .admin-topbar div {
+                font-size: 0.9rem !important;
+            }
+
+            .stat-card h3 {
+                font-size: 1.5rem !important;
             }
         }
     </style>
@@ -428,7 +473,7 @@
                     <div style="font-size: 1.2rem; font-weight: 600;">Control Panel</div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <div style="text-align: right;">
+                    <div class="avatar-text" style="text-align: right;">
                         <div id="admin-name" style="font-weight: 700;">Admin User</div>
                         <div style="font-size: 0.75rem; color: #64748b;">System Administrator</div>
                     </div>

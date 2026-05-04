@@ -65,17 +65,33 @@ app.get('/', (req, res) => {
   });
 });
 
-// Network Debug Route
-app.get('/api/debug-email-connection', async (req, res) => {
-  const net = require('net');
-  const s = new net.Socket();
-  s.setTimeout(5000);
-  s.on('timeout', () => { s.destroy(); res.json({ success: false, message: 'Timeout: Render is blocking smtp.googlemail.com:465' }); });
-  s.on('error', (e) => { s.destroy(); res.json({ success: false, message: 'Error: ' + e.message }); });
-  s.connect(465, 'smtp.googlemail.com', () => {
-    s.destroy();
-    res.json({ success: true, message: 'Success! Render can reach Google SMTP server' });
-  });
+// Comprehensive System Check
+app.get('/api/system-check/:email', async (req, res) => {
+  try {
+    const User = require('./src/models/User');
+    const email = req.params.email.toLowerCase().trim();
+    const user = await User.findOne({ email });
+    
+    res.json({
+      timestamp: new Date().toISOString(),
+      database: mongoose.connection.readyState === 1 ? 'CONNECTED' : 'DISCONNECTED',
+      environment: {
+        email_user: process.env.EMAIL_USER ? 'SET' : 'MISSING',
+        email_pass: process.env.EMAIL_PASS ? 'SET' : 'MISSING',
+        fast2sms: process.env.FAST2SMS_KEY ? 'SET' : 'MISSING',
+        mongo_uri: process.env.MONGO_URI ? 'SET' : 'MISSING'
+      },
+      user_found: !!user,
+      user_details: user ? {
+        role: user.role,
+        has_phone: !!user.phone,
+        phone_preview: user.phone ? user.phone.substring(0, 5) + '***' : 'NONE',
+        created_at: user.createdAt
+      } : 'NOT FOUND IN DATABASE'
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // 404 Handler for API

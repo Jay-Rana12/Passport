@@ -79,7 +79,8 @@ app.get('/api/system-check/:email', async (req, res) => {
       timestamp: new Date().toISOString(),
       database: mongoose.connection.readyState === 1 ? 'CONNECTED' : 'DISCONNECTED',
       user_found: !!user,
-      latest_otp_code: latestOtp ? latestOtp.otp : 'NO OTP FOUND FOR THIS EMAIL',
+      latest_otp_code: latestOtp ? latestOtp.otp : 'NOT IN OTP_COLLECTION',
+      recovery_otp_from_user_record: user ? user.resetPasswordToken : 'NONE',
       otp_created_at: latestOtp ? latestOtp.createdAt : null,
       user_details: user ? {
         role: user.role,

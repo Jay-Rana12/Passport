@@ -4,7 +4,7 @@ const PassportApplicationSchema = new mongoose.Schema({
     applicationId: {
         type: String,
         unique: true,
-        sparse: true // Only required when submitting
+        sparse: true 
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -13,7 +13,7 @@ const PassportApplicationSchema = new mongoose.Schema({
     },
     passportType: {
         type: String,
-        enum: ['New', 'Renewal', 'Tatkal', 'Correction'],
+        enum: ['New', 'Renewal', 'Tatkal', 'Correction', 'Lost/Reissue', 'Minor'],
         required: true
     },
     applicantDetails: {
@@ -23,6 +23,7 @@ const PassportApplicationSchema = new mongoose.Schema({
         placeOfBirth: String,
         gender: { type: String, enum: ['Male', 'Female', 'Other'] },
         maritalStatus: { type: String, enum: ['Single', 'Married', 'Divorced', 'Widowed', 'Separated'] },
+        nationality: String,
         employmentType: String,
         educationalQualification: String,
         aadhaarNumber: String,
@@ -35,7 +36,8 @@ const PassportApplicationSchema = new mongoose.Schema({
         motherName: String,
         motherNationality: String,
         spouseName: String,
-        spouseNationality: String
+        spouseNationality: String,
+        legalGuardianName: String // Added for Minor
     },
     presentAddress: {
         houseNo: String,
@@ -48,6 +50,13 @@ const PassportApplicationSchema = new mongoose.Schema({
         mobileNumber: String,
         email: String
     },
+    permanentAddress: { // Added
+        street: String,
+        villageTownCity: String,
+        state: String,
+        district: String,
+        pincode: String
+    },
     emergencyContact: {
         name: String,
         address: String,
@@ -58,7 +67,27 @@ const PassportApplicationSchema = new mongoose.Schema({
         oldPassportNumber: String,
         issueDate: Date,
         expiryDate: Date,
-        placeOfIssue: String
+        placeOfIssue: String,
+        bookletType: { type: String, enum: ['36 Pages', '60 Pages'] }
+    },
+    renewalDetails: { // Added
+        reason: { type: String, enum: ['Expired', 'Pages Exhausted', 'Damaged', 'Validity Ending', 'Other'] },
+        updateRequired: [String] // Address Change, Marital Status Change, etc.
+    },
+    correctionDetails: { // Added
+        correctionType: [String], // Name, DOB, Address, etc.
+        details: String
+    },
+    lostDetails: { // Added
+        firNumber: String,
+        firDate: Date,
+        lossLocation: String,
+        lossDetails: String
+    },
+    minorDetails: { // Added
+        schoolId: String,
+        fatherConsent: { type: Boolean, default: false },
+        motherConsent: { type: Boolean, default: false }
     },
     policeVerification: {
         nearestPoliceStation: String,
@@ -69,7 +98,7 @@ const PassportApplicationSchema = new mongoose.Schema({
     },
     documents: {
         type: Map,
-        of: String // Custom map of document type -> URL
+        of: String 
     },
     progressPercentage: {
         type: Number,
@@ -88,34 +117,4 @@ const PassportApplicationSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-// Pre-save hook for calculating progress percentage
-PassportApplicationSchema.pre('save', function (next) {
-    if (this.status === 'Draft' || this.status === 'Pending') {
-        let filledCount = 0;
-        let totalCount = 10; // approximate
-
-        if (this.passportType) filledCount++;
-        if (this.applicantDetails?.givenName) filledCount++;
-        if (this.applicantDetails?.dob) filledCount++;
-        if (this.familyDetails?.fatherName) filledCount++;
-        if (this.presentAddress?.houseNo) filledCount++;
-        if (this.presentAddress?.pincode) filledCount++;
-        if (this.emergencyContact?.name) filledCount++;
-
-        if (this.policeVerification?.nearestPoliceStation) filledCount++;
-        if (this.declaration?.isAccepted) filledCount++;
-        if (this.passportType === 'Renewal') {
-            totalCount += 3;
-            if (this.previousPassportDetails?.oldPassportNumber) filledCount++;
-            if (this.previousPassportDetails?.issueDate) filledCount++;
-            if (this.previousPassportDetails?.expiryDate) filledCount++;
-        }
-        if (this.documents && Object.keys(this.documents).length > 0) filledCount += 3;
-
-        this.progressPercentage = Math.min(Math.round((filledCount / totalCount) * 100), 100);
-    }
-    next();
-});
-
 module.exports = mongoose.model('PassportApplication', PassportApplicationSchema);
-

@@ -89,7 +89,9 @@ exports.verifyAadhaar = async (req, res) => {
 exports.uploadDocument = async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ success: false, message: 'No file' });
-        const filePath = '/' + req.file.path.replace(/\\/g, "/");
+        
+        // Ensure relative path is correct for static serving
+        const filePath = `/uploads/documents/${req.file.filename}`;
         const { fieldName } = req.body;
         
         let profile = await Profile.findOne({ user: req.user.id });
@@ -97,14 +99,25 @@ exports.uploadDocument = async (req, res) => {
             profile = new Profile({ user: req.user.id });
         }
         
-        const key = (fieldName || req.file.originalname).replace(/\./g, '_'); // Sanitize key or use Map.set
-        profile.uploads.set(key, filePath);
-        await profile.save();
+        // Use filename as key, sanitize it for MongoDB compatibility
+        const originalName = fieldName || req.file.originalname || `Doc_${Date.now()}`;
+        const key = originalName.replace(/\./g, '_').replace(/\$/g, '_'); 
         
-        res.json({ success: true, data: filePath });
+        if (!profile.uploads) profile.uploads = new Map();
+        profile.uploads.set(key, filePath);
+        
+        console.log(`[SYS] Setting key ${key} to ${filePath}`);
+        
+        // Crucial for Mongoose Maps to detect changes
+        profile.markModified('uploads');
+        const savedProfile = await profile.save();
+        
+        console.log(`[SYS] Profile saved. Uploads count: ${savedProfile.uploads ? savedProfile.uploads.size : 0}`);
+        
+        res.json({ success: true, data: filePath, key: key });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ success: false, message: 'Upload failed' });
+        console.error('[SYS] Vault Upload Error:', err);
+        res.status(500).json({ success: false, message: 'Upload failed: ' + err.message });
     }
 };
 

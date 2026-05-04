@@ -3,204 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passport Application - Global Consultancy</title>
+    <title>Passport Application - BorderBridge Consultancy</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #0a192f; --accent: #ff8c00; }
-        body { background: #f0f4f8; padding-top: 80px; }
-        .app-container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        :root { 
+            --primary: #064e3b; 
+            --secondary: #0a192f;
+            --accent: #10b981; 
+            --bg-light: #f0fdf4;
+        }
+        body { background: #f8fafc; padding-top: 80px; }
+        .app-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
         
         .stepper { display: flex; justify-content: space-between; margin-bottom: 50px; position: relative; }
         .stepper::before { content: ''; position: absolute; top: 25px; width: 100%; height: 4px; background: #e2e8f0; z-index: 1; }
-        .p-line { position: absolute; top: 25px; height: 4px; background: var(--color-accent-gradient); z-index: 2; transition: 0.5s; width: 0; }
+        .p-line { position: absolute; top: 25px; height: 4px; background: linear-gradient(90deg, var(--accent), #34d399); z-index: 2; transition: 0.5s; width: 0; }
         
         .step { position: relative; z-index: 3; text-align: center; width: 60px; }
-        .s-icon { width: 45px; height: 45px; background: white; border: 3px solid #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; transition: 0.3s; color: #94a3b8; font-size: 0.9rem; }
-        .step.active .s-icon { border-color: #ff8c00; color: #ff8c00; box-shadow: 0 5px 15px rgba(255,140,0,0.3); transform: scale(1.1); }
-        .step.completed .s-icon { background: #10b981; border-color: #10b981; color: white; }
-        .step-label { font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
+        .s-icon { width: 50px; height: 50px; background: white; border: 3px solid #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; transition: 0.4s; color: #94a3b8; font-size: 1rem; font-weight: 700; }
+        .step.active .s-icon { border-color: var(--accent); color: var(--accent); box-shadow: 0 10px 20px rgba(16,185,129,0.2); transform: scale(1.15); }
+        .step.completed .s-icon { background: var(--accent); border-color: var(--accent); color: white; }
+        .step-label { font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        .form-card { background: white; border-radius: 24px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); }
+        .form-card { background: white; border-radius: 30px; padding: 45px; box-shadow: 0 30px 60px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.05); }
         .form-step { display: none; }
-        .form-step.active { display: block; animation: premiumFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes premiumFadeIn { 
-            from { opacity: 0; transform: translateY(30px) scale(0.98); filter: blur(5px); } 
-            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } 
+        .form-step.active { display: block; animation: stepFade 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes stepFade { 
+            from { opacity: 0; transform: translateY(40px); filter: blur(10px); } 
+            to { opacity: 1; transform: translateY(0); filter: blur(0); } 
         }
 
-        .form-section-title { font-size: 1.5rem; color: var(--primary); margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .section-header { margin-bottom: 35px; border-bottom: 2px solid var(--bg-light); padding-bottom: 15px; }
+        .section-header h2 { font-size: 1.8rem; color: var(--secondary); font-weight: 800; }
+        
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
         .full { grid-column: 1 / -1; }
-        .input-box { margin-bottom: 20px; }
-        .input-box label { display: block; font-size: 0.8rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase; }
-        .f-input { width: 100%; padding: 12px 18px; border: 2px solid #edf2f7; border-radius: 12px; font-size: 0.95rem; background: #f8fafc; transition: 0.3s; }
-        .f-input:focus { border-color: #ff8c00; background: white; outline: none; box-shadow: 0 0 0 4px rgba(255,140,0,0.1); }
+        
+        .input-box { margin-bottom: 10px; }
+        .input-box label { display: block; font-size: 0.85rem; font-weight: 800; color: #475569; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .f-input { width: 100%; padding: 14px 20px; border: 2.5px solid #f1f5f9; border-radius: 15px; font-size: 1rem; background: #f8fafc; transition: 0.4s; color: var(--secondary); font-weight: 500; }
+        .f-input:focus { border-color: var(--accent); background: white; outline: none; box-shadow: 0 0 0 5px rgba(16,185,129,0.1); }
+        
+        .conditional-section { background: var(--bg-light); border-radius: 20px; padding: 25px; border: 1.5px solid #d1fae5; margin-bottom: 30px; display: none; }
+        .conditional-section.visible { display: block; animation: slideIn 0.5s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        .btn-row { display: flex; justify-content: space-between; margin-top: 40px; }
-        .btn-back { background: #f1f5f9; color: #475569; padding: 15px 35px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .btn-back:hover { background: #e2e8f0; }
-        .btn-next { background: var(--color-accent-gradient); color: white; padding: 15px 45px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(255,140,0,0.2); transition: 0.3s; }
-        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(255,140,0,0.3); }
+        .doc-upload { border: 2.5px dashed #e2e8f0; border-radius: 15px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; background: #fcfcfc; }
+        .doc-upload:hover { border-color: var(--accent); background: #f0fdf4; }
+        .doc-upload i { font-size: 1.5rem; color: #94a3b8; margin-bottom: 10px; }
+        .doc-upload p { font-size: 0.8rem; color: #64748b; font-weight: 600; }
 
-        .info-alert { background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 15px; border-radius: 8px; margin-bottom: 25px; display: flex; gap: 15px; align-items: flex-start; }
-        .info-alert i { color: #0ea5e9; font-size: 1.2rem; }
-        .info-alert p { font-size: 0.9rem; color: #0369a1; margin: 0; }
+        .btn-row { display: flex; justify-content: space-between; margin-top: 50px; }
+        .btn-back { background: #f1f5f9; color: #475569; padding: 18px 40px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .btn-next { background: linear-gradient(135deg, var(--accent), #059669); color: white; padding: 18px 50px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(16,185,129,0.25); transition: 0.4s; }
+        .btn-next:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(16,185,129,0.35); }
     </style>
 </head>
 <body>
     <nav class="navbar scrolled">
         <div class="container nav-container">
-            <a href="index.html" class="logo"><i class="fas fa-passport logo-icon"></i> Global <span>Consultancy</span></a>
+            <a href="index.html" class="logo"><i class="fas fa-passport logo-icon"></i> Border<span>Bridge</span></a>
         </div>
     </nav>
 
     <div class="app-container">
         <div class="stepper">
             <div class="p-line" id="pLine"></div>
-            <div class="step active" data-step="1"><div class="s-icon">1</div><div class="step-label">Type</div></div>
-            <div class="step" data-step="2"><div class="s-icon">2</div><div class="step-label">Personal</div></div>
+            <div class="step active" data-step="1"><div class="s-icon">1</div><div class="step-label">Service</div></div>
+            <div class="step" data-step="2"><div class="s-icon">2</div><div class="step-label">Applicant</div></div>
             <div class="step" data-step="3"><div class="s-icon">3</div><div class="step-label">Family</div></div>
             <div class="step" data-step="4"><div class="s-icon">4</div><div class="step-label">Address</div></div>
-            <div class="step" data-step="5"><div class="s-icon">5</div><div class="step-label">Details</div></div>
-            <div class="step" data-step="6"><div class="s-icon">6</div><div class="step-label">Uploads</div></div>
-            <div class="step" data-step="7"><div class="s-icon">7</div><div class="step-label">Final</div></div>
+            <div class="step" data-step="5"><div class="s-icon">5</div><div class="step-label">Documents</div></div>
+            <div class="step" data-step="6"><div class="s-icon">6</div><div class="step-label">Final</div></div>
         </div>
 
-        <form id="pForm" class="form-card">
-            <!-- Step 1: Type -->
+        <form id="pForm" class="form-card" enctype="multipart/form-data">
+            <!-- STEP 1: SERVICE TYPE -->
             <div class="form-step active">
-                <h2 class="form-section-title">Passport Service Selection</h2>
-                <div class="info-alert">
-                    <i class="fas fa-info-circle"></i>
-                    <p>Please select the correct service type. Fresh passport is for first-time applicants, while Renewal is for existing passport holders whose validity has expired or is about to expire.</p>
+                <div class="section-header">
+                    <h2>Passport Service Selection</h2>
+                    <p>Select the appropriate service for your requirements.</p>
                 </div>
                 <div class="grid">
                     <div class="input-box full">
                         <label>Application Type</label>
                         <select name="passportType" id="passportType" class="f-input" required>
-                            <option value="New">Fresh Passport</option>
-                            <option value="Renewal">Renewal of Passport</option>
-                            <option value="Tatkal">Tatkal (Express Service)</option>
+                            <option value="New">New / Fresh Passport Application</option>
+                            <option value="Renewal">Passport Renewal (Expired/Damaged)</option>
                             <option value="Correction">Correction in Existing Passport</option>
+                            <option value="Lost/Reissue">Lost Passport Reissue</option>
+                            <option value="Minor">Minor Passport (Below 18)</option>
+                            <option value="Tatkal">Tatkal (Urgent Service)</option>
                         </select>
                     </div>
                 </div>
-            </div>
 
-            <!-- Step 2: Personal -->
-            <div class="form-step">
-                <h2 class="form-section-title">Applicant Personal Details</h2>
-                <div class="grid">
-                    <div class="input-box"><label>Given Name (First Name)</label><input type="text" name="givenName" class="f-input" placeholder="Enter first name" required></div>
-                    <div class="input-box"><label>Surname (Last Name)</label><input type="text" name="surname" class="f-input" placeholder="Enter last name" required></div>
-                    <div class="input-box"><label>Date of Birth</label><input type="date" name="dob" class="f-input" required></div>
-                    <div class="input-box"><label>Gender</label><select name="gender" class="f-input"><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
-                    <div class="input-box"><label>Place of Birth</label><input type="text" name="placeOfBirth" class="f-input" placeholder="City/Town" required></div>
-                    <div class="input-box"><label>Marital Status</label><select name="maritalStatus" class="f-input"><option value="Single">Single</option><option value="Married">Married</option><option value="Divorced">Divorced</option></select></div>
-                    <div class="input-box"><label>Aadhaar Number</label><input type="text" name="aadhaarNumber" class="f-input" placeholder="12 Digit Aadhaar" maxlength="12" minlength="12" required></div>
-                    <div class="input-box"><label>PAN Number</label><input type="text" name="panNumber" class="f-input" placeholder="PAN Number" maxlength="10"></div>
-                    <div class="input-box full"><label>Educational Qualification</label><select name="educationalQualification" class="f-input"><option>Graduate and above</option><option>10th Pass and above</option><option>Between 7th and 9th</option><option>Below 7th</option></select></div>
-                </div>
-            </div>
-
-            <!-- Step 3: Family -->
-            <div class="form-step">
-                <h2 class="form-section-title">Family Connections</h2>
-                <div class="grid">
-                    <div class="input-box"><label>Father's Full Name</label><input type="text" name="fatherName" class="f-input" placeholder="Full name of father" required></div>
-                    <div class="input-box"><label>Father's Nationality</label><input type="text" name="fatherNationality" class="f-input" value="Indian" required></div>
-                    <div class="input-box"><label>Mother's Full Name</label><input type="text" name="motherName" class="f-input" placeholder="Full name of mother" required></div>
-                    <div class="input-box"><label>Mother's Nationality</label><input type="text" name="motherNationality" class="f-input" value="Indian" required></div>
-                    <div class="input-box full"><label>Spouse's Name (If Married)</label><input type="text" name="spouseName" class="f-input" placeholder="Full name of husband/wife"></div>
-                </div>
-            </div>
-
-            <!-- Step 4: Address -->
-            <div class="form-step">
-                <h2 class="form-section-title">Present Residential Address</h2>
-                <div class="grid">
-                    <div class="input-box"><label>House No. & Street</label><input type="text" name="street" class="f-input" placeholder="Address line 1" required></div>
-                    <div class="input-box"><label>Village/Town/City</label><input type="text" name="city" class="f-input" placeholder="City" required></div>
-                    <div class="input-box"><label>State</label><input type="text" name="state" class="f-input" placeholder="State" required></div>
-                    <div class="input-box"><label>District</label><input type="text" name="district" class="f-input" placeholder="District" required></div>
-                    <div class="input-box"><label>Pincode</label><input type="text" name="pincode" class="f-input" placeholder="6 Digit PIN" maxlength="6" required></div>
-                    <div class="input-box"><label>Mobile Number</label><input type="tel" name="mobileNumber" class="f-input" placeholder="10 Digit Mobile" required></div>
-                    <div class="input-box full"><label>Email Address</label><input type="email" name="email" class="f-input" placeholder="example@mail.com" required></div>
-                </div>
-            </div>
-
-            <!-- Step 5: Previous Passport (Conditional) -->
-            <div class="form-step">
-                <h2 class="form-section-title">Previous Passport / Emergency Contact</h2>
-                <div id="renewalFields">
-                    <div class="info-alert" id="renewalAlert" style="display:none;">
-                        <i class="fas fa-history"></i>
-                        <p>You have selected Renewal. Please provide details of your previous passport.</p>
-                    </div>
-                    <div class="grid" id="prevPassGrid" style="display:none; margin-bottom: 30px;">
+                <!-- Renewal Details Section -->
+                <div id="renewalSection" class="conditional-section">
+                    <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 20px;"><i class="fas fa-redo-alt"></i> Renewal Information</h3>
+                    <div class="grid">
                         <div class="input-box"><label>Old Passport Number</label><input type="text" name="oldPassportNumber" class="f-input"></div>
-                        <div class="input-box"><label>Place of Issue</label><input type="text" name="placeOfIssue" class="f-input"></div>
-                        <div class="input-box"><label>Issue Date</label><input type="date" name="issueDate" class="f-input"></div>
-                        <div class="input-box"><label>Expiry Date</label><input type="date" name="expiryDate" class="f-input"></div>
+                        <div class="input-box"><label>Renewal Reason</label>
+                            <select name="renewalReason" class="f-input">
+                                <option value="Expired">Validity Expired</option>
+                                <option value="Pages Exhausted">Pages Exhausted</option>
+                                <option value="Damaged">Damaged</option>
+                                <option value="Validity Ending">Validity Ending</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <h3 style="font-size: 1rem; margin-bottom: 20px; color: var(--accent);">Emergency Contact Details</h3>
-                <div class="grid">
-                    <div class="input-box"><label>Contact Person Name</label><input type="text" name="eName" class="f-input" required></div>
-                    <div class="input-box"><label>Mobile Number</label><input type="tel" name="eMobile" class="f-input" required></div>
-                    <div class="input-box full"><label>Full Address</label><input type="text" name="eAddress" class="f-input" required></div>
+
+                <!-- Correction Details Section -->
+                <div id="correctionSection" class="conditional-section">
+                    <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 20px;"><i class="fas fa-edit"></i> Correction Information</h3>
+                    <div class="grid">
+                        <div class="input-box full">
+                            <label>Correction Required In</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <label style="font-size: 0.9rem;"><input type="checkbox" name="correctionType" value="Name"> Name</label>
+                                <label style="font-size: 0.9rem;"><input type="checkbox" name="correctionType" value="DOB"> Date of Birth</label>
+                                <label style="font-size: 0.9rem;"><input type="checkbox" name="correctionType" value="Address"> Address</label>
+                                <label style="font-size: 0.9rem;"><input type="checkbox" name="correctionType" value="Parent Name"> Parent Name</label>
+                                <label style="font-size: 0.9rem;"><input type="checkbox" name="correctionType" value="Signature"> Signature</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lost Details Section -->
+                <div id="lostSection" class="conditional-section">
+                    <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 20px;"><i class="fas fa-search"></i> Lost Passport Details</h3>
+                    <div class="grid">
+                        <div class="input-box"><label>FIR Number</label><input type="text" name="firNumber" class="f-input"></div>
+                        <div class="input-box"><label>FIR Date</label><input type="date" name="firDate" class="f-input"></div>
+                        <div class="input-box full"><label>Loss Location / Details</label><input type="text" name="lossLocation" class="f-input"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Step 6: Document Uploads -->
+            <!-- STEP 2: PERSONAL DETAILS -->
             <div class="form-step">
-                <h2 class="form-section-title">Required Documents</h2>
+                <div class="section-header">
+                    <h2>Applicant Personal Details</h2>
+                    <p>Enter the applicant's details exactly as per supporting documents.</p>
+                </div>
                 <div class="grid">
-                    <div class="input-box">
-                        <label>Applicant Photo</label>
-                        <input type="file" name="applicantPhoto" class="f-input" accept="image/*" required>
-                    </div>
-                    <div class="input-box">
-                        <label>Applicant Signature</label>
-                        <input type="file" name="applicantSignature" class="f-input" accept="image/*" required>
-                    </div>
-                    <div class="input-box">
-                        <label>Aadhaar Card (Front & Back)</label>
-                        <input type="file" name="aadhaarDoc" class="f-input" accept="image/*,application/pdf" required>
-                    </div>
-                    <div class="input-box">
-                        <label>Birth Certificate / 10th Marksheet</label>
-                        <input type="file" name="birthProof" class="f-input" accept="image/*,application/pdf" required>
-                    </div>
+                    <div class="input-box"><label>Given Name</label><input type="text" name="givenName" class="f-input" required></div>
+                    <div class="input-box"><label>Surname</label><input type="text" name="surname" class="f-input" required></div>
+                    <div class="input-box"><label>Date of Birth</label><input type="date" name="dob" class="f-input" required></div>
+                    <div class="input-box"><label>Place of Birth</label><input type="text" name="placeOfBirth" class="f-input" required></div>
+                    <div class="input-box"><label>Gender</label><select name="gender" class="f-input"><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
+                    <div class="input-box"><label>Marital Status</label><select name="maritalStatus" class="f-input"><option value="Single">Single</option><option value="Married">Married</option><option value="Divorced">Divorced</option></select></div>
+                    <div class="input-box"><label>Aadhaar Number</label><input type="text" name="aadhaarNumber" class="f-input" maxlength="12" required></div>
+                    <div class="input-box"><label>PAN Card (Optional)</label><input type="text" name="panNumber" class="f-input" maxlength="10"></div>
+                    <div class="input-box"><label>Employment Type</label><input type="text" name="employmentType" class="f-input" placeholder="e.g. Government, Private, Self Employed"></div>
+                    <div class="input-box"><label>Education Qualification</label><input type="text" name="educationalQualification" class="f-input" placeholder="e.g. Graduate, 10th Pass"></div>
                 </div>
             </div>
 
-            <!-- Step 6: Final Review -->
+            <!-- STEP 3: FAMILY DETAILS -->
             <div class="form-step">
-                <h2 class="form-section-title">Review & Submit</h2>
-                <div style="background:#f8fafc; padding:30px; border-radius:12px; margin-bottom:30px; border: 1px solid #e2e8f0;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                        <span>Service Fee:</span>
-                        <strong id="displayFee">₹1,500</strong>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                        <span>Processing Time:</span>
-                        <strong id="displayTime">15-20 Days</strong>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; color: var(--accent); font-weight: 800; font-size: 1.2rem; border-top: 1px solid #e2e8f0; pt: 15px; margin-top: 15px;">
-                        <span>Total Payable:</span>
-                        <span id="displayTotal">₹1,500</span>
-                    </div>
+                <div class="section-header">
+                    <h2>Family & Guardian Details</h2>
+                    <p>Please provide details of parents or legal guardian.</p>
                 </div>
-                <label style="display:flex; gap:15px; cursor:pointer; background: #fffbeb; padding: 15px; border-radius: 10px; border: 1px solid #fef3c7;">
-                    <input type="checkbox" id="declarationCheck" required style="width: 20px; height: 20px;">
-                    <span style="font-size:0.9rem; line-height: 1.4; color: #92400e;">I hereby declare that all the information given by me in this form is true and correct to the best of my knowledge and belief. I understand that any false information may lead to rejection of my application.</span>
+                <div class="grid">
+                    <div class="input-box"><label>Father's Full Name</label><input type="text" name="fatherName" class="f-input" required></div>
+                    <div class="input-box"><label>Mother's Full Name</label><input type="text" name="motherName" class="f-input" required></div>
+                    <div class="input-box full"><label>Legal Guardian Name (For Minors)</label><input type="text" name="legalGuardianName" class="f-input"></div>
+                    <div class="input-box full"><label>Spouse's Name (If Married)</label><input type="text" name="spouseName" class="f-input"></div>
+                </div>
+            </div>
+
+            <!-- STEP 4: ADDRESS DETAILS -->
+            <div class="form-step">
+                <div class="section-header">
+                    <h2>Residential Address</h2>
+                    <p>Enter present and permanent address details.</p>
+                </div>
+                <div class="grid">
+                    <div class="input-box full"><label>Present Address</label><input type="text" name="street" class="f-input" placeholder="House No, Building, Street" required></div>
+                    <div class="input-box"><label>Police Station</label><input type="text" name="policeStation" class="f-input" required></div>
+                    <div class="input-box"><label>District</label><input type="text" name="district" class="f-input" required></div>
+                    <div class="input-box"><label>State</label><input type="text" name="state" class="f-input" required></div>
+                    <div class="input-box"><label>PIN Code</label><input type="text" name="pincode" class="f-input" maxlength="6" required></div>
+                    <div class="input-box"><label>Emergency Contact Name</label><input type="text" name="eName" class="f-input" required></div>
+                    <div class="input-box"><label>Emergency Mobile</label><input type="tel" name="eMobile" class="f-input" required></div>
+                    <div class="input-box full"><label>Permanent Address (If different)</label><input type="text" name="permanentAddress" class="f-input" placeholder="Leave blank if same as present"></div>
+                </div>
+            </div>
+
+            <!-- STEP 5: DOCUMENT UPLOADS -->
+            <div class="form-step">
+                <div class="section-header">
+                    <h2>Document Verification</h2>
+                    <p>Upload clear images/PDFs of the required documents.</p>
+                </div>
+                <div class="grid grid-3">
+                    <div class="input-box"><label>Applicant Photo</label><div class="doc-upload" onclick="this.querySelector('input').click()"><i class="fas fa-user-circle"></i><p>Passport Size Photo</p><input type="file" name="applicantPhoto" hidden required></div></div>
+                    <div class="input-box"><label>Signature</label><div class="doc-upload" onclick="this.querySelector('input').click()"><i class="fas fa-signature"></i><p>Sign on White Paper</p><input type="file" name="applicantSignature" hidden required></div></div>
+                    <div class="input-box"><label>Aadhaar Card</label><div class="doc-upload" onclick="this.querySelector('input').click()"><i class="fas fa-id-card"></i><p>Front & Back</p><input type="file" name="aadhaarDoc" hidden required></div></div>
+                    <div class="input-box"><label>Birth Proof</label><div class="doc-upload" onclick="this.querySelector('input').click()"><i class="fas fa-baby"></i><p>Birth Certificate</p><input type="file" name="birthProof" hidden required></div></div>
+                    <div class="input-box"><label>Education</label><div class="doc-upload" onclick="this.querySelector('input').click()"><i class="fas fa-graduation-cap"></i><p>10th Marksheet</p><input type="file" name="educationProof" hidden></div></div>
+                    <div class="input-box"><label>Address Proof</label><div class="doc-upload" onclick="this.querySelector('input').click()"><i class="fas fa-home"></i><p>Electricity Bill / Gas</p><input type="file" name="addressProof" hidden></div></div>
+                </div>
+            </div>
+
+            <!-- STEP 6: FINAL REVIEW -->
+            <div class="form-step">
+                <div class="section-header">
+                    <h2>Final Review & Payment</h2>
+                    <p>Review your application details and proceed to secure payment.</p>
+                </div>
+                <div style="background:#f1f5f9; padding:30px; border-radius:20px; border: 1.5px solid #e2e8f0; margin-bottom: 30px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight: 700;"><span>Service Fee:</span><span id="feeAmount">₹1,500</span></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight: 700;"><span>Service Tax (GST):</span><span>₹0</span></div>
+                    <div style="display:flex; justify-content:space-between; font-size:1.5rem; font-weight:900; color:var(--primary); border-top:2px dashed #cbd5e1; padding-top:15px;"><span>Total Payable:</span><span id="totalAmount">₹1,500</span></div>
+                </div>
+                <label style="display:flex; gap:15px; cursor:pointer; padding: 15px; background: #fffbeb; border: 1.5px solid #fef3c7; border-radius: 12px;">
+                    <input type="checkbox" required style="width: 25px;">
+                    <span style="font-size: 0.9rem; color: #92400e; font-weight: 600;">I hereby declare that all information provided is true to my knowledge and I accept the terms of service of BorderBridge Consultancy.</span>
                 </label>
             </div>
 
             <div class="btn-row">
-                <button type="button" id="prevBtn" class="btn-back" style="visibility:hidden;">BACK</button>
+                <button type="button" id="prevBtn" class="btn-back" style="visibility:hidden;">PREVIOUS</button>
                 <button type="button" id="nextBtn" class="btn-next">NEXT STEP</button>
             </div>
         </form>
@@ -214,99 +244,105 @@
 
         let currentStep = 0;
         const steps = document.querySelectorAll('.form-step');
-        const stepperDots = document.querySelectorAll('.step');
+        const stepper = document.querySelectorAll('.step');
+        const pLine = document.getElementById('pLine');
         const nextBtn = document.getElementById('nextBtn');
         const prevBtn = document.getElementById('prevBtn');
         const form = document.getElementById('pForm');
 
-        // Handle Type Change for Conditional Fields
-        document.getElementById('passportType').addEventListener('change', (e) => {
-            const isRenewal = e.target.value === 'Renewal';
-            document.getElementById('renewalAlert').style.display = isRenewal ? 'flex' : 'none';
-            document.getElementById('prevPassGrid').style.display = isRenewal ? 'grid' : 'none';
+        // Dynamic Section Logic
+        document.getElementById('passportType').addEventListener('change', function() {
+            const val = this.value;
+            const renewal = document.getElementById('renewalSection');
+            const correction = document.getElementById('correctionSection');
+            const lost = document.getElementById('lostSection');
+
+            renewal.classList.remove('visible');
+            correction.classList.remove('visible');
+            lost.classList.remove('visible');
+
+            if(val === 'Renewal') renewal.classList.add('visible');
+            if(val === 'Correction') correction.classList.add('visible');
+            if(val === 'Lost/Reissue') lost.classList.add('visible');
+
+            // Fee Logic
+            let fee = 1500;
+            if(val === 'Tatkal') fee = 3500;
+            if(val === 'Lost/Reissue') fee = 3000;
+            if(val === 'Minor') fee = 1000;
             
-            const isTatkal = e.target.value === 'Tatkal';
-            document.getElementById('displayFee').innerText = isTatkal ? '₹3,500' : '₹1,500';
-            document.getElementById('displayTotal').innerText = isTatkal ? '₹3,500' : '₹1,500';
-            document.getElementById('displayTime').innerText = isTatkal ? '3-5 Days' : '15-20 Days';
+            document.getElementById('feeAmount').innerText = '₹' + fee.toLocaleString();
+            document.getElementById('totalAmount').innerText = '₹' + fee.toLocaleString();
         });
 
-        async function prefillProfile() {
-            try {
-                const res = await fetch('/api/profile/me', { headers: {'Authorization':`Bearer ${token}`} });
-                const { success, data } = await res.json();
-                if(success) {
-                    form.elements['givenName'].value = data.personalInfo?.fullName?.split(' ')[0] || '';
-                    form.elements['surname'].value = data.personalInfo?.fullName?.split(' ').slice(1).join(' ') || '';
-                    form.elements['aadhaarNumber'].value = data.govtIdInfo?.aadhaarNumber || '';
-                    form.elements['panNumber'].value = data.govtIdInfo?.panNumber || '';
-                    form.elements['dob'].value = data.personalInfo?.dateOfBirth?.split('T')[0] || '';
-                    form.elements['fatherName'].value = data.personalInfo?.fatherName || '';
-                    form.elements['motherName'].value = data.personalInfo?.motherName || '';
-                    form.elements['street'].value = data.contactInfo?.currentAddress?.street || '';
-                    form.elements['city'].value = data.contactInfo?.currentAddress?.city || '';
-                    form.elements['state'].value = data.contactInfo?.currentAddress?.state || '';
-                    form.elements['pincode'].value = data.contactInfo?.currentAddress?.pincode || '';
-                    form.elements['mobileNumber'].value = data.contactInfo?.mobileNumber || '';
-                    form.elements['email'].value = data.contactInfo?.email || '';
-                }
-            } catch(e) {}
-        }
-
-        function updateUI() {
+        function updateStepper() {
             steps.forEach((s, i) => s.classList.toggle('active', i === currentStep));
-            stepperDots.forEach((d, i) => { 
-                d.classList.toggle('active', i === currentStep); 
-                d.classList.toggle('completed', i < currentStep); 
+            stepper.forEach((s, i) => {
+                s.classList.toggle('active', i === currentStep);
+                s.classList.toggle('completed', i < currentStep);
             });
-            document.getElementById('pLine').style.width = (currentStep / (steps.length - 1)) * 100 + '%';
+            pLine.style.width = (currentStep / (stepper.length - 1)) * 100 + '%';
             prevBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
             nextBtn.innerText = currentStep === steps.length - 1 ? 'PAY & SUBMIT' : 'NEXT STEP';
         }
 
-        nextBtn.onclick = () => {
-            const inputs = steps[currentStep].querySelectorAll('input[required], select[required], textarea[required]');
-            for(let i of inputs) if(!i.checkValidity()){ i.reportValidity(); return; }
-            
-            if(currentStep < steps.length - 1) { 
-                currentStep++; 
-                updateUI(); 
+        nextBtn.addEventListener('click', () => {
+            const inputs = steps[currentStep].querySelectorAll('input[required], select[required]');
+            for(let i of inputs) if(!i.checkValidity()) { i.reportValidity(); return; }
+
+            if(currentStep < steps.length - 1) {
+                currentStep++;
+                updateStepper();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
-                handleSubmission();
+                handlePaySubmit();
             }
-        };
+        });
 
-        async function handleSubmission() {
+        prevBtn.addEventListener('click', () => {
+            currentStep--;
+            updateStepper();
+        });
+
+        async function handlePaySubmit() {
             const fd = new FormData(form);
-            const amount = fd.get('passportType') === 'Tatkal' ? 3500 : 1500;
+            const amountStr = document.getElementById('totalAmount').innerText.replace('₹', '').replace(',', '');
+            const amount = parseInt(amountStr);
 
             PaymentGateway.init({
                 amount: amount,
-                itemName: 'Passport Application Fee',
+                itemName: 'Passport Service Fee',
                 onSuccess: async () => {
                     try {
                         const res = await fetch('/api/passport/create', {
                             method: 'POST',
-                            headers: {'Authorization':`Bearer ${token}`},
+                            headers: { 'Authorization': `Bearer ${token}` },
                             body: fd
                         });
-                        const result = await res.json();
-                        if(result.success) {
-                            alert('Passport Application Submitted Successfully! Redirecting to your dashboard.');
-                            window.location.href = 'profile.html?tab=apps';
+                        const data = await res.json();
+                        if(data.success) {
+                            alert('Application Submitted Successfully!');
+                            window.location.href = 'profile.html';
                         } else {
-                            alert('Error: ' + result.message);
+                            alert('Error: ' + data.message);
                         }
                     } catch(e) {
-                        alert('Something went wrong. Please try again.');
+                        alert('Submission failed. Please try again.');
                     }
                 }
             });
         }
-
-        prevBtn.onclick = () => { currentStep--; updateUI(); };
-        prefillProfile();
+        
+        // Show selected file name in upload boxes
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function() {
+                if(this.files && this.files[0]) {
+                    this.parentElement.querySelector('p').innerText = this.files[0].name;
+                    this.parentElement.style.borderColor = 'var(--accent)';
+                    this.parentElement.style.background = 'var(--bg-light)';
+                }
+            });
+        });
     </script>
 </body>
 </html>

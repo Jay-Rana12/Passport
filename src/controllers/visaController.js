@@ -1,4 +1,6 @@
 const VisaApplication = require('../models/VisaApplication');
+const fs = require('fs');
+const path = require('path');
 const StatusHistory = require('../models/StatusHistory');
 const Profile = require('../models/Profile');
 

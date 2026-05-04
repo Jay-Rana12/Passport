@@ -528,7 +528,7 @@
                     <div class="mobile-toggle" id="sidebarToggle">
                         <i class="fas fa-bars"></i>
                     </div>
-                    <div style="font-size: 1.2rem; font-weight: 600;">Control Panel</div>
+                    <div style="font-size: 1.2rem; font-weight: 600;">Control Panel</div>                    <button onclick="resendAllReceipts()" style="margin-left: 20px; padding: 8px 15px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 700;"> <i class="fas fa-paper-plane"></i> Resend Missing Receipts</button>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <div class="avatar-text" style="text-align: right;">
@@ -965,6 +965,25 @@
             }
         }
     </script>
+
+    <script>
+    async function resendAllReceipts() {
+        const token = localStorage.getItem('token');
+        if (!confirm('Are you sure you want to resend receipts to all submitted forms?')) return;
+        
+        try {
+            const res = await fetch('/api/admin/resend-all-receipts', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const data = await res.json();
+            alert(data.message);
+        } catch (err) {
+            alert('Connection failed. Please check server.');
+        }
+    }
+    </script>
 </body>
 
 </html>
+

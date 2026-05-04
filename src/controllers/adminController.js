@@ -3,6 +3,8 @@ const Profile = require('../models/Profile');
 const VisaApplication = require('../models/VisaApplication');
 const PassportApplication = require('../models/PassportApplication');
 const StatusHistory = require('../models/StatusHistory');
+const sendEmail = require('../utils/sendEmail');
+const { generateVisaPDF, generatePassportPDF } = require('../utils/pdfGenerator');
 
 // @desc    Get all users
 // @route   GET /api/admin/users
@@ -125,3 +127,80 @@ exports.verifyProfile = async (req, res) => {
     }
 };
 
+
+// @desc    Resend receipts to all submitted applications that don't have them
+// @route   POST /api/admin/resend-all-receipts
+// @access  Private/Admin
+exports.resendAllReceipts = async (req, res) => {
+    try {
+        console.log('[ADMIN] Starting bulk receipt resend process...');
+        
+        // 1. Find all active applications (Submitted, Approved, Processing, Pending)
+        const activeStatuses = ['Submitted', 'Approved', 'Processing', 'Pending'];
+        const visaApps = await VisaApplication.find({ status: { $in: activeStatuses } }).populate('user', 'fullName email');
+        const passportApps = await PassportApplication.find({ status: { $in: activeStatuses } }).populate('user', 'fullName email');
+        
+        let count = 0;
+        let errors = 0;
+
+        // Process Visa
+        for (const app of visaApps) {
+            try {
+                const profile = await Profile.findOne({ user: app.user._id });
+                const pdfResult = await generateVisaPDF(app, app.user, profile);
+                
+                await sendEmail({
+                    email: app.user.email,
+                    subject: `♻️ RE-SENT: Visa Application Receipt - ${app.applicationId}`,
+                    message: `Dear ${app.user.fullName},\n\nHumne aapki request ke anusaar aapka Visa Application Receipt firse bhej diya hai. BorderBridge Consultancy par bharosa karne ke liye dhanyavad.\n\nRegards,\nBorderBridge Consultancy Team`,
+                    attachments: [
+                        {
+                            filename: pdfResult.fileName,
+                            path: pdfResult.filePath,
+                            contentType: 'application/pdf'
+                        }
+                    ]
+                });
+                count++;
+            } catch (err) {
+                console.error(`[ADMIN] Failed to resend Visa ${app.applicationId}:`, err.message);
+                errors++;
+            }
+        }
+
+        // Process Passport
+        for (const app of passportApps) {
+            try {
+                const profile = await Profile.findOne({ user: app.user._id });
+                const pdfResult = await generatePassportPDF(app, app.user, profile);
+                
+                await sendEmail({
+                    email: app.user.email,
+                    subject: `♻️ RE-SENT: Passport Application Receipt - ${app.applicationId}`,
+                    message: `Dear ${app.user.fullName},\n\nHumne aapki request ke anusaar aapka Passport Application Receipt firse bhej diya hai. BorderBridge Consultancy par bharosa karne ke liye dhanyavad.\n\nRegards,\nBorderBridge Consultancy Team`,
+                    attachments: [
+                        {
+                            filename: pdfResult.fileName,
+                            path: pdfResult.filePath,
+                            contentType: 'application/pdf'
+                        }
+                    ]
+                });
+                count++;
+            } catch (err) {
+                console.error(`[ADMIN] Failed to resend Passport ${app.applicationId}:`, err.message);
+                errors++;
+            }
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Successfully re-sent ${count} receipts. Errors: ${errors}`,
+            count
+        });
+
+    } catch (error) {
+        console.error('[ADMIN] Bulk Resend Error:', error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};

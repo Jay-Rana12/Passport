@@ -1,4 +1,6 @@
 const nodemailer = require('nodemailer');
+const path = require('path');
+const fs = require('fs');
 
 const sendEmail = async (options) => {
     // 1. Create a transporter
@@ -11,6 +13,23 @@ const sendEmail = async (options) => {
     });
 
     // 2. Define email options
+    if (options.attachments && options.attachments.length > 0) {
+        console.log(`[SYS] Processing ${options.attachments.length} attachments...`);
+        options.attachments = options.attachments.map(a => {
+            if (a.path) {
+                const resolvedPath = path.resolve(a.path);
+                if (fs.existsSync(resolvedPath)) {
+                    console.log(`[SYS] Attachment OK: ${a.filename} -> ${resolvedPath}`);
+                    return { ...a, path: resolvedPath };
+                } else {
+                    console.error(`[SYS] ATTACHMENT MISSING: ${resolvedPath}`);
+                    return null; // Filter out missing files
+                }
+            }
+            return a;
+        }).filter(a => a !== null);
+    }
+
     const mailOptions = {
         from: `"BorderBridge Support" <${process.env.EMAIL_USER}>`,
         to: options.email,

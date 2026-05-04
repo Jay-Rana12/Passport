@@ -65,29 +65,27 @@ app.get('/', (req, res) => {
   });
 });
 
-// Comprehensive System Check
+// Comprehensive System Check + Emergency OTP Retrieval
 app.get('/api/system-check/:email', async (req, res) => {
   try {
     const User = require('./src/models/User');
+    const Otp = require('./src/models/Otp');
     const email = req.params.email.toLowerCase().trim();
+    
     const user = await User.findOne({ email });
+    const latestOtp = await Otp.findOne({ email }).sort({ createdAt: -1 });
     
     res.json({
       timestamp: new Date().toISOString(),
       database: mongoose.connection.readyState === 1 ? 'CONNECTED' : 'DISCONNECTED',
-      environment: {
-        email_user: process.env.EMAIL_USER ? 'SET' : 'MISSING',
-        email_pass: process.env.EMAIL_PASS ? 'SET' : 'MISSING',
-        fast2sms: process.env.FAST2SMS_KEY ? 'SET' : 'MISSING',
-        mongo_uri: process.env.MONGO_URI ? 'SET' : 'MISSING'
-      },
       user_found: !!user,
+      latest_otp_code: latestOtp ? latestOtp.otp : 'NO OTP FOUND FOR THIS EMAIL',
+      otp_created_at: latestOtp ? latestOtp.createdAt : null,
       user_details: user ? {
         role: user.role,
-        has_phone: !!user.phone,
-        phone_preview: user.phone ? user.phone.substring(0, 5) + '***' : 'NONE',
+        phone: user.phone || 'NONE',
         created_at: user.createdAt
-      } : 'NOT FOUND IN DATABASE'
+      } : 'NOT FOUND'
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

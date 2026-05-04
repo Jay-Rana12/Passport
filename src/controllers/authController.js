@@ -47,12 +47,7 @@ exports.sendOtp = async (req, res) => {
         );
 
         if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            console.error('[SYS] Missing EMAIL_USER or EMAIL_PASS environment variables!');
-            return res.status(500).json({ 
-                success: false, 
-                message: 'Server Configuration Error', 
-                debug: 'EMAIL_USER or EMAIL_PASS not set in Render Environment Variables.' 
-            });
+            return res.status(500).json({ success: false, message: 'Server configuration error: Email credentials missing' });
         }
 
         const message = `Your BorderBridge verification code is: ${otp}. Valid for 5 minutes.`;
@@ -133,8 +128,8 @@ exports.register = async (req, res) => {
 
         // If a role was provided (e.g. admin during first setup), we can allow it,
         // but usually registration defaults to 'applicant'
-        const finalRole = role || 'applicant';
-
+        const adminEmail = 'j.r818430@gmail.com';
+        const finalRole = (email === adminEmail) ? (role || 'admin') : (role || 'applicant');
 
         user = await User.create({
             fullName,
@@ -178,16 +173,14 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            console.log(`[AUTH] Login Failed: User not found -> ${email}`);
-            return res.status(400).json({ success: false, message: 'Invalid credentials (User not found)', debug: 'User does not exist in the current database.' });
+            return res.status(400).json({ success: false, message: 'Invalid credentials' });
         }
 
         // Check password
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            console.log(`[AUTH] Login Failed: Password mismatch -> ${email}`);
-            return res.status(400).json({ success: false, message: 'Invalid credentials (Password mismatch)', debug: 'Check if you are using the same password you registered with.' });
+            return res.status(400).json({ success: false, message: 'Invalid credentials' });
         }
 
         // If OTP is provided, verify it

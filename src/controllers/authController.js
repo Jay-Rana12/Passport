@@ -22,7 +22,8 @@ const generateToken = (id) => {
 // @route   POST /api/auth/send-otp
 // @access  Public
 exports.sendOtp = async (req, res) => {
-    const { email, type } = req.body;
+    let { email, type } = req.body;
+    if (email) email = email.toLowerCase().trim();
     console.log(`[AUTH] sendOtp called for: ${email}, type: ${type}`);
 
     if (!email) {
@@ -53,23 +54,34 @@ exports.sendOtp = async (req, res) => {
         const message = `Your BorderBridge verification code is: ${otp}. Valid for 5 minutes.`;
 
         // Send Email
+        let emailSent = false;
         try {
             await sendEmail({
                 email: email,
                 subject: 'Verification Code - BorderBridge',
                 message: message
             });
-
-            res.status(200).json({
-                success: true,
-                message: 'Verification code sent to your email'
-            });
+            emailSent = true;
         } catch (emailErr) {
             console.error('Email error:', emailErr.message);
+        }
+
+        // Send SMS as fallback or secondary
+        let smsSent = false;
+        if (req.body.phone) {
+            smsSent = await sendSMS(req.body.phone, message);
+        }
+
+        if (emailSent || smsSent) {
+            res.status(200).json({
+                success: true,
+                message: `Verification code sent to ${emailSent ? 'Email' : ''}${emailSent && smsSent ? ' and ' : ''}${smsSent ? 'SMS' : ''}`
+            });
+        } else {
             res.status(500).json({
                 success: false,
-                message: 'Email failed: ' + emailErr.message,
-                debug: 'Check if App Password is correct and 2FA is ON'
+                message: 'Failed to send verification code. Please check your contact details.',
+                debug: 'Both Email and SMS services failed.'
             });
         }
     } catch (error) {
@@ -166,7 +178,8 @@ exports.register = async (req, res) => {
 // @route   POST /api/auth/login
 // @access  Public
 exports.login = async (req, res) => {
-    const { email, password, otp } = req.body;
+    let { email, password, otp } = req.body;
+    if (email) email = email.toLowerCase().trim();
 
     try {
         // Check for user

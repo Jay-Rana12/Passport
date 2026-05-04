@@ -83,6 +83,26 @@ app.use('/api/*', (req, res) => {
   res.status(404).json({ success: false, message: `API Route ${req.originalUrl} not found` });
 });
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error('[CRITICAL ERROR]', err);
+  res.status(500).json({ 
+    success: false, 
+    message: 'Internal Server Error', 
+    error: err.message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  });
+});
+
+// Catch unhandled rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[UNHANDLED REJECTION]', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('[UNCAUGHT EXCEPTION]', err);
+});
+
 const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, '0.0.0.0', () => {

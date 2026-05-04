@@ -12,8 +12,6 @@ const sendSMS = async (phone, message) => {
     console.log(`Sending Real SMS to: ${phone}`);
 
     try {
-        // Using Fast2SMS Bulk V2 API (OTP Route/Quick SMS)
-        // Note: For OTP route, variables_values should contain just the code
         const otpMatch = message.match(/\d{6}/);
         const otpCode = otpMatch ? otpMatch[0] : '';
 
@@ -30,12 +28,14 @@ const sendSMS = async (phone, message) => {
             console.log("✅ SMS Sent Successfully via Fast2SMS");
             return true;
         } else {
-            console.error("❌ Fast2SMS Error:", response.data.message);
-            return false;
+            const errorMsg = response.data.message || 'Unknown Gateway Error';
+            console.error("❌ Fast2SMS Error:", errorMsg);
+            throw new Error(errorMsg);
         }
     } catch (error) {
-        console.error("❌ SMS Gateway Connection Error:", error.message);
-        return false;
+        const finalMsg = error.response?.data?.message || error.message;
+        console.error("❌ SMS Gateway Connection Error:", finalMsg);
+        throw new Error(finalMsg);
     }
 };
 

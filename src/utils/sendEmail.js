@@ -3,6 +3,12 @@ const path = require('path');
 const fs = require('fs');
 
 const sendEmail = async (options) => {
+    console.log(`[SYS] Preparing to send email to ${options.email}. Config: service=${process.env.EMAIL_SERVICE}, user=${process.env.EMAIL_USER ? 'SET' : 'MISSING'}, pass=${process.env.EMAIL_PASS ? 'SET' : 'MISSING'}`);
+
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        throw new Error('Server Environment Variables EMAIL_USER or EMAIL_PASS are missing on the hosting platform (Render/Hostinger).');
+    }
+
     // 1. Create a transporter
     const transporter = nodemailer.createTransport({
         service: process.env.EMAIL_SERVICE || 'gmail',

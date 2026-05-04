@@ -47,7 +47,12 @@ exports.sendOtp = async (req, res) => {
         );
 
         if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            return res.status(500).json({ success: false, message: 'Server configuration error: Email credentials missing' });
+            console.error('[SYS] Missing EMAIL_USER or EMAIL_PASS environment variables!');
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Server Configuration Error', 
+                debug: 'EMAIL_USER or EMAIL_PASS not set in Render Environment Variables.' 
+            });
         }
 
         const message = `Your BorderBridge verification code is: ${otp}. Valid for 5 minutes.`;
@@ -173,14 +178,16 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(400).json({ success: false, message: 'Invalid credentials' });
+            console.log(`[AUTH] Login Failed: User not found -> ${email}`);
+            return res.status(400).json({ success: false, message: 'Invalid credentials (User not found)', debug: 'User does not exist in the current database.' });
         }
 
         // Check password
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            return res.status(400).json({ success: false, message: 'Invalid credentials' });
+            console.log(`[AUTH] Login Failed: Password mismatch -> ${email}`);
+            return res.status(400).json({ success: false, message: 'Invalid credentials (Password mismatch)', debug: 'Check if you are using the same password you registered with.' });
         }
 
         // If OTP is provided, verify it

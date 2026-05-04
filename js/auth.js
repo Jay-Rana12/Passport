@@ -310,7 +310,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.location.href = 'reset-password.html?email=' + email;
                     }, 2000);
                 } else {
-                    showError(data.message);
+                    let errText = data.message;
+                    if (data.debug) {
+                        errText += ` (Email: ${data.debug.email}, SMS: ${data.debug.sms})`;
+                    }
+                    showError(errText);
                 }
             } catch (err) {
                 showError('Something went wrong');

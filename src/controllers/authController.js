@@ -275,17 +275,27 @@ exports.forgotPassword = async (req, res) => {
 
         // Send Email
         let emailSent = false;
+        let emailErrorMsg = '';
         try {
             await sendEmail({ email: user.email, subject: 'Password Reset OTP', message });
             emailSent = true;
         } catch (emailErr) {
+            emailErrorMsg = emailErr.message;
             console.error('Email error:', emailErr.message);
         }
 
         // Send SMS Fallback
         let smsSent = false;
+        let smsErrorMsg = '';
         if (user.phone) {
-            smsSent = await sendSMS(user.phone, message);
+            try {
+                smsSent = await sendSMS(user.phone, message);
+                if (!smsSent) smsErrorMsg = 'Gateway rejected the request';
+            } catch (smsErr) {
+                smsErrorMsg = smsErr.message;
+            }
+        } else {
+            smsErrorMsg = 'User has no phone number in database';
         }
 
         if (emailSent || smsSent) {
@@ -294,7 +304,11 @@ exports.forgotPassword = async (req, res) => {
                 message: `Reset OTP sent to ${emailSent ? 'Email' : ''}${emailSent && smsSent ? ' and ' : ''}${smsSent ? 'SMS' : ''}`
             });
         } else {
-            res.status(500).json({ success: false, message: 'Failed to send reset code' });
+            res.status(500).json({ 
+                success: false, 
+                message: 'Failed to send reset code',
+                debug: { email: emailErrorMsg, sms: smsErrorMsg }
+            });
         }
 
     } catch (error) {

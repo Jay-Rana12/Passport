@@ -256,7 +256,8 @@ exports.getMe = async (req, res) => {
 // @route   POST /api/auth/forgot-password
 // @access  Public
 exports.forgotPassword = async (req, res) => {
-    const { email } = req.body;
+    let { email } = req.body;
+    if (email) email = email.toLowerCase().trim();
 
     try {
         const user = await User.findOne({ email });
@@ -265,31 +266,35 @@ exports.forgotPassword = async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        // Generate 6 digit OTP
         const otp = generateOTP();
-
-        // Set OTP and Expiry (10 mins)
-        user.resetPasswordToken = otp; // In a real app, hash this token
+        user.resetPasswordToken = otp;
         user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
-
         await user.save();
 
         const message = `Your password reset OTP is: ${otp}. Valid for 10 minutes.`;
 
+        // Send Email
+        let emailSent = false;
         try {
-            await sendEmail({
-                email: user.email,
-                subject: 'Password Reset OTP',
-                message,
-            });
+            await sendEmail({ email: user.email, subject: 'Password Reset OTP', message });
+            emailSent = true;
+        } catch (emailErr) {
+            console.error('Email error:', emailErr.message);
+        }
 
-            res.status(200).json({ success: true, message: 'OTP sent to email' });
-        } catch (error) {
-            console.error(error);
-            user.resetPasswordToken = undefined;
-            user.resetPasswordExpire = undefined;
-            await user.save();
-            return res.status(500).json({ success: false, message: 'Email could not be sent' });
+        // Send SMS Fallback
+        let smsSent = false;
+        if (user.phone) {
+            smsSent = await sendSMS(user.phone, message);
+        }
+
+        if (emailSent || smsSent) {
+            res.status(200).json({
+                success: true,
+                message: `Reset OTP sent to ${emailSent ? 'Email' : ''}${emailSent && smsSent ? ' and ' : ''}${smsSent ? 'SMS' : ''}`
+            });
+        } else {
+            res.status(500).json({ success: false, message: 'Failed to send reset code' });
         }
 
     } catch (error) {
@@ -302,7 +307,8 @@ exports.forgotPassword = async (req, res) => {
 // @route   POST /api/auth/reset-password
 // @access  Public
 exports.resetPassword = async (req, res) => {
-    const { email, otp, newPassword } = req.body;
+    let { email, otp, newPassword } = req.body;
+    if (email) email = email.toLowerCase().trim();
 
     try {
         const user = await User.findOne({

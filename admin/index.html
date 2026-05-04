@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - BorderBridge</title>
+    <title>Admin Dashboard - Global Consultancy</title>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -419,17 +419,75 @@
             }
         }
 
-        /* Adjustment for very small screens */
-        @media (max-width: 400px) {
-
-            .admin-topbar h3,
-            .admin-topbar div {
-                font-size: 0.9rem !important;
-            }
-
             .stat-card h3 {
                 font-size: 1.5rem !important;
             }
+        }
+
+        /* Detail Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 3000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 900px;
+            margin: 50px auto;
+            border-radius: 20px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+        .close-modal {
+            position: absolute;
+            right: 25px;
+            top: 25px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        .detail-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        .detail-section h4 {
+            margin: 0 0 15px;
+            color: var(--admin-accent);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .detail-item label {
+            display: block;
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .detail-item span {
+            font-weight: 600;
+            color: #1e293b;
         }
     </style>
 </head>
@@ -651,6 +709,20 @@
         </main>
     </div>
 
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modal-header" style="margin-bottom: 30px; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px;">
+                <h2 id="modal-title" style="margin: 0; color: #0f172a;">Application Details</h2>
+                <p id="modal-subtitle" style="margin: 5px 0 0; color: #64748b;">ID: BB-123456</p>
+            </div>
+            <div id="modal-body">
+                <!-- Content will be injected here -->
+            </div>
+        </div>
+    </div>
+
     <!-- Script for Admin Logic -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -718,139 +790,178 @@
             fetchDashboardData(token);
         });
 
+        let currentApplications = { visa: [], passport: [] };
+
         async function fetchDashboardData(token) {
             try {
                 const headers = { 'Authorization': `Bearer ${token}` };
-
-                // Fetch Apps
-                const appsRes = await fetch('https://passport-ia5r.onrender.com/api/admin/applications', { headers });
+                const appsRes = await fetch('/api/admin/applications', { headers });
                 const appsData = await appsRes.json();
-
-                // Fetch Users
-                const usersRes = await fetch('https://passport-ia5r.onrender.com/api/admin/users', { headers });
+                const usersRes = await fetch('/api/admin/users', { headers });
                 const usersData = await usersRes.json();
 
                 if (appsData.success && usersData.success) {
+                    currentApplications = appsData.data;
                     renderDashboard(appsData.data, usersData.data);
-                } else {
-                    alert("Failed to load backend info.");
                 }
-
             } catch (err) {
                 console.error(err);
-                alert("Server connection error");
             }
+        }
+
+        function showAppDetails(type, id) {
+            const app = currentApplications[type.toLowerCase()].find(a => a._id === id);
+            if (!app) return;
+
+            const modal = document.getElementById('detailModal');
+            document.getElementById('modal-title').innerText = `${type} Application Details`;
+            document.getElementById('modal-subtitle').innerText = `Application ID: ${app.applicationId || 'N/A'}`;
+
+            let html = '';
+
+            if (type === 'Passport') {
+                html = `
+                    <div class="detail-section">
+                        <h4>Personal Information</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item"><label>Name</label><span>${app.applicantDetails?.givenName} ${app.applicantDetails?.surname}</span></div>
+                            <div class="detail-item"><label>DOB</label><span>${new Date(app.applicantDetails?.dob).toLocaleDateString()}</span></div>
+                            <div class="detail-item"><label>Aadhaar</label><span>${app.applicantDetails?.aadhaarNumber || 'N/A'}</span></div>
+                            <div class="detail-item"><label>PAN</label><span>${app.applicantDetails?.panNumber || 'N/A'}</span></div>
+                            <div class="detail-item"><label>Gender</label><span>${app.applicantDetails?.gender}</span></div>
+                        </div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>Family Details</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item"><label>Father</label><span>${app.familyDetails?.fatherName}</span></div>
+                            <div class="detail-item"><label>Mother</label><span>${app.familyDetails?.motherName}</span></div>
+                            <div class="detail-item"><label>Spouse</label><span>${app.familyDetails?.spouseName || 'N/A'}</span></div>
+                        </div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>Address & Contact</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item"><label>Address</label><span>${app.presentAddress?.street}, ${app.presentAddress?.villageTownCity}</span></div>
+                            <div class="detail-item"><label>State/PIN</label><span>${app.presentAddress?.state} - ${app.presentAddress?.pincode}</span></div>
+                            <div class="detail-item"><label>Mobile</label><span>${app.presentAddress?.mobileNumber}</span></div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html = `
+                    <div class="detail-section">
+                        <h4>Travel Details</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item"><label>Country</label><span>${app.travelDetails?.destinationCountry}</span></div>
+                            <div class="detail-item"><label>Visa Type</label><span>${app.visaType}</span></div>
+                            <div class="detail-item"><label>Travel Date</label><span>${new Date(app.travelDetails?.travelDate).toLocaleDateString()}</span></div>
+                            <div class="detail-item"><label>Duration</label><span>${app.travelDetails?.durationOfStay} Days</span></div>
+                        </div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>Passport Information</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item"><label>Passport No</label><span>${app.passportDetails?.passportNumber}</span></div>
+                            <div class="detail-item"><label>Expiry</label><span>${new Date(app.passportDetails?.expiryDate).toLocaleDateString()}</span></div>
+                        </div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>Employment Details</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item"><label>Occupation</label><span>${app.employmentDetails?.occupation}</span></div>
+                            <div class="detail-item"><label>Monthly Income</label><span>₹${app.employmentDetails?.monthlyIncome}</span></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('modal-body').innerHTML = html;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
         }
 
         function renderDashboard(apps, users) {
             const visaApps = apps.visa || [];
             const passportApps = apps.passport || [];
 
-            // Counters
             document.getElementById('stat-users').innerText = users.length;
             document.getElementById('stat-visa').innerText = visaApps.length;
             document.getElementById('stat-passport').innerText = passportApps.length;
+            document.getElementById('stat-pending').innerText = visaApps.filter(a => a.status === 'Submitted').length + passportApps.filter(a => a.status === 'Submitted').length;
 
-            const pendingVisa = visaApps.filter(a => a.status === 'Submitted' || a.status === 'Pending').length;
-            const pendingPassport = passportApps.filter(a => a.status === 'Submitted' || a.status === 'Pending').length;
-            document.getElementById('stat-pending').innerText = pendingVisa + pendingPassport;
+            document.getElementById('all-visa-tbody').innerHTML = visaApps.map(app => `
+                <tr>
+                    <td><strong>${app.applicationId || 'N/A'}</strong></td>
+                    <td>${app.user?.fullName} <br><small>${app.user?.email}</small></td>
+                    <td>${app.visaType}</td>
+                    <td>${new Date(app.createdAt).toLocaleDateString()}</td>
+                    <td><span class="status-badge status-${app.status}">${app.status}</span></td>
+                    <td>
+                        <button onclick="showAppDetails('Visa', '${app._id}')" class="action-btn">Detail</button>
+                        <select onchange="updateAppStatus('${app._id}', 'Visa', this.value)" class="action-btn">
+                            <option value="">Update...</option>
+                            <option value="Processing">Process</option>
+                            <option value="Approved">Approve</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
 
-            // Render Recent Visa in Dashboard
+            document.getElementById('all-passport-tbody').innerHTML = passportApps.map(app => `
+                <tr>
+                    <td><strong>${app.applicationId || 'N/A'}</strong></td>
+                    <td>${app.user?.fullName} <br><small>${app.user?.email}</small></td>
+                    <td>${app.passportType}</td>
+                    <td>${new Date(app.createdAt).toLocaleDateString()}</td>
+                    <td><span class="status-badge status-${app.status}">${app.status}</span></td>
+                    <td>
+                        <button onclick="showAppDetails('Passport', '${app._id}')" class="action-btn">Detail</button>
+                        <select onchange="updateAppStatus('${app._id}', 'Passport', this.value)" class="action-btn">
+                            <option value="">Update...</option>
+                            <option value="Processing">Process</option>
+                            <option value="Approved">Approve</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+            document.getElementById('all-users-tbody').innerHTML = users.map(u => `
+                <tr>
+                    <td>${u.fullName}</td>
+                    <td>${u.email}</td>
+                    <td>${u.phone || 'N/A'}</td>
+                    <td>${u.role}</td>
+                    <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+
+            // Populate Recent Visa Apps (Dashboard Preview)
             const recentVisa = visaApps.slice(0, 5);
             document.getElementById('recent-visa-tbody').innerHTML = recentVisa.map(app => `
                 <tr>
                     <td><strong>${app.applicationId || 'N/A'}</strong></td>
-                    <td>${app.user ? app.user.fullName : 'Unknown'}</td>
+                    <td>${app.user?.fullName || 'Unknown'}</td>
                     <td>${app.visaType}</td>
                     <td>${new Date(app.createdAt).toLocaleDateString()}</td>
                     <td><span class="status-badge status-${app.status}">${app.status}</span></td>
                 </tr>
-            `).join('') || `<tr><td colspan="5" style="text-align:center;">No recent application</td></tr>`;
-
-            // Render ALL Visa Apps Tab
-            document.getElementById('all-visa-tbody').innerHTML = visaApps.map(app => `
-                <tr>
-                    <td><strong>${app.applicationId || 'N/A'}</strong></td>
-                    <td>
-                        <div style="font-weight:600;">${app.user ? app.user.fullName : 'Unknown'}</div>
-                        <div style="font-size:0.8rem; color:#64748b;">${app.user ? app.user.email : ''}</div>
-                    </td>
-                    <td>${app.visaType} <br><small style="color:#64748b">${app.travelDetails?.destinationCountry || ''}</small></td>
-                    <td>${new Date(app.createdAt).toLocaleDateString()}</td>
-                    <td><span class="status-badge status-${app.status}">${app.status}</span></td>
-                    <td>
-                        <select onchange="updateAppStatus('${app._id}', 'Visa', this.value)" style="padding: 5px; border-radius: 5px; border: 1px solid #cbd5e1;">
-                            <option value="">Change Status...</option>
-                            <option value="Processing">Mark Processing</option>
-                            <option value="Approved">Approve</option>
-                            <option value="Rejected">Reject</option>
-                        </select>
-                        ${app.pdfUrl ? `<br><a href="${app.pdfUrl}" target="_blank" style="font-size:0.8rem; color:var(--admin-accent); text-decoration:none;"><i class="fas fa-file-pdf"></i> View PDF</a>` : ''}
-                    </td>
-                </tr>
-            `).join('') || `<tr><td colspan="6" style="text-align:center;">No applications</td></tr>`;
-
-            // Render ALL Passport Apps Tab
-            document.getElementById('all-passport-tbody').innerHTML = passportApps.map(app => `
-                <tr>
-                    <td><strong>${app.applicationId || 'N/A'}</strong></td>
-                    <td>
-                        <div style="font-weight:600;">${app.user ? app.user.fullName : 'Unknown'}</div>
-                        <div style="font-size:0.8rem; color:#64748b;">${app.user ? app.user.email : ''}</div>
-                    </td>
-                    <td>${app.passportType || 'Standard'}</td>
-                    <td>${new Date(app.createdAt).toLocaleDateString()}</td>
-                    <td><span class="status-badge status-${app.status}">${app.status}</span></td>
-                    <td>
-                        <select onchange="updateAppStatus('${app._id}', 'Passport', this.value)" style="padding: 5px; border-radius: 5px; border: 1px solid #cbd5e1;">
-                            <option value="">Change Status...</option>
-                            <option value="Processing">Mark Processing</option>
-                            <option value="Approved">Approve</option>
-                            <option value="Rejected">Reject</option>
-                        </select>
-                    </td>
-                </tr>
-            `).join('') || `<tr><td colspan="6" style="text-align:center;">No applications</td></tr>`;
-
-            // Render Users Tab
-            document.getElementById('all-users-tbody').innerHTML = users.map(u => `
-                <tr>
-                    <td><div style="display:flex; align-items:center; gap:10px;">
-                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(u.fullName)}&rounded=true&size=32" />
-                        <strong>${u.fullName}</strong>
-                    </div></td>
-                    <td>${u.email}</td>
-                    <td>${u.phone || 'N/A'}</td>
-                    <td><span class="status-badge status-${u.role === 'admin' ? 'Approved' : 'Draft'}">${u.role.toUpperCase()}</span></td>
-                    <td>${new Date(u.createdAt).toLocaleDateString()}</td>
-                </tr>
-            `).join('') || `<tr><td colspan="5" style="text-align:center;">No users</td></tr>`;
+            `).join('');
         }
 
-        async function updateAppStatus(id, type, newStatus) {
-            if (!newStatus) return;
-            if (!confirm(`Are you sure you want to mark this application as ${newStatus}?`)) return;
-
+        async function updateAppStatus(id, type, status) {
+            if(!status) return;
             const token = localStorage.getItem('token');
-            try {
-                const res = await fetch(`https://passport-ia5r.onrender.com/api/admin/application/status/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ status: newStatus, applicationType: type })
-                });
-
-                const data = await res.json();
-                if (data.success) {
-                    alert("Status updated successfully.");
-                    fetchDashboardData(token); // Refresh UI
-                } else {
-                    alert(data.message || "Failed to update status");
-                }
-            } catch (e) {
-                alert("Error updating status");
+            const res = await fetch(`/api/admin/application/status/${id}`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ applicationType: type, status })
+            });
+            if(res.ok) {
+                alert('Status Updated!');
+                fetchDashboardData(token);
             }
         }
     </script>

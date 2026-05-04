@@ -1,7 +1,7 @@
 const Document = require('../models/Document');
 
 // @desc    Upload document
-// @route   POST https://passport-ia5r.onrender.com/api/documents/upload
+// @route   POST /api/documents/upload
 // @access  Private
 exports.uploadDocument = async (req, res) => {
     try {
@@ -29,7 +29,7 @@ exports.uploadDocument = async (req, res) => {
 };
 
 // @desc    Get my documents
-// @route   GET https://passport-ia5r.onrender.com/api/documents/my
+// @route   GET /api/documents/my
 // @access  Private
 exports.getMyDocuments = async (req, res) => {
     try {

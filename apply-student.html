@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply for Student Visa - BorderBridge</title>
+    <title>Apply for Student Visa - Global Consultancy</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -218,7 +218,7 @@
                 <div class="passport-cover"></div>
             </div>
         </div>
-        <div class="loading-text">BorderBridge</div>
+        <div class="loading-text">Global Consultancy</div>
     </div>
 
     <!-- Navigation -->
@@ -483,7 +483,7 @@
     <!-- Footer copied from other pages -->
     <footer>
         <div class="container text-center">
-            <p>&copy; 2026 BorderBridge.</p>
+            <p>&copy; 2026 Global Consultancy.</p>
         </div>
     </footer>
 
@@ -521,7 +521,7 @@
             prevBtn.addEventListener('click', () => { currentStep--; updateUI(); });
 
             async function loadData() {
-                const profRes = await (await fetch('https://passport-ia5r.onrender.com/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })).json();
+                const profRes = await (await fetch('/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })).json();
                 if (profRes.success && profRes.data.completionPercentage > 70) {
                     const p = profRes.data;
                     const f = document.getElementById('visaForm');
@@ -545,4 +545,3 @@
 </body>
 
 </html>
-

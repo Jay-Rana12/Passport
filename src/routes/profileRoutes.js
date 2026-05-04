@@ -4,31 +4,39 @@ const profileController = require('../controllers/profileController');
 const { protect, admin } = require('../middlewares/authMiddleware');
 const upload = require('../middlewares/uploadMiddleware');
 
-// @route   GET https://passport-ia5r.onrender.com/api/profile/me
+// @route   GET /api/profile/me
 // @desc    Get current user profile
 router.get('/me', protect, profileController.getProfile);
 
-// @route   PUT https://passport-ia5r.onrender.com/api/profile/update
+// @route   PUT /api/profile/update
 // @desc    Create or update current user profile
 router.put('/update', [protect, [
     // Add express-validator checks here if needed, keeping it simple for now
 ]], profileController.updateProfile);
 
-// @route   POST https://passport-ia5r.onrender.com/api/profile/upload-photo
+// @route   POST /api/profile/photo
 // @desc    Upload profile photo
-router.post('/upload-photo', protect, upload.single('profilePhoto'), profileController.uploadProfilePhoto);
+router.post('/photo', protect, upload.single('photo'), profileController.uploadProfilePhoto);
 
-// @route   POST https://passport-ia5r.onrender.com/api/profile/upload-signature
+// @route   POST /api/profile/upload-signature
 // @desc    Upload digital signature
 router.post('/upload-signature', protect, upload.single('digitalSignature'), profileController.uploadSignature);
 
-// @route   POST https://passport-ia5r.onrender.com/api/profile/upload-document
+// @route   POST /api/profile/upload-document
 // @desc    Upload other documents
 router.post('/upload-document', protect, upload.single('document'), profileController.uploadDocument);
 
-// @route   PUT https://passport-ia5r.onrender.com/api/profile/admin/verify/:userId
+// @route   DELETE /api/profile/document/:fieldName
+// @desc    Delete document from vault
+router.delete('/document/:fieldName', protect, profileController.deleteDocument);
+
+// @route   PUT /api/profile/admin/verify/:userId
 // @desc    Verify user profile (Admin only)
 router.put('/admin/verify/:userId', protect, admin, profileController.verifyProfile);
+
+// @route   POST /api/profile/verify-aadhaar
+// @desc    Verify Aadhaar number
+router.post('/verify-aadhaar', protect, profileController.verifyAadhaar);
 
 module.exports = router;
 

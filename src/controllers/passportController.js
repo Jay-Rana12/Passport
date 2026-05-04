@@ -15,36 +15,66 @@ const generateApplicationId = (typeCode = '') => {
 };
 
 // @desc    Create new Passport Application
-// @route   POST https://passport-ia5r.onrender.com/api/passport/create
+// @route   POST /api/passport/create
 // @access  Private
 exports.createPassportApplication = async (req, res) => {
     try {
-        const {
-            passportType,
-            applicantDetails,
-            familyDetails,
-            presentAddress,
-            emergencyContact,
-            previousPassportDetails,
-            policeVerification,
-            declaration,
-            status
-        } = req.body;
+        const d = req.body;
+        const files = req.files || {};
 
         const dataPayload = {
             user: req.user.id,
-            passportType: passportType || 'New',
-            applicantDetails,
-            familyDetails,
-            presentAddress,
-            emergencyContact,
-            previousPassportDetails,
-            policeVerification,
-            declaration,
-            status: status || 'Draft'
+            passportType: d.passportType || 'New',
+            applicantDetails: {
+                givenName: d.givenName,
+                surname: d.surname,
+                dob: d.dob,
+                placeOfBirth: d.placeOfBirth,
+                gender: d.gender,
+                maritalStatus: d.maritalStatus,
+                educationalQualification: d.educationalQualification,
+                aadhaarNumber: d.aadhaarNumber,
+                panNumber: d.panNumber
+            },
+            familyDetails: {
+                fatherName: d.fatherName,
+                fatherNationality: d.fatherNationality,
+                motherName: d.motherName,
+                motherNationality: d.motherNationality,
+                spouseName: d.spouseName
+            },
+            presentAddress: {
+                street: d.street,
+                villageTownCity: d.city,
+                state: d.state,
+                district: d.district,
+                pincode: d.pincode,
+                mobileNumber: d.mobileNumber,
+                email: d.email
+            },
+            emergencyContact: {
+                name: d.eName,
+                mobileNumber: d.eMobile,
+                address: d.eAddress
+            },
+            previousPassportDetails: d.passportType === 'Renewal' ? {
+                oldPassportNumber: d.oldPassportNumber,
+                issueDate: d.issueDate,
+                expiryDate: d.expiryDate,
+                placeOfIssue: d.placeOfIssue
+            } : {},
+            declaration: { isAccepted: true },
+            status: d.status || 'Draft',
+            documents: {}
         };
 
-        if (status === 'Submitted') {
+        // Handle uploaded files
+        if (files.applicantPhoto) dataPayload.documents['applicantPhoto'] = '/' + files.applicantPhoto[0].path.replace(/\\/g, "/");
+        if (files.applicantSignature) dataPayload.documents['applicantSignature'] = '/' + files.applicantSignature[0].path.replace(/\\/g, "/");
+        if (files.aadhaarDoc) dataPayload.documents['aadhaarDoc'] = '/' + files.aadhaarDoc[0].path.replace(/\\/g, "/");
+        if (files.birthProof) dataPayload.documents['birthProof'] = '/' + files.birthProof[0].path.replace(/\\/g, "/");
+
+        if (d.status === 'Submitted') {
             dataPayload.submissionDate = Date.now();
         }
 
@@ -82,8 +112,8 @@ exports.createPassportApplication = async (req, res) => {
 
                     await sendEmail({
                         email: req.user.email,
-                        subject: `Your Passport Application - ${passApp.applicationId}`,
-                        message: `Dear ${req.user.fullName},\n\nYour application for ${passApp.passportType} Passport has been submitted.\nApplication Number: ${passApp.applicationId}.\n\nPlease find the PDF receipt attached.\n\nThank you,\nBorderBridge Team`,
+                        subject: `✅ Passport Application Received - ${passApp.applicationId}`,
+                        message: `Dear ${req.user.fullName},\n\nBorderBridge Consultancy me aane ke liye aapka bahut bahut dhanyavad. Humne aapka ${passApp.passportType} Passport application successfully receive kar liya hai.\n\nApplication Number: ${passApp.applicationId}\n\nHumari team jald hi aapke documents verify karke aage ki process shuru karegi. Aapka application receipt is email ke saath attached hai.\n\nRegards,\nBorderBridge Consultancy Team`,
                         attachments: [
                             {
                                 filename: pdfResult.fileName,
@@ -125,7 +155,7 @@ exports.createPassportApplication = async (req, res) => {
 };
 
 // @desc    Get all passport applications for logged in user
-// @route   GET https://passport-ia5r.onrender.com/api/passport/my
+// @route   GET /api/passport/my
 // @access  Private
 exports.getMyPassportApplications = async (req, res) => {
     try {

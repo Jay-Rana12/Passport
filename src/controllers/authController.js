@@ -19,7 +19,7 @@ const generateToken = (id) => {
 
 
 // @desc    Send OTP to Email
-// @route   POST https://passport-ia5r.onrender.com/api/auth/send-otp
+// @route   POST /api/auth/send-otp
 // @access  Public
 exports.sendOtp = async (req, res) => {
     const { email, type } = req.body;
@@ -79,7 +79,7 @@ exports.sendOtp = async (req, res) => {
 };
 
 // @desc    Verify OTP
-// @route   POST https://passport-ia5r.onrender.com/api/auth/verify-otp
+// @route   POST /api/auth/verify-otp
 // @access  Public
 exports.verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
@@ -101,7 +101,7 @@ exports.verifyOtp = async (req, res) => {
 };
 
 // @desc    Register user
-// @route   POST https://passport-ia5r.onrender.com/api/auth/register
+// @route   POST /api/auth/register
 // @access  Public
 exports.register = async (req, res) => {
     const errors = validationResult(req);
@@ -126,8 +126,10 @@ exports.register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const adminEmail = 'j.r818430@gmail.com';
-        const finalRole = (email === adminEmail) ? (role || 'admin') : 'applicant';
+        // If a role was provided (e.g. admin during first setup), we can allow it,
+        // but usually registration defaults to 'applicant'
+        const finalRole = role || 'applicant';
+
 
         user = await User.create({
             fullName,
@@ -161,7 +163,7 @@ exports.register = async (req, res) => {
 };
 
 // @desc    Login user
-// @route   POST https://passport-ia5r.onrender.com/api/auth/login
+// @route   POST /api/auth/login
 // @access  Public
 exports.login = async (req, res) => {
     const { email, password, otp } = req.body;
@@ -194,8 +196,8 @@ exports.login = async (req, res) => {
             // Fetch profile to get profile photo if it exists
             const profile = await Profile.findOne({ user: user._id });
 
-            const adminEmail = 'j.r818430@gmail.com';
-            const finalRole = (user.email === adminEmail) ? user.role : 'applicant';
+            const finalRole = user.role;
+
 
             return res.json({
                 success: true,
@@ -225,7 +227,7 @@ exports.login = async (req, res) => {
 };
 
 // @desc    Get current logged in user
-// @route   GET https://passport-ia5r.onrender.com/api/auth/profile
+// @route   GET /api/auth/profile
 // @access  Private
 exports.getMe = async (req, res) => {
     try {
@@ -238,7 +240,7 @@ exports.getMe = async (req, res) => {
 };
 
 // @desc    Forgot Password (Send OTP)
-// @route   POST https://passport-ia5r.onrender.com/api/auth/forgot-password
+// @route   POST /api/auth/forgot-password
 // @access  Public
 exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
@@ -284,7 +286,7 @@ exports.forgotPassword = async (req, res) => {
 };
 
 // @desc    Reset Password
-// @route   POST https://passport-ia5r.onrender.com/api/auth/reset-password
+// @route   POST /api/auth/reset-password
 // @access  Public
 exports.resetPassword = async (req, res) => {
     const { email, otp, newPassword } = req.body;

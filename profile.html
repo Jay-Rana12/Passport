@@ -1,1505 +1,383 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard - BorderBridge</title>
+    <title>Global Consultancy - Premium Profile</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --profile-sidebar-width: 300px;
-            --premium-gradient: linear-gradient(135deg, #0a192f 0%, #172a45 100%);
-            --accent-gradient: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
-            --shadow-premium: 0 20px 50px rgba(0, 0, 0, 0.1);
+            --glass: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --sidebar-w: 280px;
         }
-
-        .profile-mobile-toggle {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--accent-gradient);
-            color: white;
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            box-shadow: 0 10px 25px rgba(255, 140, 0, 0.4);
-            cursor: pointer;
-            border: none;
+        body { background: #f0f2f5; font-family: 'Outfit', sans-serif; margin: 0; padding-top: 80px; }
+        .dashboard-layout { display: grid; grid-template-columns: var(--sidebar-w) 1fr; min-height: 100vh; padding: 20px; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        
+        .sidebar { background: #0a192f; border-radius: 24px; padding: 30px 0; color: white; height: fit-content; position: sticky; top: 100px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .profile-card { text-align: center; padding: 0 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .avatar-box { width: 100px; height: 100px; margin: 0 auto 15px; position: relative; border-radius: 50%; padding: 5px; background: var(--accent-gradient); }
+        .avatar-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #0a192f; }
+        .nav-list { list-style: none; padding: 20px 0; }
+        .nav-btn { display: flex; align-items: center; gap: 15px; padding: 15px 30px; color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.3s; font-weight: 600; }
+        .nav-btn.active { color: #ff8c00; background: rgba(255,140,0,0.1); border-right: 4px solid #ff8c00; }
+        
+        /* Avatar Upload */
+        .avatar-box:hover .upload-overlay { opacity: 1; }
+        .upload-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.3s; cursor: pointer; color: white; font-size: 1.5rem;
         }
+        
+        .content-area { display: flex; flex-direction: column; gap: 20px; }
+        .main-card { background: white; border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: slideUp 0.5s ease; }
+        @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 
-        body {
-            background-color: #f8fafc;
-            color: #1e293b;
-        }
-
-        .dashboard-container {
-            display: grid;
-            grid-template-columns: var(--profile-sidebar-width) 1fr;
-            min-height: 100vh;
-            gap: 2rem;
-            padding: 2rem;
-            max-width: 1600px;
-            margin: 90px auto 0;
-        }
-
-        /* Sidebar Styles */
-        .sidebar-card {
-            background: white;
-            border-radius: 25px;
-            box-shadow: var(--shadow-premium);
-            padding: 2.5rem 0;
-            height: calc(100vh - 130px);
-            position: sticky;
-            top: 110px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            overflow-x: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-
-        .user-profile-header {
-            text-align: center;
-            padding: 0 1.5rem 2.5rem;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .profile-img-wrapper {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 1.5rem;
-        }
-
-        .profile-avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid white;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .edit-avatar-btn {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: var(--accent-gradient);
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 3px solid white;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .edit-avatar-btn:hover {
-            transform: translateY(-3px) rotate(15deg);
-            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
-        }
-
-        .sidebar-nav {
-            margin-top: 2rem;
-            flex-grow: 1;
-        }
-
-        .nav-item-btn {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 1.2rem 2.5rem;
-            color: #64748b;
-            font-weight: 600;
-            transition: all 0.3s;
-            cursor: pointer;
-            border-left: 5px solid transparent;
-            font-size: 0.95rem;
-        }
-
-        .nav-item-btn:hover {
-            background: #f8fafc;
-            color: var(--color-primary);
-            padding-left: 2.8rem;
-        }
-
-        .nav-item-btn.active {
-            background: linear-gradient(to right, rgba(255, 193, 7, 0.1), transparent);
-            color: var(--color-primary);
-            border-left-color: var(--color-accent);
-        }
-
-        .nav-item-btn i {
-            font-size: 1.1rem;
-            width: 20px;
-        }
-
-        /* Content Area */
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .premium-card {
-            background: white;
-            border-radius: 25px;
-            padding: 3rem;
-            box-shadow: var(--shadow-premium);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .section-header h2 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin: 0;
-            letter-spacing: -0.02em;
-        }
-
-        /* Stats & Info */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .content-tab {
-            display: none;
-        }
-
-        .content-tab.active {
-            display: block;
-            animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .btn-gradient {
-            background: var(--accent-gradient);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-gradient:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 14px 20px;
-            border: 2px solid #f1f5f9;
-            border-radius: 15px;
-            font-family: inherit;
-            font-weight: 600;
-            transition: all 0.3s;
-            background: #f8fafc;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #ff8c00;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(255, 140, 0, 0.1);
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #64748b;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-        }
-
-        /* Accordion Styles */
-        .accordion-item {
-            background: white;
-            border-radius: 15px;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            border: 1px solid #f1f5f9;
-            transition: all 0.3s;
-        }
-
-        .accordion-item.active {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            border-color: rgba(255, 140, 0, 0.3);
-        }
-
-        .accordion-header {
-            padding: 1.5rem 2rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f8fafc;
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: var(--color-primary);
-            transition: all 0.3s;
-            user-select: none;
-        }
-
-        .accordion-header:hover {
-            background: #f1f5f9;
-        }
-
-        .accordion-item.active .accordion-header {
-            background: var(--color-primary);
-            color: white;
-            border-bottom: 1px solid rgba(255, 140, 0, 0.3);
-        }
-
-        .accordion-header i.fa-chevron-down {
-            transition: transform 0.3s;
-            color: #94a3b8;
-        }
-
-        .accordion-item.active .accordion-header i.fa-chevron-down {
-            transform: rotate(180deg);
-            color: white;
-        }
-
-        .accordion-content {
-            padding: 0 2rem;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-out, padding 0.5s ease-out, opacity 0.3s ease-in;
-            opacity: 0;
-        }
-
-        .accordion-item.active .accordion-content {
-            padding: 2rem;
-            opacity: 1;
-            overflow: visible;
-        }
-
-        .file-upload-box {
-            border: 2px dashed #cbd5e1;
-            padding: 2rem;
-            text-align: center;
-            border-radius: 15px;
-            background: #f8fafc;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .file-upload-box:hover {
-            border-color: #ff8c00;
-            background: #fff8eb;
-        }
-
-        .file-upload-box i {
-            font-size: 2.5rem;
-            color: #94a3b8;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .file-upload-box:hover i {
-            color: #ff8c00;
-        }
-
-        .verify-btn {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.8rem;
-            margin-top: 10px;
-        }
-
-        .status-pill {
-            padding: 6px 14px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .status-verified {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        /* Profile Response Fixes */
-        @media (max-width: 991px) {
-            .dashboard-container {
-                grid-template-columns: 1fr;
-                padding: 1rem;
-                margin-top: 80px;
-            }
-
-            .sidebar-card {
-                position: fixed;
-                left: -100%;
-                top: 0;
-                height: 100vh;
-                margin: 0;
-                width: 280px;
-                z-index: 1500;
-                border-radius: 0 25px 25px 0;
-                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-
-            .sidebar-card.active {
-                left: 0;
-            }
-
-            .profile-mobile-toggle {
-                display: flex;
-            }
-
-            .premium-card {
-                padding: 1.5rem;
-            }
-
-            .section-header h2 {
-                font-size: 1.4rem;
-            }
-
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px; }
+        .full-row { grid-column: 1 / -1; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-group label { font-size: 0.85rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-control { padding: 12px 18px; border: 2px solid #edf2f7; border-radius: 12px; font-size: 1rem; transition: 0.3s; }
+        .form-control:focus { border-color: #ff8c00; outline: none; box-shadow: 0 0 0 4px rgba(255,140,0,0.1); }
+        
+        .section-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; padding-bottom: 10px; border-bottom: 2px solid #f7fafc; }
+        .section-header i { width: 40px; height: 40px; background: #fff8ed; color: #ff8c00; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        
+        .vault-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .doc-card { background: #f8fafc; border: 2px dashed #e2e8f0; border-radius: 16px; padding: 20px; text-align: center; position: relative; transition: 0.3s; }
+        .doc-card:hover { border-color: #ff8c00; background: white; }
+        .doc-icon { font-size: 2.5rem; color: #94a3b8; margin-bottom: 10px; }
+        .doc-name { font-weight: 700; color: #1e293b; font-size: 0.9rem; margin-bottom: 15px; overflow: hidden; text-overflow: ellipsis; }
+        .doc-actions { display: flex; gap: 10px; justify-content: center; }
+        .action-btn { width: 35px; height: 35px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .btn-view { background: #e0f2fe; color: #0284c7; }
+        .btn-del { background: #fee2e2; color: #ef4444; }
+        
+        .upload-placeholder { border: 2px dashed #cbd5e1; border-radius: 16px; padding: 30px; text-align: center; cursor: pointer; }
+        .upload-placeholder:hover { border-color: #ff8c00; color: #ff8c00; }
+        
+        .progress-stat { margin-top: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; }
+        .p-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+        .p-fill { height: 100%; background: #10b981; width: 0%; transition: 1s; }
     </style>
 </head>
-
 <body>
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="earth-container">
-            <div class="earth-globe">
-                <div class="passport-inner"></div>
-                <div class="passport-cover"></div>
-            </div>
-        </div>
-        <div class="loading-text">BorderBridge</div>
-    </div>
-
-    <!-- Navigation -->
     <nav class="navbar scrolled">
         <div class="container nav-container">
-            <a href="index.html" class="logo">
-                <i class="fas fa-plane-departure logo-icon"></i>
-                Border <span>Bridge</span>
-            </a>
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">Services <i class="fas fa-chevron-down"
-                            style="font-size: 0.8rem; margin-left: 5px;"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="visa.html" class="dropdown-link">Visa Services</a></li>
-                        <li><a href="passport.html" class="dropdown-link">Passport Services</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item"><a href="countries.html" class="nav-link">Countries</a></li>
-                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
-                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
-            </ul>
-            <a href="login.html" class="btn btn-primary btn-nav">Login</a>
+            <a href="index.html" class="logo"><i class="fas fa-plane-departure logo-icon"></i> Global <span>Consultancy</span></a>
+            <ul class="nav-menu" id="navMenu"></ul>
         </div>
     </nav>
 
-    <button class="profile-mobile-toggle" id="profileSidebarToggle">
-        <i class="fas fa-user-gear"></i>
-    </button>
-
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <aside class="sidebar-card">
-            <div class="user-profile-header">
-                <div class="profile-img-wrapper">
-                    <img src="images/default-avatar.png" alt="User" class="profile-avatar" id="sidebar-avatar">
-                    <div class="edit-avatar-btn" onclick="document.getElementById('profile-photo-input').click()">
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="profile-card">
+                <div class="avatar-box">
+                    <img id="sideAvatar" src="images/default-avatar.png">
+                    <div class="upload-overlay" onclick="document.getElementById('avatarInput').click()">
                         <i class="fas fa-camera"></i>
                     </div>
-                    <input type="file" id="profile-photo-input" style="display:none"
-                        onchange="uploadProfilePhoto(this)">
+                    <input type="file" id="avatarInput" style="display:none" accept="image/*" onchange="uploadAvatar(this)">
                 </div>
-                <h3 id="sidebar-name" style="margin: 0; font-weight: 800;">User Name</h3>
-                <p id="sidebar-email" style="color: #64748b; font-size: 0.85rem; margin: 10px 0 20px;">user@example.com
-                </p>
-                <div id="verification-badge" class="status-pill status-pending" style="margin-bottom: 15px;">
-                    <i class="fas fa-clock"></i> Profile Pending
-                </div>
-
-                <!-- Profile Completion Progress -->
-                <div style="width: 100%; text-align: left; margin-top: 10px;">
-                    <div
-                        style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: #64748b; margin-bottom: 5px;">
-                        <span>Profile Completion</span>
-                        <span id="profileProgressText">0%</span>
+                <h3 id="sideName" style="margin:0;">User Name</h3>
+                <p id="sideEmail" style="font-size:0.8rem; color:rgba(255,255,255,0.5);">email@example.com</p>
+                <div class="progress-stat">
+                    <div style="display:flex; justify-content:space-between; font-size:0.7rem; font-weight:800;">
+                        <span>PROFILE COMPLETION</span>
+                        <span id="pText">0%</span>
                     </div>
-                    <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
-                        <div id="profileProgressFill"
-                            style="height: 100%; width: 0%; background: var(--color-success); border-radius: 4px; transition: width 0.5s ease-in-out;">
-                        </div>
-                    </div>
+                    <div class="p-bar"><div id="pFill" class="p-fill"></div></div>
                 </div>
             </div>
-
-            <nav class="sidebar-nav">
-                <div class="nav-item-btn active" data-tab="complete-profile">
-                    <i class="fas fa-user-edit" style="width:20px; text-align:center;"></i> Complete Profile
-                </div>
-                <div class="nav-item-btn" data-tab="overview">
-                    <i class="fas fa-gauge-high" style="width:20px; text-align:center;"></i> Overview
-                </div>
-                <div class="nav-item-btn" data-tab="applications">
-                    <i class="fas fa-file-invoice" style="width:20px; text-align:center;"></i> Tracking Status
-                </div>
-                <div class="nav-item-btn" data-tab="documents">
-                    <i class="fas fa-vault" style="width:20px; text-align:center;"></i> Document Vault
-                </div>
-            </nav>
-
-            <div style="padding: 0 2.5rem 1rem;">
-                <button class="nav-item-btn" id="logoutBtn"
-                    style="width: 100%; border-radius: 15px; color: #ef4444; background: #fff1f2; margin-top: 1rem; border: none; padding: 1rem;">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </div>
+            <ul class="nav-list">
+                <li class="nav-btn active" onclick="switchTab('profile', this)"><i class="fas fa-user-edit"></i> Profile Details</li>
+                <li class="nav-btn" onclick="switchTab('vault', this)"><i class="fas fa-vault"></i> Document Vault</li>
+                <li class="nav-btn" onclick="switchTab('apps', this)"><i class="fas fa-file-invoice"></i> My Applications</li>
+                <li class="nav-btn" onclick="logout()" style="color:#ff4d4d; margin-top:50px;"><i class="fas fa-sign-out-alt"></i> Logout</li>
+            </ul>
         </aside>
 
-        <!-- Main Content -->
-        <main class="main-content">
-
-            <!-- TAB: COMPLETE PROFILE -->
-            <div id="tab-complete-profile" class="content-tab active">
-                <div class="section-header">
-                    <h2><i class="fas fa-clipboard-check" style="color: #ff8c00;"></i> Complete Your Profile</h2>
-                    <span
-                        style="background: white; padding: 8px 16px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 10px rgba(0,0,0,0.03); color:#10b981">
-                        <i class="fas fa-shield-alt"></i> Secure Form
-                    </span>
-                </div>
-
-                <form id="fullProfileForm">
-
-                    <!-- 1️⃣ Basic Personal Information -->
-                    <div class="accordion-item active">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <span><i class="fas fa-user" style="color: #ffc107; margin-right:10px;"></i> 1️⃣ Basic
-                                Personal Information</span>
-                            <i class="fas fa-chevron-down"></i>
+        <main class="content-area">
+            <!-- TAB: PROFILE -->
+            <div id="profile" class="tab-panel active">
+                <form id="profileForm">
+                    <div class="main-card">
+                        <div class="section-header"><i class="fas fa-id-card"></i> <h2>Personal Information</h2></div>
+                        <div class="form-grid">
+                            <div class="input-group"><label>Full Name</label><input type="text" name="fullName" class="form-control" placeholder="John Doe"></div>
+                            <div class="input-group"><label>Email Address</label><input type="email" name="email" class="form-control" readonly></div>
+                            <div class="input-group"><label>Phone Number</label><input type="text" name="phone" class="form-control"></div>
+                            <div class="input-group"><label>Date of Birth</label><input type="date" name="dateOfBirth" class="form-control"></div>
+                            <div class="input-group"><label>Gender</label><select name="gender" class="form-control"><option>Male</option><option>Female</option></select></div>
+                            <div class="input-group"><label>Occupation</label><input type="text" name="occupation" class="form-control"></div>
                         </div>
-                        <div class="accordion-content">
-                            <div class="info-grid">
-                                <div><label class="form-label">Full Name (as per Aadhaar/ID)</label><input type="text"
-                                        name="fullName" class="form-control" required></div>
-                                <div><label class="form-label">Father’s Name</label><input type="text" name="fatherName"
-                                        class="form-control"></div>
-                                <div><label class="form-label">Mother’s Name</label><input type="text" name="motherName"
-                                        class="form-control"></div>
-                                <div>
-                                    <label class="form-label">Gender</label>
-                                    <select name="gender" class="form-control">
-                                        <option value="">Select</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Other">Other</option>
-                                    </select>
+
+                        <div class="section-header"><i class="fas fa-map-marker-alt"></i> <h2>Current Address</h2></div>
+                        <div class="form-grid">
+                            <div class="input-group full-row"><label>Street / House No</label><input type="text" name="currentAddress.street" class="form-control"></div>
+                            <div class="input-group"><label>City</label><input type="text" name="currentAddress.city" class="form-control"></div>
+                            <div class="input-group"><label>State</label><input type="text" name="currentAddress.state" class="form-control"></div>
+                            <div class="input-group"><label>Pincode</label><input type="text" name="currentAddress.pincode" class="form-control"></div>
+                        </div>
+
+                        <div class="section-header"><i class="fas fa-fingerprint"></i> <h2>Identity Verification</h2></div>
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Aadhaar Number</label>
+                                <div style="display:flex; gap:10px;">
+                                    <input type="text" id="aadhaar" name="aadhaarNumber" class="form-control" maxlength="12" style="flex:1;">
+                                    <button type="button" id="vBtn" onclick="verifyAadhaar()" class="btn-gradient" style="padding:0 20px;">Verify</button>
                                 </div>
-                                <div><label class="form-label">Date of Birth</label><input type="date" name="dob"
-                                        id="dobInput" class="form-control" max=""></div>
-                                <div><label class="form-label">Place of Birth</label><input type="text"
-                                        name="placeOfBirth" class="form-control"></div>
-                                <div>
-                                    <label class="form-label">Marital Status</label>
-                                    <select name="maritalStatus" class="form-control">
-                                        <option value="Single">Single</option>
-                                        <option value="Married">Married</option>
-                                        <option value="Divorced">Divorced</option>
-                                        <option value="Widowed">Widowed</option>
-                                    </select>
-                                </div>
-                                <div><label class="form-label">Nationality</label><input type="text" name="nationality"
-                                        class="form-control" value="Indian"></div>
                             </div>
+                            <div class="input-group"><label>PAN Number</label><input type="text" name="panNumber" class="form-control"></div>
+                        </div>
+                        
+                        <div style="text-align:right;">
+                            <button type="submit" class="btn-gradient" style="padding:15px 50px;">Update Profile</button>
                         </div>
                     </div>
-
-                    <!-- 2️⃣ Contact Information -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <span><i class="fas fa-address-book" style="color: #ffc107; margin-right:10px;"></i> 2️⃣
-                                Contact Information</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="info-grid">
-                                <div>
-                                    <label class="form-label">Mobile Number</label>
-                                    <input type="tel" name="mobile" class="form-control" required>
-                                </div>
-                                <div>
-                                    <label class="form-label">Email ID</label>
-                                    <input type="email" name="email" class="form-control" readonly>
-                                    <span style="color:#10b981; font-size:0.8rem; display:block; margin-top:5px;"><i
-                                            class="fas fa-check-circle"></i> Verified</span>
-                                </div>
-                                <div style="grid-column: 1 / -1;">
-                                    <label class="form-label">Current Address</label>
-                                    <textarea name="currentAddress" class="form-control" rows="2"></textarea>
-                                </div>
-                                <div style="grid-column: 1 / -1;">
-                                    <label class="form-label">Permanent Address</label>
-                                    <textarea name="permanentAddress" class="form-control" rows="2"></textarea>
-                                </div>
-                                <div>
-                                    <label class="form-label">Pincode</label>
-                                    <input type="text" name="pincode" id="pincodeInput" class="form-control"
-                                        oninput="fetchLocationByPincode(this.value)" maxlength="6">
-                                    <span id="pincodeMsg"
-                                        style="font-size:0.8rem; margin-top:5px; display:block;"></span>
-                                </div>
-                                <div><label class="form-label">State</label><input type="text" name="state"
-                                        id="stateInput" class="form-control" readonly></div>
-                                <div><label class="form-label">District</label><input type="text" name="district"
-                                        id="districtInput" class="form-control" readonly></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 3️⃣ Identity Details -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <span><i class="fas fa-id-card" style="color: #ffc107; margin-right:10px;"></i> 3️⃣ Identity
-                                Details</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="info-grid">
-                                <div><label class="form-label">Aadhaar Number / National ID</label><input type="text"
-                                        name="aadhaar" class="form-control"></div>
-                                <div><label class="form-label">PAN (Optional)</label><input type="text" name="pan"
-                                        class="form-control"></div>
-                                <div><label class="form-label">Old Passport Number (If Renewal)</label><input
-                                        type="text" name="oldPassport" class="form-control"></div>
-                            </div>
-                            <div class="info-grid" style="margin-top:20px;">
-                                <div class="file-upload-box" onclick="document.getElementById('idProof').click()">
-                                    <i class="fas fa-address-card"></i>
-                                    <p style="font-weight:700;">Upload ID Proof</p>
-                                    <p style="font-size:0.8rem; color:#94a3b8;">PDF, JPG (Max 2MB)</p>
-                                    <input type="file" id="idProof" style="display:none;" accept=".pdf, .jpg, .jpeg">
-                                </div>
-                                <div class="file-upload-box" onclick="document.getElementById('addressProof').click()">
-                                    <i class="fas fa-home"></i>
-                                    <p style="font-weight:700;">Upload Address Proof</p>
-                                    <p style="font-size:0.8rem; color:#94a3b8;">PDF, JPG (Max 2MB)</p>
-                                    <input type="file" id="addressProof" style="display:none;"
-                                        accept=".pdf, .jpg, .jpeg">
-                                </div>
-                                <div class="file-upload-box" onclick="document.getElementById('birthCert').click()">
-                                    <i class="fas fa-certificate"></i>
-                                    <p style="font-weight:700;">Birth Certificate</p>
-                                    <p style="font-size:0.8rem; color:#94a3b8;">PDF, JPG (Max 2MB)</p>
-                                    <input type="file" id="birthCert" style="display:none;" accept=".pdf, .jpg, .jpeg">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 4️⃣ Passport Specific Details -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <span><i class="fas fa-passport" style="color: #ffc107; margin-right:10px;"></i> 4️⃣
-                                Passport Specific Details (If Applying)</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="info-grid">
-                                <div>
-                                    <label class="form-label">Passport Type</label>
-                                    <select name="passportType" class="form-control">
-                                        <option value="Normal">Normal</option>
-                                        <option value="Tatkal">Tatkal</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="form-label">Booklet Type</label>
-                                    <select name="bookletType" class="form-control">
-                                        <option value="36">36 Pages</option>
-                                        <option value="60">60 Pages</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="form-label">Police Verification Preference</label>
-                                    <select name="policeVerification" class="form-control">
-                                        <option value="Before">Before Issuance</option>
-                                        <option value="After">After Issuance</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="form-label">Emergency Contact Person</label>
-                                    <input type="text" name="emergencyContact" class="form-control">
-                                </div>
-                                <div style="grid-column: 1 / -1;">
-                                    <label class="form-label">Previous Passport Details / Rejection (If any)</label>
-                                    <textarea name="previousPassportDesc" class="form-control" rows="2"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 5️⃣ Visa Specific Details -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <span><i class="fas fa-plane" style="color: #ffc107; margin-right:10px;"></i> 5️⃣ Visa
-                                Specific Details (If Applying)</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="info-grid">
-                                <div><label class="form-label">Target Country</label><input type="text"
-                                        name="visaCountry" class="form-control"></div>
-                                <div>
-                                    <label class="form-label">Visa Type</label>
-                                    <select name="visaType" class="form-control">
-                                        <option value="">Select</option>
-                                        <option value="Tourist">Tourist</option>
-                                        <option value="Student">Student</option>
-                                        <option value="Work">Work</option>
-                                    </select>
-                                </div>
-                                <div><label class="form-label">Expected Travel Date</label><input type="date"
-                                        name="travelDate" class="form-control"></div>
-                                <div><label class="form-label">Return Date</label><input type="date" name="returnDate"
-                                        class="form-control"></div>
-                                <div><label class="form-label">Sponsor Details (Name / Organization)</label><input
-                                        type="text" name="sponsorDetails" class="form-control"></div>
-                                <div>
-                                    <label class="form-label">Travel History (Last 5 years)</label>
-                                    <input type="text" name="travelHistory" class="form-control"
-                                        placeholder="E.g. UK(2022), France(2023)">
-                                </div>
-                            </div>
-                            <div class="file-upload-box" style="margin-top:20px; width:100%; max-width:400px;"
-                                onclick="document.getElementById('invitationLetter').click()">
-                                <i class="fas fa-envelope-open-text"></i>
-                                <p style="font-weight:700;">Upload Invitation Letter</p>
-                                <input type="file" id="invitationLetter" style="display:none;" accept=".pdf">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 6️⃣ Security & Account Settings -->
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <span><i class="fas fa-shield-alt" style="color: #ffc107; margin-right:10px;"></i> 6️⃣
-                                Security & Account Settings</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="info-grid">
-                                <div class="premium-card"
-                                    style="padding: 1.5rem; background: #fff8eb; border-radius: 15px; grid-column: 1/-1;">
-                                    <h4>Change Password</h4>
-                                    <div style="display:flex; gap:10px; margin-top:10px;">
-                                        <input type="password" placeholder="New Password" class="form-control">
-                                        <button type="button" class="btn-gradient">Update</button>
-                                    </div>
-                                </div>
-                                <div class="premium-card" style="padding: 1.5rem; border-radius: 15px;">
-                                    <h4 style="margin-top:0;"><i class="fas fa-lock"></i> Two-Factor Authentication</h4>
-                                    <p style="font-size:0.85rem; color:#64748b;">Add an extra layer of security to your
-                                        account.</p>
-                                    <button type="button" class="verify-btn" style="background:#3b82f6;">Enable
-                                        2FA</button>
-                                </div>
-                                <div class="premium-card" style="padding: 1.5rem; border-radius: 15px;">
-                                    <h4 style="margin-top:0;"><i class="fas fa-file-pdf"></i> Application Tools</h4>
-                                    <div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
-                                        <button type="button" class="btn-gradient"
-                                            style="padding:10px; font-size:0.9rem; justify-content:center;"><i
-                                                class="fas fa-download"></i> Download Full Copy (PDF)</button>
-                                        <button type="button" class="btn-gradient"
-                                            style="padding:10px; font-size:0.9rem; justify-content:center; background:#475569;"><i
-                                                class="fas fa-receipt"></i> Payment History</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="text-align: right; margin-top: 2rem;">
-                        <button type="submit" class="btn-gradient" style="padding: 18px 40px; font-size: 1.1rem;">
-                            <i class="fas fa-save"></i> Save Profile Details
-                        </button>
-                    </div>
-
                 </form>
             </div>
 
-            <!-- TAB: OVERVIEW -->
-            <div id="tab-overview" class="content-tab">
-                <div class="section-header">
-                    <h2><i class="fas fa-gauge-high" style="color: #ff8c00;"></i> Dashboard Overview</h2>
-                    <span id="overview-welcome" style="color:#64748b; font-weight:600;">Welcome back!</span>
-                </div>
-
-                <!-- Stats Grid -->
-                <div
-                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-                    <!-- Card 1 -->
-                    <div
-                        style="background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                        <div
-                            style="width: 50px; height: 50px; border-radius: 12px; background: #fff0ed; color: #ff6b6b; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                            <i class="fas fa-file-signature"></i>
-                        </div>
-                        <div>
-                            <p
-                                style="margin: 0; color: #64748b; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">
-                                Profile Status</p>
-                            <h4 id="overview-profile-status"
-                                style="margin: 5px 0 0; font-size: 1.2rem; font-weight: 800; color: #0a192f;">Pending
-                            </h4>
-                        </div>
+            <!-- TAB: VAULT -->
+            <div id="vault" class="tab-panel">
+                <div class="main-card">
+                    <div class="section-header"><i class="fas fa-shield-alt"></i> <h2>Secure Document Vault</h2></div>
+                    <div class="upload-placeholder" onclick="document.getElementById('docInput').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size:3rem; margin-bottom:15px; display:block;"></i>
+                        <p style="font-weight:700; margin:0;">Click to upload document</p>
+                        <p style="font-size:0.8rem; color:#64748b;">PDF, PNG, JPG supported (Max 5MB)</p>
+                        <input type="file" id="docInput" style="display:none" onchange="handleUpload(this)">
                     </div>
-                    <!-- Card 2 -->
-                    <div onclick="document.querySelector('[data-tab=\'applications\']').click()"
-                        style="cursor: pointer; background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px; transition: transform 0.2s;">
-                        <div
-                            style="width: 50px; height: 50px; border-radius: 12px; background: #eff6ff; color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                            <i class="fas fa-passport"></i>
-                        </div>
-                        <div>
-                            <p
-                                style="margin: 0; color: #64748b; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">
-                                Active Applications</p>
-                            <h4 id="active-applications-count"
-                                style="margin: 5px 0 0; font-size: 1.2rem; font-weight: 800; color: #0a192f;">0</h4>
-                        </div>
-                    </div>
-                    <!-- Card 3 -->
-                    <div
-                        style="background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; display: flex; align-items: center; gap: 15px;">
-                        <div
-                            style="width: 50px; height: 50px; border-radius: 12px; background: #f0fdf4; color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                            <i class="fas fa-file-contract"></i>
-                        </div>
-                        <div>
-                            <p
-                                style="margin: 0; color: #64748b; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">
-                                Documents Vault</p>
-                            <h4 style="margin: 5px 0 0; font-size: 1.2rem; font-weight: 800; color: #0a192f;">Secured
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="premium-card" style="text-align:center; padding: 3rem 2rem;">
-                    <i class="fas fa-clipboard-check" style="font-size: 3rem; color:#ff8c00; margin-bottom: 20px;"></i>
-                    <h3>Complete Your Journey</h3>
-                    <p style="color: #64748b; max-width: 500px; margin: 10px auto;">Navigate to <b>Complete Profile</b>
-                        to finish your setup. Upload your mandatory documents and then apply for your desired Visa or
-                        Passport!</p>
-                    <button class="btn-gradient"
-                        onclick="document.querySelector('[data-tab=\'complete-profile\']').click()"
-                        style="margin-top:20px;">
-                        Go to Profile Form <i class="fas fa-arrow-right" style="margin-left: 5px;"></i>
-                    </button>
+                    <div id="vaultGrid" class="vault-grid" style="margin-top: 30px;"></div>
                 </div>
             </div>
 
-            <!-- TAB: APPLICATIONS (Tracking) -->
-            <div id="tab-applications" class="content-tab">
-                <div class="section-header">
-                    <h2><i class="fas fa-satellite-dish" style="color: #ff8c00;"></i> Application Tracking Status</h2>
-                </div>
-                <div class="premium-card" style="padding: 2rem;" id="applications-container">
-                    <p style="color: #64748b; text-align: center;"><i class="fas fa-box-open"
-                            style="font-size:3rem; display:block; margin-bottom:15px; opacity:0.3;"></i> Fetching
-                        applications... please wait.</p>
-                </div>
-            </div>
-
-            <!-- TAB: DOCUMENT VAULT -->
-            <div id="tab-documents" class="content-tab">
-                <div class="section-header">
-                    <h2><i class="fas fa-folder-open" style="color: #10b981;"></i> My Document Vault</h2>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <select id="docTypeSelect"
-                            style="padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1;">
-                            <option value="">Select Document Type...</option>
-                            <option value="Aadhar Card">Aadhar Card</option>
-                            <option value="Passport Copy">Passport Copy</option>
-                            <option value="12th Marksheet">12th Marksheet</option>
-                            <option value="Leaving Certificate">Leaving Certificate</option>
-                            <option value="Other Document">Other Document</option>
-                        </select>
-                        <button class="btn-gradient" onclick="triggerGenericUpload()">
-                            <i class="fas fa-cloud-arrow-up"></i> Upload New
-                        </button>
-                    </div>
-                    <input type="file" id="generic-upload" style="display:none" onchange="uploadGenericDoc(this)">
-                </div>
-                <div class="premium-card" style="padding: 2rem;">
-                    <div
-                        style="background: #f8fafc; border-radius: 15px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);">
-                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                            <thead style="background: var(--color-primary); color: white;">
-                                <tr>
-                                    <th style="padding: 15px 20px;">Document Name</th>
-                                    <th style="padding: 15px 20px;">Category</th>
-                                    <th style="padding: 15px 20px;">Upload Date</th>
-                                    <th style="padding: 15px 20px;">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="document-vault-tbody">
-                                <tr>
-                                    <td colspan="4" style="text-align:center; padding: 20px;">No documents uploaded yet.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <!-- TAB: MY APPLICATIONS -->
+            <div id="apps" class="tab-panel">
+                <div class="main-card">
+                    <div class="section-header"><i class="fas fa-file-invoice"></i> <h2>My Applications</h2></div>
+                    <div id="appsList" style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="text-align:center; padding:40px; color:#64748b;">
+                            <i class="fas fa-spinner fa-spin" style="font-size:2rem; margin-bottom:10px;"></i>
+                            <p>Loading your applications...</p>
+                        </div>
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h4>BorderBridge</h4>
-                    <p style="opacity: 0.8;">Your trusted partner for international travel documentation and immigration
-                        services.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Quick Links</h4>
-                    <ul class="footer-links">
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="visa.html">Visa Services</a></li>
-                        <li><a href="countries.html">Destinations</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Contact Info</h4>
-                    <ul class="footer-links">
-                        <li><i class="fas fa-map-marker-alt"></i> 401, Gitanjali Complex, Palanpur</li>
-                        <li><i class="fas fa-phone"></i> +91 8200306075</li>
-                        <li><i class="fas fa-envelope"></i> j.r818430@gmail.com</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">&copy; 2026 BorderBridge. All Rights Reserved.</div>
-        </div>
-    </footer>
-
-    <script src="js/script.js?v=1772162207381"></script>
+    <script src="js/script.js"></script>
     <script>
-        // Init Dashboard & User Data
-        function initDashboard() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            const token = localStorage.getItem('token');
-            if (!user || !token) {
-                window.location.href = 'login.html';
-                return;
-            }
+        const token = localStorage.getItem('token');
+        if(!token) window.location.href = 'login.html';
 
-            // Set user details in UI
-            document.getElementById('sidebar-name').innerText = user.fullName || 'User';
-            document.getElementById('overview-welcome').innerText = `Welcome back, ${(user.fullName || 'User').split(' ')[0]}!`;
-            document.getElementById('sidebar-email').innerText = user.email || 'user@example.com';
-
-            const fullNameInput = document.querySelector('input[name="fullName"]');
-            if (fullNameInput) fullNameInput.value = user.fullName || '';
-
-            const emailInput = document.querySelector('input[name="email"]');
-            if (emailInput) emailInput.value = user.email || '';
-
-            if (user.profilePhoto) {
-                document.getElementById('sidebar-avatar').src = user.profilePhoto;
-            } else {
-                document.getElementById('sidebar-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName || 'User')}&background=ff8c00&color=fff&rounded=true`;
-            }
-
-            // Set Max DOB to today (disallow future dates)
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('dobInput').setAttribute('max', today);
-
-            // Fetch profile data if any exists (to prepopulate)
-            fetch('https://passport-ia5r.onrender.com/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success && data.data) {
-                        const profile = data.data;
-                        if (profile.personalInfo?.fullName) {
-                            document.getElementById('verification-badge').className = 'status-pill status-verified';
-                            document.getElementById('verification-badge').innerHTML = '<i class="fas fa-check-circle"></i> Profile Setup';
-                        }
-
-                        // Update Profile Progress UI
-                        const progress = profile.completionPercentage || 0;
-                        document.getElementById('profileProgressText').innerText = progress + '%';
-                        document.getElementById('profileProgressFill').style.width = progress + '%';
-
-                        // Also update Overview Tab
-                        const overviewStatus = document.getElementById('overview-profile-status');
-                        if (overviewStatus) {
-                            if (progress === 100) {
-                                overviewStatus.innerText = 'Completed';
-                                overviewStatus.style.color = '#10b981';
-                            } else {
-                                overviewStatus.innerText = `${progress}% Complete`;
-                            }
-                        }
-
-                        // Load Document Vault Render
-                        renderDocumentsVault(profile.uploads || {}, profile.status?.verificationStatus);
-
-                    } else {
-                        // Error or no profile yet
-                        document.getElementById('profileProgressText').innerText = '0%';
-                        document.getElementById('profileProgressFill').style.width = '0%';
-                        renderDocumentsVault({}, null);
+        async function loadProfile() {
+            const res = await fetch('/api/profile/me', { headers: {'Authorization': `Bearer ${token}`} });
+            const { success, data } = await res.json();
+            if(success) {
+                document.getElementById('sideName').innerText = data.user.name;
+                document.getElementById('sideEmail').innerText = data.user.email;
+                document.getElementById('pText').innerText = data.completionPercentage + '%';
+                document.getElementById('pFill').style.width = data.completionPercentage + '%';
+                
+                const form = document.getElementById('profileForm');
+                form.elements['email'].value = data.user.email;
+                if(data.personalInfo) {
+                    form.elements['fullName'].value = data.personalInfo.fullName || '';
+                    form.elements['phone'].value = data.contactInfo?.phone || '';
+                    form.elements['dateOfBirth'].value = data.personalInfo.dateOfBirth?.split('T')[0] || '';
+                    form.elements['occupation'].value = data.personalInfo.occupation || '';
+                    form.elements['gender'].value = data.personalInfo.gender || 'Male';
+                }
+                if(data.contactInfo?.currentAddress) {
+                    form.elements['currentAddress.street'].value = data.contactInfo.currentAddress.street || '';
+                    form.elements['currentAddress.city'].value = data.contactInfo.currentAddress.city || '';
+                    form.elements['currentAddress.state'].value = data.contactInfo.currentAddress.state || '';
+                    form.elements['currentAddress.pincode'].value = data.contactInfo.currentAddress.pincode || '';
+                }
+                if(data.govtIdInfo) {
+                    form.elements['aadhaarNumber'].value = data.govtIdInfo.aadhaarNumber || '';
+                    form.elements['panNumber'].value = data.govtIdInfo.panNumber || '';
+                    if(data.govtIdInfo.isAadhaarVerified) {
+                        document.getElementById('vBtn').innerHTML = '<i class="fas fa-check"></i> Verified';
+                        document.getElementById('vBtn').style.background = '#10b981';
+                        document.getElementById('vBtn').disabled = true;
+                        document.getElementById('aadhaar').readOnly = true;
                     }
-                }).catch(err => console.error(err));
-
-            // Fetch User Applications for Tracking Status Tab
-            fetchApplications(token);
-        }
-
-        async function fetchApplications(token) {
-            try {
-                const [visaRes, passRes] = await Promise.all([
-                    fetch('https://passport-ia5r.onrender.com/api/visa/my', { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch('https://passport-ia5r.onrender.com/api/passport/my', { headers: { 'Authorization': `Bearer ${token}` } })
-                ]);
-
-                const visaData = await visaRes.json();
-                const passData = await passRes.json();
-
-                let allApps = [];
-                if (visaData.success && visaData.data) {
-                    allApps = [...allApps, ...visaData.data.map(a => ({ ...a, appCategory: 'Visa' }))];
                 }
-                if (passData.success && passData.data) {
-                    allApps = [...allApps, ...passData.data.map(a => ({ ...a, appCategory: 'Passport' }))];
+                renderVault(data.uploads || {});
+                if(data.user.profilePhoto) {
+                    document.getElementById('sideAvatar').src = data.user.profilePhoto;
                 }
-
-                // Sort by creation date descending
-                allApps.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-                if (allApps.length > 0) {
-                    const activeCount = allApps.filter(app => app.status !== 'Draft' && app.status !== 'Rejected').length;
-                    document.getElementById('active-applications-count').innerText = activeCount;
-                    renderApplicationsTable(allApps);
-                } else {
-                    document.getElementById('active-applications-count').innerText = '0';
-                    document.getElementById('applications-container').innerHTML = '<p style="color:#64748b; text-align:center;">No applications found.</p>';
-                }
-
-            } catch (err) {
-                console.error('Error fetching apps:', err);
             }
         }
 
-        function renderApplicationsTable(apps) {
-            const container = document.getElementById('applications-container');
-            if (!container) return;
+        async function uploadAvatar(input) {
+            if(!input.files[0]) return;
+            const fd = new FormData();
+            fd.append('photo', input.files[0]);
+            
+            const res = await fetch('/api/profile/photo', {
+                method: 'POST',
+                headers: {'Authorization': `Bearer ${token}`},
+                body: fd
+            });
+            if(res.ok) {
+                const result = await res.json();
+                document.getElementById('sideAvatar').src = result.data.profilePhoto;
+                alert('Profile photo updated!');
+            }
+        }
 
-            let html = `
-                <div style="background: #f8fafc; border-radius: 15px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <thead style="background: var(--color-primary); color: white;">
-                            <tr>
-                                <th style="padding: 15px 20px;">App Number</th>
-                                <th style="padding: 15px 20px;">Type</th>
-                                <th style="padding: 15px 20px;">Submission Date</th>
-                                <th style="padding: 15px 20px;">Status</th>
-                                <th style="padding: 15px 20px;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-
-            apps.forEach(app => {
-                const dateRaw = app.submissionDate || app.createdAt;
-                const docDate = new Date(dateRaw).toLocaleDateString();
-
-                let badgeClass = 'status-pending';
-                let iconClass = 'fa-clock';
-
-                if (app.status === 'Draft') { badgeClass = ''; iconClass = 'fa-edit'; }
-                else if (app.status === 'Submitted') { badgeClass = 'status-verified'; iconClass = 'fa-check'; }
-                else if (app.status === 'Approved') { badgeClass = 'status-verified'; iconClass = 'fa-check-double'; }
-                else if (app.status === 'Rejected') { badgeClass = ''; iconClass = 'fa-times'; }
-
-                let actionBtn = '';
-                if (app.pdfUrl) {
-                    actionBtn = `<a href="${app.pdfUrl}" target="_blank" class="btn-outline" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fas fa-file-pdf text-accent"></i> Download</a>`;
-                } else if (app.status === 'Draft') {
-                    let draftUrl = app.appCategory === 'Passport' ? 'passport.html' : 'apply-tourist.html';
-                    actionBtn = `<a href="${draftUrl}" class="btn-outline" style="padding: 5px 10px; font-size: 0.8rem; border-color: #3b82f6; color: #3b82f6;"><i class="fas fa-edit"></i> Continue</a>`;
-                } else {
-                    actionBtn = `<span style="color: #64748b; font-size: 0.85rem;">Processing</span>`;
-                }
-
-                const displayName = app.appCategory === 'Passport' ? app.passportType + ' Passport' : app.visaType + ' Visa';
-                const displayId = app.applicationId || 'Draft PID: ' + app._id.toString().substring(0, 8);
-
-                html += `
-                    <tr style="border-bottom: 1px solid #e2e8f0; ${app.status === 'Draft' ? 'opacity: 0.6;' : ''}">
-                        <td style="padding: 15px 20px; font-weight: 700; color: #0a192f;">${displayId}</td>
-                        <td style="padding: 15px 20px; font-weight: 600; color: #64748b;">${displayName}</td>
-                        <td style="padding: 15px 20px; color: #64748b;">${docDate}</td>
-                        <td style="padding: 15px 20px;"><span class="status-pill ${badgeClass}" style="${app.status === 'Draft' ? 'background:#e2e8f0;color:#64748b;' : ''}"><i class="fas ${iconClass}"></i> ${app.status}</span></td>
-                        <td style="padding: 15px 20px;">${actionBtn}</td>
-                    </tr>
+        function renderVault(uploads) {
+            const grid = document.getElementById('vaultGrid');
+            grid.innerHTML = '';
+            Object.keys(uploads).forEach(key => {
+                const card = document.createElement('div');
+                card.className = 'doc-card';
+                card.innerHTML = `
+                    <i class="fas fa-file-alt doc-icon"></i>
+                    <div class="doc-name">${key}</div>
+                    <div class="doc-actions">
+                        <a href="${uploads[key]}" target="_blank" class="action-btn btn-view"><i class="fas fa-eye"></i></a>
+                        <div class="action-btn btn-del" onclick="deleteDoc('${key}')"><i class="fas fa-trash"></i></div>
+                    </div>
                 `;
+                grid.appendChild(card);
             });
-
-            html += `</tbody></table></div>`;
-            container.innerHTML = html;
         }
 
-        // Accordion functionality with exact height calculation for smooth animation
-        function toggleAccordion(header) {
-            const item = header.parentElement;
-            const content = item.querySelector('.accordion-content');
-
-            // Close all others
-            document.querySelectorAll('.accordion-item').forEach(acc => {
-                if (acc !== item && acc.classList.contains('active')) {
-                    acc.classList.remove('active');
-                    const accContent = acc.querySelector('.accordion-content');
-                    accContent.style.maxHeight = '0px';
-                }
+        async function handleUpload(input) {
+            if(!input.files[0]) return;
+            const fd = new FormData();
+            fd.append('document', input.files[0]);
+            fd.append('fieldName', input.files[0].name);
+            
+            const res = await fetch('/api/profile/upload-document', {
+                method: 'POST',
+                headers: {'Authorization': `Bearer ${token}`},
+                body: fd
             });
-
-            if (item.classList.contains('active')) {
-                item.classList.remove('active');
-                content.style.maxHeight = '0px';
-            } else {
-                item.classList.add('active');
-                content.style.maxHeight = content.scrollHeight + 100 + "px";
-            }
+            if(res.ok) loadProfile();
         }
 
-        // Initialize Accordions
-        document.addEventListener('DOMContentLoaded', () => {
-            initDashboard();
-
-            // Set initial heights for active accordions
-            setTimeout(() => {
-                document.querySelectorAll('.accordion-item.active .accordion-content').forEach(cont => {
-                    cont.style.maxHeight = cont.scrollHeight + 100 + "px";
-                });
-            }, 100);
-
-            // Handle URL params for direct tab opening
-            const urlParams = new URLSearchParams(window.location.search);
-            const tabParam = urlParams.get('tab');
-            if (tabParam) {
-                const targetBtn = document.querySelector(`.nav-item-btn[data-tab="${tabParam}"]`);
-                if (targetBtn) {
-                    targetBtn.click();
-                }
-            }
-        });
-
-        // Tab Switching Logic
-        document.querySelectorAll('.nav-item-btn').forEach(btn => {
-            if (btn.id === 'logoutBtn') return;
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.nav-item-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                const tabId = btn.getAttribute('data-tab');
-                document.querySelectorAll('.content-tab').forEach(t => t.classList.remove('active'));
-                const activeTab = document.getElementById(`tab-${tabId}`);
-                activeTab.classList.add('active');
-
-                // Readjust accordions inside active tab if they were closed due to display:none
-                if (tabId === 'complete-profile') {
-                    setTimeout(() => {
-                        const activeAcc = activeTab.querySelector('.accordion-item.active .accordion-content');
-                        if (activeAcc) activeAcc.style.maxHeight = activeAcc.scrollHeight + 100 + "px";
-                    }, 50);
-                }
+        async function deleteDoc(name) {
+            if(!confirm('Delete this document?')) return;
+            const res = await fetch(`/api/profile/document/${name}`, {
+                method: 'DELETE',
+                headers: {'Authorization': `Bearer ${token}`}
             });
-        });
-
-        // Pincode API Logic
-        let pinTimer;
-        function fetchLocationByPincode(pincode) {
-            const msgEl = document.getElementById('pincodeMsg');
-            const stateInput = document.getElementById('stateInput');
-            const districtInput = document.getElementById('districtInput');
-
-            // Only search if 6 digits
-            if (pincode.length === 6) {
-                clearTimeout(pinTimer);
-                msgEl.innerText = 'Fetching location...';
-                msgEl.style.color = '#ff8c00';
-
-                pinTimer = setTimeout(() => {
-                    fetch(`https://api.postalpincode.in/pincode/${pincode}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data && data[0] && data[0].Status === 'Success') {
-                                const postOffice = data[0].PostOffice[0];
-                                stateInput.value = postOffice.State;
-                                districtInput.value = postOffice.District;
-                                msgEl.innerText = 'Location found!';
-                                msgEl.style.color = '#10b981';
-                            } else {
-                                msgEl.innerText = 'Invalid Pincode';
-                                msgEl.style.color = '#ef4444';
-                                stateInput.value = '';
-                                districtInput.value = '';
-                            }
-                        })
-                        .catch(() => {
-                            msgEl.innerText = 'Error fetching location';
-                            msgEl.style.color = '#ef4444';
-                        });
-                }, 500);
-            } else {
-                msgEl.innerText = '';
-                stateInput.value = '';
-                districtInput.value = '';
-            }
+            if(res.ok) loadProfile();
         }
 
-        // Upload Profile Photo Helper
-        async function uploadProfilePhoto(input) {
-            const file = input.files[0];
-            if (!file) return;
-
-            // Validate image
-            if (!file.type.startsWith('image/')) {
-                alert('Please select an image file');
-                return;
-            }
-
-            const token = localStorage.getItem('token');
-            const formData = new FormData();
-            formData.append('profilePhoto', file);
-
-            try {
-                const res = await fetch('https://passport-ia5r.onrender.com/api/profile/upload-photo', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData
-                });
-                const data = await res.json();
-                if (data.success && data.data) {
-                    document.getElementById('sidebar-avatar').src = data.data;
-
-                    // Update LocalStorage user object with new photo
-                    let user = JSON.parse(localStorage.getItem('user'));
-                    user.profilePhoto = data.data;
-                    localStorage.setItem('user', JSON.stringify(user));
-
-                    // It will also update navbar automatically on reload or dynamically
-                    const navAvatar = document.querySelector('.nav-avatar');
-                    if (navAvatar) navAvatar.src = data.data;
-                    alert('Profile photo updated!');
-                } else {
-                    alert('Failed to update photo: ' + (data.message || 'Unknown Error'));
-                }
-            } catch (e) {
-                alert('Upload failed. Note: Requires backend running correctly.');
-            }
-        }
-
-        function triggerGenericUpload() {
-            const select = document.getElementById('docTypeSelect');
-            if (!select.value) {
-                alert('Please select a Document Type first.');
-                return;
-            }
-            document.getElementById('generic-upload').click();
-        }
-
-        // Generic Document Upload (Document Vault)
-        async function uploadGenericDoc(input) {
-            const file = input.files[0];
-            if (!file) return;
-
-            const sizeMB = file.size / (1024 * 1024);
-            if (sizeMB > 5) {
-                alert('File size exceeds 5MB limit. Please upload a smaller file.');
-                input.value = '';
-                return;
-            }
-
-            const docType = document.getElementById('docTypeSelect').value;
-            const token = localStorage.getItem('token');
-            const formData = new FormData();
-            formData.append('document', file);
-            formData.append('fieldName', docType);
-
-            try {
-                const res = await fetch('https://passport-ia5r.onrender.com/api/profile/upload-document', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    alert('Document ' + file.name + ' uploaded successfully to Vault!');
-                    // Reload dashboard to fetch updated profile
-                    initDashboard();
-                } else {
-                    alert('Upload failed: ' + (data.message || 'Error occurred. Please try saving your Complete Profile first.'));
-                }
-            } catch (e) {
-                alert('An error occurred during upload. Please check your connection.');
-            }
-
-            input.value = ''; // Reset
-            document.getElementById('docTypeSelect').value = '';
-        }
-
-        function renderDocumentsVault(uploads, verificationStatus) {
-            const tbody = document.getElementById('document-vault-tbody');
-            if (!tbody) return;
-
-            if (!uploads || Object.keys(uploads).length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">No documents uploaded yet.</td></tr>';
-                return;
-            }
-
-            // Using Profile verificationStatus for document status: 
-            // If profile is Verified, docs are Verified. Else Pending.
-            let statusHtml = `<span class="status-pill status-pending"><i class="fas fa-clock"></i> Reviewing</span>`;
-            if (verificationStatus === 'Verified' || verificationStatus === 'Approved') {
-                statusHtml = `<span class="status-pill status-verified"><i class="fas fa-check-circle"></i> Verified</span>`;
-            } else if (verificationStatus === 'Rejected') {
-                statusHtml = `<span class="status-pill" style="background:#fee2e2; color:#991b1b;"><i class="fas fa-times-circle"></i> Rejected</span>`;
-            }
-
-            // Ignore profilePhoto as that's handled in sidebar
-            const docKeys = Object.keys(uploads).filter(k => k !== 'profilePhoto');
-
-            if (docKeys.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">No documents uploaded yet.</td></tr>';
-                return;
-            }
-
-            let html = '';
-            docKeys.forEach(key => {
-                const docUrl = uploads[key];
-                const fileName = docUrl.split('/').pop() || 'document_file';
-                const fileExt = fileName.split('.').pop().toLowerCase();
-                let icon = 'fa-file-alt';
-                let iconColor = '#64748b';
-
-                if (['pdf'].includes(fileExt)) { icon = 'fa-file-pdf'; iconColor = '#ef4444'; }
-                else if (['jpg', 'jpeg', 'png'].includes(fileExt)) { icon = 'fa-file-image'; iconColor = '#3b82f6'; }
-
-                html += `
-                    <tr>
-                        <td style="padding: 15px 20px;">
-                            <a href="${docUrl}" target="_blank" style="text-decoration:none; color:#0a192f; font-weight:600;">
-                                <i class="fas ${icon}" style="color: ${iconColor}; margin-right: 10px;"></i> ${fileName}
-                            </a>
-                        </td>
-                        <td style="padding: 15px 20px; font-weight: 600; color: #64748b;">${key.replace(/([A-Z])/g, ' $1').trim()}</td>
-                        <td style="padding: 15px 20px; color: #64748b;">Recently</td>
-                        <td style="padding: 15px 20px;">${statusHtml}</td>
-                    </tr>
-                `;
+        async function verifyAadhaar() {
+            const res = await fetch('/api/profile/verify-aadhaar', {
+                method: 'POST',
+                headers: {'Authorization': `Bearer ${token}`}
             });
-            tbody.innerHTML = html;
+            if(res.ok) {
+                alert('Aadhaar Verified Successfully!');
+                loadProfile();
+            }
         }
 
-        // File Validation for other documents
-        document.querySelectorAll('input[type="file"]').forEach(input => {
-            if (input.id !== 'profile-photo-input') {
-                input.addEventListener('change', function () {
-                    const file = this.files[0];
-                    if (file) {
-                        const sizeMB = file.size / (1024 * 1024);
-                        if (sizeMB > 2) {
-                            alert('File size exceeds 2MB limit. Please upload a smaller file.');
-                            this.value = ''; // clear
-                        } else {
-                            // Show visually that file is selected
-                            const box = this.parentElement;
-                            box.querySelector('p').innerHTML = `<i class="fas fa-check-circle" style="color:#10b981; font-size:1rem; display:inline; margin:0;"></i> ${file.name}`;
-                            box.style.borderColor = '#10b981';
-                            box.style.background = '#f0fdf4';
-                        }
-                    }
-                });
-            }
-        });
-
-        // Form Submit
-        document.getElementById('fullProfileForm').addEventListener('submit', async (e) => {
+        document.getElementById('profileForm').onsubmit = async (e) => {
             e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-            btn.disabled = true;
-
-            const formElements = e.target.elements;
-
-            // Build Payload mapping HTML names to API Names
-            const payload = {
-                fullName: formElements['fullName']?.value,
-                fatherName: formElements['fatherName']?.value,
-                motherName: formElements['motherName']?.value,
-                gender: formElements['gender']?.value,
-                dateOfBirth: formElements['dob']?.value,
-                placeOfBirth: formElements['placeOfBirth']?.value,
-                maritalStatus: formElements['maritalStatus']?.value,
-                nationality: formElements['nationality']?.value,
-                email: formElements['email']?.value,
-                phone: formElements['mobile']?.value,
-                currentAddress: formElements['currentAddress']?.value,
-                permanentAddress: formElements['permanentAddress']?.value,
-                aadhaarNumber: formElements['aadhaar']?.value,
-                panNumber: formElements['pan']?.value,
-                passportNumber: formElements['oldPassport']?.value,
-                passportType: formElements['passportType']?.value,
-                issueDate: formElements['passportIssue']?.value,
-                expiryDate: formElements['passportExpiry']?.value,
-                placeOfIssue: formElements['placeOfIssue']?.value,
-                emergencyContactName: formElements['emergencyName']?.value,
-                emergencyContactRelation: formElements['emergencyRelation']?.value,
-                emergencyContactPhone: formElements['emergencyMobile']?.value,
-                isSubmitted: true
-            };
-
-            const token = localStorage.getItem('token');
-            try {
-                // First save document uploads if any are attached in the profile section
-                const ids = ['idProof', 'addressProof', 'birthCert'];
-                const docTypes = ['Aadhar Card', 'Address Proof', 'Birth Certificate'];
-
-                for (let i = 0; i < ids.length; i++) {
-                    const fileInput = document.getElementById(ids[i]);
-                    if (fileInput && fileInput.files.length > 0) {
-                        const formData = new FormData();
-                        formData.append('document', fileInput.files[0]);
-                        formData.append('fieldName', docTypes[i]);
-                        await fetch('https://passport-ia5r.onrender.com/api/profile/upload-document', {
-                            method: 'POST',
-                            headers: { 'Authorization': `Bearer ${token}` },
-                            body: formData
-                        });
-                        fileInput.value = ''; // clear out
-                    }
-                }
-
-                // Update text profile
-                const res = await fetch('https://passport-ia5r.onrender.com/api/profile/update', {
-                    method: 'PUT',
-                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await res.json();
-
-                if (data.success) {
-                    btn.innerHTML = '<i class="fas fa-check"></i> Saved Successfully';
-                    btn.style.background = '#10b981';
-                    initDashboard(); // refresh to update the completion bar
-                } else {
-                    alert('Failed: ' + (data.message || 'Unknown Error'));
-                    btn.innerHTML = originalText;
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Connection Error!');
-                btn.innerHTML = originalText;
-            }
-
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-                btn.style.background = 'var(--accent-gradient)';
-            }, 3000);
-        });
-
-        // Mobile Sidebar Toggle
-        const profileToggle = document.getElementById('profileSidebarToggle');
-        const sidebar = document.querySelector('.sidebar-card');
-        if (profileToggle) {
-            profileToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
+            const fd = new FormData(e.target);
+            const obj = {};
+            fd.forEach((v, k) => {
+                if(k.includes('.')) {
+                    const [p, c] = k.split('.');
+                    obj[p] = obj[p] || {};
+                    obj[p][c] = v;
+                } else obj[k] = v;
             });
+            
+            const res = await fetch('/api/profile/update', {
+                method: 'PUT',
+                headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'},
+                body: JSON.stringify(obj)
+            });
+            if(res.ok) {
+                alert('Profile Updated!');
+                loadProfile();
+            }
+        };
+
+        function switchTab(id, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
         }
 
-        // Close when clicking nav but only on mobile
-        document.querySelectorAll('.nav-item-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (window.innerWidth <= 991) sidebar.classList.remove('active');
-            });
-        });
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        async function loadApplications() {
+            const list = document.getElementById('appsList');
+            try {
+                const [vRes, pRes] = await Promise.all([
+                    fetch('/api/visa/my', { headers: {'Authorization': `Bearer ${token}`} }),
+                    fetch('/api/passport/my', { headers: {'Authorization': `Bearer ${token}`} })
+                ]);
+                const vData = await vRes.json();
+                const pData = await pRes.json();
+                
+                const allApps = [
+                    ...(vData.data || []).map(a => ({...a, model: 'Visa'})),
+                    ...(pData.data || []).map(a => ({...a, model: 'Passport'}))
+                ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                if(allApps.length === 0) {
+                    list.innerHTML = `<div style="text-align:center; padding:40px; color:#94a3b8;"><p>No applications found.</p></div>`;
+                    return;
+                }
+
+                list.innerHTML = allApps.map(app => `
+                    <div style="padding:20px; border:1px solid #edf2f7; border-radius:16px; display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; gap:20px; align-items:center;">
+                            <div style="width:50px; height:50px; border-radius:12px; background:${app.model === 'Visa' ? '#eff6ff' : '#fff7ed'}; color:${app.model === 'Visa' ? '#3b82f6' : '#f97316'}; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">
+                                <i class="fas fa-${app.model === 'Visa' ? 'plane-departure' : 'passport'}"></i>
+                            </div>
+                            <div>
+                                <h4 style="margin:0; font-size:1.1rem; color:#1e293b;">${app.model} - ${app.visaType || app.passportType}</h4>
+                                <p style="margin:5px 0 0; font-size:0.8rem; color:#64748b;">ID: <strong>${app.applicationId}</strong> • Submitted on ${new Date(app.createdAt).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:20px;">
+                            <span class="status-badge status-${app.status.toLowerCase()}" style="font-size:0.75rem; padding:6px 12px; border-radius:20px; font-weight:800;">${app.status}</span>
+                            <a href="${app.pdfUrl || '#'}" target="_blank" class="btn-gradient" style="padding:10px 20px; font-size:0.8rem; border-radius:10px; text-decoration:none; visibility: ${app.pdfUrl ? 'visible' : 'hidden'}">Receipt</a>
+                        </div>
+                    </div>
+                `).join('');
+            } catch(e) {
+                list.innerHTML = `<p style="color:red; text-align:center;">Failed to load applications.</p>`;
+            }
+        }
+
+        async function init() {
+            await loadProfile();
+            await loadApplications();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const tab = urlParams.get('tab');
+            if(tab === 'apps') {
+                const btn = document.querySelector('li[onclick*="apps"]');
+                if(btn) switchTab('apps', btn);
+            }
+        }
+
+        init();
     </script>
 </body>
-
 </html>

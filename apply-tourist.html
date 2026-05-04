@@ -1,1043 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply for Tourist Visa - BorderBridge</title>
+    <title>Tourist Visa Application - Global Consultancy</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .application-form-container {
-            background: white;
-            padding: 3rem;
-            border-radius: 15px;
-            box-shadow: var(--shadow-premium);
-            margin-top: -5rem;
-            position: relative;
-            z-index: 10;
+        :root {
+            --primary: #0a192f;
+            --accent: #ff8c00;
+            --glass-bg: rgba(255, 255, 255, 0.9);
         }
+        body { background: #f4f7f9; padding-top: 80px; }
+        .app-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        
+        /* Modern Stepper */
+        .stepper { display: flex; justify-content: space-between; margin-bottom: 50px; position: relative; }
+        .stepper::before { content: ''; position: absolute; top: 25px; left: 0; width: 100%; height: 4px; background: #e2e8f0; z-index: 1; border-radius: 2px; }
+        .step-progress { position: absolute; top: 25px; left: 0; height: 4px; background: var(--accent-gradient); z-index: 2; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); width: 0; }
+        
+        .step { position: relative; z-index: 3; text-align: center; width: 100px; }
+        .step-icon { width: 54px; height: 54px; background: white; border: 4px solid #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; transition: 0.4s; color: #94a3b8; font-size: 1.2rem; }
+        .step.active .step-icon { border-color: #ff8c00; color: #ff8c00; transform: scale(1.1); box-shadow: 0 10px 20px rgba(255,140,0,0.2); }
+        .step.completed .step-icon { background: #10b981; border-color: #10b981; color: white; }
+        .step-label { font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; }
+        .step.active .step-label { color: var(--primary); }
 
-        /* Step Progress Bar */
-        .step-progressbar {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 3rem;
-            position: relative;
-        }
+        /* Form Card */
+        .form-card { background: white; border-radius: 32px; padding: 50px; box-shadow: 0 30px 60px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.8); }
+        .form-step { display: none; }
+        .form-step.active { display: block; animation: fadeIn 0.6s ease; }
+        @keyframes fadeIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
 
-        .step-progressbar::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: #e5e7eb;
-            z-index: 1;
-        }
+        .section-title { font-size: 1.8rem; font-weight: 900; color: #0a192f; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
+        .section-title i { color: #ff8c00; font-size: 1.5rem; }
 
-        .step-progressbar .progress-line {
-            position: absolute;
-            top: 15px;
-            left: 0;
-            height: 3px;
-            background: var(--color-accent-gradient);
-            z-index: 2;
-            transition: width 0.4s ease;
-            width: 0%;
-        }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .full { grid-column: 1 / -1; }
+        
+        .input-box { margin-bottom: 25px; }
+        .input-box label { display: block; font-size: 0.85rem; font-weight: 700; color: #64748b; margin-bottom: 10px; text-transform: uppercase; }
+        .form-input { width: 100%; padding: 14px 20px; border: 2px solid #edf2f7; border-radius: 16px; font-size: 1rem; transition: 0.3s; background: #f8fafc; }
+        .form-input:focus { border-color: #ff8c00; background: white; outline: none; box-shadow: 0 0 0 5px rgba(255,140,0,0.1); }
 
-        .step-item {
-            position: relative;
-            z-index: 3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            width: 20%;
-        }
-
-        .step-circle {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: #fff;
-            border: 3px solid #e5e7eb;
-            color: #6b7280;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
-
-        .step-item.active .step-circle {
-            border-color: var(--color-accent);
-            background: var(--color-accent);
-            color: white;
-            box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
-        }
-
-        .step-item.completed .step-circle {
-            border-color: var(--color-success);
-            background: var(--color-success);
-            color: white;
-        }
-
-        .step-label {
-            font-size: 0.8rem;
-            text-align: center;
-            font-weight: 600;
-            color: #6b7280;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        .step-item.active .step-label {
-            color: var(--color-primary);
-        }
-
-        .form-section-title {
-            border-left: 4px solid var(--color-accent);
-            padding-left: 1rem;
-            margin: 2rem 0 1.5rem;
-            color: var(--color-primary);
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .application-form-container {
-                padding: 1.5rem;
-                margin-top: -2rem;
-            }
-
-            .step-label {
-                display: none;
-            }
-
-            /* Hide labels on mobile to save space */
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--color-text-main);
-            font-size: 0.95rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--color-light-gray);
-            border-radius: 8px;
-            font-family: var(--font-body);
-            transition: var(--transition-fast);
-            background: #fdfdfd;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--color-accent);
-            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.15);
-            background: white;
-        }
-
-        .form-step {
-            display: none;
-            animation: slideIn 0.4s ease forwards;
-        }
-
-        .form-step.active {
-            display: block;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .action-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
-            border-top: 1px solid #e5e7eb;
-            padding-top: 2rem;
-            align-items: center;
-        }
-
-        /* Declaration Box */
-        .declaration-box {
-            background: rgba(255, 193, 7, 0.05);
-            border: 1px solid rgba(255, 193, 7, 0.3);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-        }
-
-        .declaration-box label {
-            display: flex;
-            gap: 10px;
-            cursor: pointer;
-            align-items: flex-start;
-        }
-
-        .declaration-box input[type="checkbox"] {
-            margin-top: 4px;
-            transform: scale(1.2);
-            cursor: pointer;
-        }
+        .btn-row { display: flex; justify-content: space-between; margin-top: 50px; padding-top: 30px; border-top: 2px solid #f7fafc; }
+        .btn-back { background: #f1f5f9; color: #475569; padding: 15px 35px; border-radius: 14px; font-weight: 700; cursor: pointer; border: none; }
+        .btn-next { background: var(--accent-gradient); color: white; padding: 15px 45px; border-radius: 14px; font-weight: 800; cursor: pointer; border: none; box-shadow: 0 10px 20px rgba(255,140,0,0.2); }
+        
+        .summary-item { background: #f8fafc; padding: 15px 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .summary-item span:first-child { font-weight: 700; color: #64748b; font-size: 0.85rem; }
+        .summary-item span:last-child { font-weight: 800; color: #0a192f; }
     </style>
 </head>
-
 <body>
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="earth-container">
-            <div class="earth-globe">
-                <div class="passport-inner"></div>
-                <div class="passport-cover"></div>
-            </div>
-        </div>
-        <div class="loading-text">BorderBridge</div>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar scrolled">
         <div class="container nav-container">
-            <a href="index.html" class="logo"><i class="fas fa-plane-departure logo-icon"></i> Border
-                <span>Bridge</span></a>
-            <div class="hamburger"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">Services <i class="fas fa-chevron-down"
-                            style="font-size: 0.8rem; margin-left: 5px;"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="visa.html" class="dropdown-link">Visa Services</a></li>
-                        <li><a href="passport.html" class="dropdown-link">Passport Services</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item"><a href="countries.html" class="nav-link">Countries</a></li>
-                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
-                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
-            </ul>
-            <a href="login.html" class="btn btn-primary btn-nav">Login</a>
+            <a href="index.html" class="logo"><i class="fas fa-plane-departure logo-icon"></i> Global <span>Consultancy</span></a>
         </div>
     </nav>
 
-    <!-- Page Header -->
-    <header class="section page-header header-visa">
-        <div class="container text-center">
-            <h1>Apply for Tourist Visa</h1>
-            <p>Your journey begins here. Submit your application securely.</p>
+    <div class="app-container">
+        <div class="stepper">
+            <div class="step-progress" id="stepProgress"></div>
+            <div class="step active" data-step="1"><div class="step-icon"><i class="fas fa-user"></i></div><div class="step-label">Applicant</div></div>
+            <div class="step" data-step="2"><div class="step-icon"><i class="fas fa-passport"></i></div><div class="step-label">Passport</div></div>
+            <div class="step" data-step="3"><div class="step-icon"><i class="fas fa-plane"></i></div><div class="step-label">Travel</div></div>
+            <div class="step" data-step="4"><div class="step-icon"><i class="fas fa-file-invoice"></i></div><div class="step-label">Review</div></div>
         </div>
-    </header>
 
-    <!-- Application Form Section -->
-    <section class="section" style="padding-top: 0;">
-        <div class="container" style="max-width: 1000px;">
-            <div class="application-form-container reveal">
-
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h2>Complete Application</h2>
-                    <span id="saveStatus" style="color: #6b7280; font-size: 0.9rem; font-weight: 500;">Draft Saved: Just
-                        now</span>
-                </div>
-
-                <!-- Progress Bar -->
-                <div class="step-progressbar">
-                    <div class="progress-line" id="progressLine"></div>
-                    <div class="step-item active" data-step="1">
-                        <div class="step-circle"><i class="fas fa-user"></i></div>
-                        <div class="step-label">Personal <br> Details</div>
-                    </div>
-                    <div class="step-item" data-step="2">
-                        <div class="step-circle"><i class="fas fa-briefcase"></i></div>
-                        <div class="step-label">Emp &amp; <br> Address</div>
-                    </div>
-                    <div class="step-item" data-step="3">
-                        <div class="step-circle"><i class="fas fa-plane"></i></div>
-                        <div class="step-label">Travel <br> Details</div>
-                    </div>
-                    <div class="step-item" data-step="4">
-                        <div class="step-circle"><i class="fas fa-passport"></i></div>
-                        <div class="step-label">Passport <br> Details</div>
-                    </div>
-                    <div class="step-item" data-step="5">
-                        <div class="step-circle"><i class="fas fa-history"></i></div>
-                        <div class="step-label">History &amp; <br> Sponsor</div>
-                    </div>
-                    <div class="step-item" data-step="6">
-                        <div class="step-circle"><i class="fas fa-check-double"></i></div>
-                        <div class="step-label">Verify &amp; <br> Submit</div>
-                    </div>
-                </div>
-
-                <form id="visaForm">
-                    <!-- Step 1: Personal Details -->
-                    <div class="form-step active" id="step1">
-                        <h3 class="form-section-title">Step 1: Personal Details</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Given Name (First Name) *</label>
-                                <input type="text" class="form-control" name="givenName" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Surname</label>
-                                <input type="text" class="form-control" name="surname">
-                            </div>
-                            <div class="form-group">
-                                <label>Date of Birth *</label>
-                                <input type="date" class="form-control" name="dob" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Gender *</label>
-                                <select class="form-control" name="gender" required>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Nationality *</label>
-                                <input type="text" class="form-control" name="nationality" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Marital Status</label>
-                                <select class="form-control" name="maritalStatus">
-                                    <option value="Single">Single</option>
-                                    <option value="Married">Married</option>
-                                    <option value="Divorced">Divorced</option>
-                                    <option value="Widowed">Widowed</option>
-                                    <option value="Separated">Separated</option>
-                                </select>
-                            </div>
-                            <div class="form-group" style="grid-column: 1/-1;">
-                                <label>National ID Number (Aadhaar / SSN)</label>
-                                <input type="text" class="form-control" name="nationalId">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 2: Employment & Address -->
-                    <div class="form-step" id="step2">
-                        <h3 class="form-section-title">Step 2: Employment & Contact Address</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Occupation *</label>
-                                <input type="text" class="form-control" name="occupation" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Employer / Company Name</label>
-                                <input type="text" class="form-control" name="employerName">
-                            </div>
-                            <div class="form-group" style="grid-column: 1 / -1;">
-                                <label>Employer Address</label>
-                                <input type="text" class="form-control" name="employerAddress">
-                            </div>
-                            <div class="form-group">
-                                <label>Monthly Income *</label>
-                                <input type="text" class="form-control" name="monthlyIncome" required>
-                            </div>
-                        </div>
-
-                        <hr style="border: 0; border-top: 1px solid #eee; margin: 1.5rem 0;">
-
-                        <div class="form-grid">
-                            <div class="form-group" style="grid-column: 1 / -1;">
-                                <label>Current Residential Address (House/Street) *</label>
-                                <input type="text" class="form-control" name="houseNo" required>
-                            </div>
-                            <div class="form-group">
-                                <label>City *</label>
-                                <input type="text" class="form-control" name="city" required>
-                            </div>
-                            <div class="form-group">
-                                <label>State *</label>
-                                <input type="text" class="form-control" name="state" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Country *</label>
-                                <input type="text" class="form-control" name="country" required>
-                            </div>
-                            <div class="form-group">
-                                <label>PIN Code *</label>
-                                <input type="text" class="form-control" name="pincode" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 3: Travel Information -->
-                    <div class="form-step" id="step3">
-                        <h3 class="form-section-title">Step 3: Travel Information</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Destination Country *</label>
-                                <select class="form-control" name="destinationCountry" required>
-                                    <option value="" disabled selected>Select Destination</option>
-                                    <option value="United States">United States</option>
-                                    <option value="United Kingdom">United Kingdom</option>
-                                    <option value="Canada">Canada</option>
-                                    <option value="Australia">Australia</option>
-                                    <option value="Schengen">Schengen Area</option>
-                                    <option value="Dubai">Dubai (UAE)</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Duration of Stay *</label>
-                                <select class="form-control" name="durationOfStay" required>
-                                    <option value="" disabled selected>Select Duration</option>
-                                    <option value="15 Days">Up to 15 Days</option>
-                                    <option value="1 Month">1 Month</option>
-                                    <option value="3 Months">3 Months</option>
-                                    <option value="6 Months">6 Months</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Expected Departure Date *</label>
-                                <input type="date" class="form-control" name="travelDate" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Expected Return Date *</label>
-                                <input type="date" class="form-control" name="returnDate" required>
-                            </div>
-                            <div class="form-group" style="grid-column: 1 / -1;">
-                                <label>Primary Purpose of Visit *</label>
-                                <textarea class="form-control" name="purposeOfVisit" rows="3"
-                                    placeholder="Explain your travel plan, places you wish to visit, etc."
-                                    required></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 4: Passport Details -->
-                    <div class="form-step" id="step4">
-                        <h3 class="form-section-title">Step 4: Applicant Passport Details</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Passport Number *</label>
-                                <input type="text" class="form-control" name="passportNumber"
-                                    placeholder="e.g. A1234567" style="text-transform: uppercase;">
-                            </div>
-                            <div class="form-group">
-                                <label>Issuing Authority / Place of Issue *</label>
-                                <input type="text" class="form-control" name="issuingAuthority"
-                                    placeholder="e.g. RPO Delhi">
-                            </div>
-                            <div class="form-group">
-                                <label>Date of Issue *</label>
-                                <input type="date" class="form-control" name="issueDate">
-                            </div>
-                            <div class="form-group">
-                                <label>Date of Expiry *</label>
-                                <input type="date" class="form-control" name="expiryDate">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 5: History & Sponsor -->
-                    <div class="form-step" id="step5">
-                        <h3 class="form-section-title">Step 5: Past Travel History & Sponsor Details</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Sponsor / Hotel Name *</label>
-                                <input type="text" class="form-control" name="sponsorName"
-                                    placeholder="Full Name or Hotel Name">
-                            </div>
-                            <div class="form-group">
-                                <label>Relationship (if applicable)</label>
-                                <input type="text" class="form-control" name="sponsorRelationship"
-                                    placeholder="e.g. Brother, Friend, NA">
-                            </div>
-                            <div class="form-group">
-                                <label>Contact Number in Destination</label>
-                                <input type="tel" class="form-control" name="sponsorContact" placeholder="+1 ...">
-                            </div>
-                            <div class="form-group">
-                                <label>Address in Destination *</label>
-                                <input type="text" class="form-control" name="sponsorAddress"
-                                    placeholder="Full Address">
-                            </div>
-                        </div>
-
-                        <hr style="border: 0; border-top: 1px solid #eee; margin: 1.5rem 0;">
-
-                        <div class="form-group">
-                            <label>Have you traveled internationally in the last 5 years? *</label>
-                            <select class="form-control" name="hasTraveledBefore" id="historySelect">
-                                <option value="No" selected>No, this is my first international trip</option>
-                                <option value="Yes">Yes, I have traveled before</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="countriesVisitedBlock" style="display: none;">
-                            <label>Mention Countries Visited & Year (e.g., Dubai - 2022, Singapore - 2023)</label>
-                            <textarea class="form-control" name="previousCountriesMentioned" rows="3"
-                                placeholder="List your previous travels..."></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Step 6: Declaration & Submit -->
-                    <div class="form-step" id="step6">
-                        <h3 class="form-section-title">Step 6: Uploads &amp; Declaration</h3>
-                        <div class="form-grid" style="margin-bottom:20px;">
-                            <div class="form-group">
-                                <label>Applicant Photo (Passport Size)</label>
-                                <input type="file" id="applicantPhoto" class="form-control" accept="image/*" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Applicant Signature</label>
-                                <input type="file" id="applicantSignature" class="form-control" accept="image/*"
-                                    required>
-                            </div>
-                        </div>
-
-                        <div class="declaration-box">
-                            <label>
-                                <input type="checkbox" name="isAccepted" id="declarationCheck">
-                                <span>I hereby declare that all the information provided above is true to the best of my
-                                    knowledge. I understand that processing of my visa application is subject to the
-                                    rules of the destination country, and BorderBridge acts only as a facilitator. I
-                                    agree to pay the required processing fees.</span>
-                            </label>
-                        </div>
-                        <div
-                            style="background: #fdf2f2; padding: 1.5rem; border-radius: 8px; border: 1px solid #fee2e2; margin-bottom: 20px;">
-                            <h4 style="margin-bottom: 0.5rem; color: #991b1b;"><i class="fas fa-file-contract"></i>
-                                Original Documents to Bring to Office</h4>
-                            <p style="font-size: 0.9rem; color: #7f1d1d; margin-bottom: 10px;">Please ensure you bring
-                                the following <strong>ORIGINAL</strong> documents when you visit our office for
-                                processing:</p>
-                            <ul style="font-size: 0.85rem; color: #7f1d1d; padding-left: 20px;">
-                                <li>Current Passport with at least 6 months validity</li>
-                                <li>Original Birth Certificate / School Leaving Certificate</li>
-                                <li>Original Aadhaar Card and PAN Card</li>
-                                <li>Proof of Income / Bank Statements (last 6 months)</li>
-                                <li>Original Educational Certificates (if applicable)</li>
-                                <li>Sponsorship Declaration (if applicable)</li>
-                            </ul>
-                        </div>
-
-                        <div
-                            style="background: #f9fafb; padding: 1.5rem; border-radius: 8px; border: 1px solid #e5e7eb;">
-                            <h4 style="margin-bottom: 0.5rem; color: var(--color-primary);"><i
-                                    class="fas fa-info-circle text-accent"></i> Final Submit Note</h4>
-                            <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 0;">By clicking Final Submit,
-                                you will be prompted to pay the processing fee. Your dashboard will then update with PDF
-                                tracking.</p>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="action-buttons">
-                        <div>
-                            <button type="button" class="btn btn-outline" id="prevBtn"
-                                style="display: none;">Back</button>
-                        </div>
-                        <div style="display: flex; gap: 10px;">
-                            <button type="button" class="btn btn-outline" id="draftBtn"
-                                style="border-color: #6b7280; color: #6b7280;"><i class="fas fa-save"></i> Save
-                                Draft</button>
-                            <button type="button" class="btn btn-primary" id="nextBtn">Next Step</button>
-                            <button type="submit" class="btn btn-primary" id="submitBtn"
-                                style="display: none; background: var(--color-success); border-color: var(--color-success);"><i
-                                    class="fas fa-paper-plane"></i> Final Submit</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h4>BorderBridge</h4>
-                    <p style="opacity: 0.8;">Your trusted partner for international travel documentation and immigration
-                        services.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Quick Links</h4>
-                    <ul class="footer-links">
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="visa.html">Visa Services</a></li>
-                        <li><a href="contact.html">Contact Support</a></li>
-                    </ul>
+        <form id="visaForm" class="form-card">
+            <!-- Step 1: Applicant -->
+            <div class="form-step active">
+                <h2 class="section-title"><i class="fas fa-user-circle"></i> Applicant Details</h2>
+                <div class="grid-2">
+                    <div class="input-box"><label>First Name</label><input type="text" name="firstName" class="form-input" required></div>
+                    <div class="input-box"><label>Last Name</label><input type="text" name="lastName" class="form-input" required></div>
+                    <div class="input-box"><label>Date of Birth</label><input type="date" name="dob" class="form-input" required></div>
+                    <div class="input-box"><label>Nationality</label><input type="text" name="nationality" class="form-input" value="Indian" readonly></div>
+                    <div class="input-box full"><label>Permanent Address</label><textarea name="address" class="form-input" rows="3" required></textarea></div>
                 </div>
             </div>
-            <div class="copyright">&copy; 2026 BorderBridge. All Rights Reserved.</div>
-        </div>
-    </footer>
 
-    <script src="js/script.js?v=2"></script>
+            <!-- Step 2: Passport -->
+            <div class="form-step">
+                <h2 class="section-title"><i class="fas fa-passport"></i> Passport Information</h2>
+                <div class="grid-2">
+                    <div class="input-box"><label>Passport Number</label><input type="text" name="passportNo" class="form-input" placeholder="e.g. L1234567" required></div>
+                    <div class="input-box"><label>Place of Issue</label><input type="text" name="placeIssue" class="form-input" required></div>
+                    <div class="input-box"><label>Date of Issue</label><input type="date" name="issueDate" class="form-input" required></div>
+                    <div class="input-box"><label>Date of Expiry</label><input type="date" name="expiryDate" class="form-input" required></div>
+                </div>
+            </div>
+
+            <!-- Step 3: Travel -->
+            <div class="form-step">
+                <h2 class="section-title"><i class="fas fa-route"></i> Travel & Stay</h2>
+                <div class="grid-2">
+                    <div class="input-box"><label>Destination Country</label><input type="text" name="dest" class="form-input" required></div>
+                    <div class="input-box"><label>Travel Date</label><input type="date" name="travelDate" class="form-input" required></div>
+                    <div class="input-box"><label>Purpose of Visit</label><select name="purpose" class="form-input"><option>Tourism</option><option>Business</option><option>Family Visit</option></select></div>
+                    <div class="input-box"><label>Duration (Days)</label><input type="number" name="days" class="form-input" value="15"></div>
+                </div>
+            </div>
+
+            <!-- Step 4: Review -->
+            <div class="form-step">
+                <h2 class="section-title"><i class="fas fa-clipboard-check"></i> Review Application</h2>
+                <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px;" id="summaryList"></div>
+                <div style="background:#fff8ed; padding:20px; border-radius:16px; border:1px solid #ff8c00;">
+                    <label style="display:flex; gap:15px; cursor:pointer;">
+                        <input type="checkbox" id="declare" required style="width:20px; height:20px; margin-top:3px;">
+                        <span style="font-size:0.9rem; font-weight:600; color:#475569;">I declare that all information is correct and I agree to pay the processing fee of ₹6,500.</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button type="button" class="btn-back" id="prev" style="visibility:hidden">Previous</button>
+                <button type="button" class="btn-next" id="next">Next Step</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script src="js/payment.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Guard: Check if User is Logged In
-            const user = localStorage.getItem('user');
-            const token = localStorage.getItem('token');
-            if (!user || !token) {
-                // Save redirect intent so after login they come back here
-                localStorage.setItem('redirectAfterLogin', 'apply-tourist.html');
-                alert("Please login to start your Visa Application");
-                window.location.href = 'login.html';
-                return;
+        const token = localStorage.getItem('token');
+        let currentStep = 0;
+        const steps = document.querySelectorAll('.form-step');
+        const indicators = document.querySelectorAll('.step');
+        
+        async function prefill() {
+            const res = await fetch('/api/profile/me', { headers: {'Authorization': `Bearer ${token}`} });
+            const { success, data } = await res.json();
+            if(success && data.personalInfo) {
+                const f = document.getElementById('visaForm');
+                f.elements['firstName'].value = data.personalInfo.fullName?.split(' ')[0] || '';
+                f.elements['lastName'].value = data.personalInfo.fullName?.split(' ').slice(1).join(' ') || '';
+                f.elements['dob'].value = data.personalInfo.dateOfBirth?.split('T')[0] || '';
+                f.elements['address'].value = data.contactInfo?.currentAddress?.street || '';
             }
+        }
 
-            // Elements
-            const steps = document.querySelectorAll('.form-step');
-            const progressItems = document.querySelectorAll('.step-item');
-            const progressLine = document.getElementById('progressLine');
-            const nextBtn = document.getElementById('nextBtn');
-            const prevBtn = document.getElementById('prevBtn');
-            const submitBtn = document.getElementById('submitBtn');
-            const draftBtn = document.getElementById('draftBtn');
-            const saveStatus = document.getElementById('saveStatus');
-            const historySelect = document.getElementById('historySelect');
-            const historyBlock = document.getElementById('countriesVisitedBlock');
-
-            let currentStep = 0;
-            const totalSteps = steps.length;
-
-            // Travel History Toggle
-            historySelect.addEventListener('change', (e) => {
-                if (e.target.value === 'Yes') {
-                    historyBlock.style.display = 'block';
-                } else {
-                    historyBlock.style.display = 'none';
-                    historyBlock.querySelector('textarea').value = '';
-                }
+        function updateUI() {
+            steps.forEach((s, i) => s.classList.toggle('active', i === currentStep));
+            indicators.forEach((s, i) => {
+                s.classList.toggle('active', i === currentStep);
+                s.classList.toggle('completed', i < currentStep);
             });
+            document.getElementById('stepProgress').style.width = (currentStep / (steps.length - 1)) * 100 + '%';
+            document.getElementById('prev').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+            document.getElementById('next').innerText = currentStep === steps.length - 1 ? 'Pay & Submit' : 'Next Step';
+            
+            if(currentStep === 3) buildSummary();
+        }
 
-            // Navigation functions
-            function updateFormSteps() {
-                // Update views
-                steps.forEach((step, index) => {
-                    step.classList.toggle('active', index === currentStep);
+        function buildSummary() {
+            const f = document.getElementById('visaForm');
+            const list = document.getElementById('summaryList');
+            list.innerHTML = `
+                <div class="summary-item"><span>NAME</span><span>${f.firstName.value} ${f.lastName.value}</span></div>
+                <div class="summary-item"><span>PASSPORT</span><span>${f.passportNo.value}</span></div>
+                <div class="summary-item"><span>DESTINATION</span><span>${f.dest.value}</span></div>
+                <div class="summary-item"><span>FEES</span><span>₹6,500</span></div>
+            `;
+        }
+
+        document.getElementById('next').onclick = () => {
+            const inputs = steps[currentStep].querySelectorAll('input[required], textarea[required]');
+            for(let i of inputs) if(!i.checkValidity()) { i.reportValidity(); return; }
+            
+            if(currentStep < steps.length - 1) {
+                currentStep++;
+                updateUI();
+            } else {
+                if(!document.getElementById('declare').checked) return alert('Accept declaration');
+                PaymentGateway.init({
+                    amount: 6500,
+                    itemName: 'Visa Application Fee',
+                    onSuccess: async () => {
+                        const fd = new FormData(document.getElementById('visaForm'));
+                        await fetch('/api/visa/create', {
+                            method: 'POST',
+                            headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'},
+                            body: JSON.stringify({ status: 'Submitted', applicantDetails: Object.fromEntries(fd) })
+                        });
+                        window.location.href = 'profile.html?tab=apps';
+                    }
                 });
-
-                // Update UI ProgressBar
-                progressItems.forEach((item, index) => {
-                    if (index === currentStep) {
-                        item.classList.add('active');
-                        item.classList.remove('completed');
-                    } else if (index < currentStep) {
-                        item.classList.remove('active');
-                        item.classList.add('completed');
-                        item.querySelector('.step-circle').innerHTML = '<i class="fas fa-check"></i>';
-                    } else {
-                        item.classList.remove('active', 'completed');
-                        // Restore original icons
-                        const icons = ['fa-user', 'fa-briefcase', 'fa-plane', 'fa-passport', 'fa-history', 'fa-check-double'];
-                        item.querySelector('.step-circle').innerHTML = `<i class="fas ${icons[index]}"></i>`;
-                    }
-                });
-
-                // Calculate width for the connection line
-                const progressWidth = (currentStep / (totalSteps - 1)) * 100;
-                progressLine.style.width = `calc(${progressWidth}% - 10px)`; // adjust for circle widths
-
-                // Update Buttons
-                if (currentStep === 0) {
-                    prevBtn.style.display = 'none';
-                } else {
-                    prevBtn.style.display = 'block';
-                }
-
-                if (currentStep === totalSteps - 1) {
-                    nextBtn.style.display = 'none';
-                    submitBtn.style.display = 'block';
-                } else {
-                    nextBtn.style.display = 'block';
-                    submitBtn.style.display = 'none';
-                }
             }
+        };
 
-            // Click Handlers
-            nextBtn.addEventListener('click', () => {
-                // Validation for current step
-                const currentStepElement = steps[currentStep];
-                const inputs = currentStepElement.querySelectorAll('input[required], select[required], textarea[required]');
-                let isValid = true;
-
-                // Show standard HTML5 validation messages
-                for (let input of inputs) {
-                    if (!input.checkValidity()) {
-                        input.reportValidity();
-                        isValid = false;
-                        break; // Stop at first invalid input and show its message
-                    }
-                }
-
-                if (!isValid) return; // Prevent next step if invalid
-
-                if (currentStep < totalSteps - 1) {
-                    currentStep++;
-                    updateFormSteps();
-                    saveDraft(); // Auto-save draft on Next
-                }
-            });
-
-            prevBtn.addEventListener('click', () => {
-                if (currentStep > 0) {
-                    currentStep--;
-                    updateFormSteps();
-                }
-            });
-
-            draftBtn.addEventListener('click', () => {
-                draftBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-                saveDraft().then(() => {
-                    setTimeout(() => {
-                        draftBtn.innerHTML = '<i class="fas fa-check"></i> Saved';
-                        draftBtn.style.borderColor = 'var(--color-success)';
-                        draftBtn.style.color = 'var(--color-success)';
-                        saveStatus.innerText = 'Draft Saved: Just now';
-
-                        // Reset button UI after 2 sec
-                        setTimeout(() => {
-                            draftBtn.innerHTML = '<i class="fas fa-save"></i> Save Draft';
-                            draftBtn.style.borderColor = '#6b7280';
-                            draftBtn.style.color = '#6b7280';
-                        }, 2000);
-                    }, 800);
-                });
-            });
-
-            // Function to collect form data into JSON matching Backend Schema
-            function collectFormData() {
-                const form = document.getElementById('visaForm');
-                const fd = new FormData(form);
-                const data = Object.fromEntries(fd.entries());
-
-                // Restructure to match our Mongoose Schema
-                return {
-                    visaType: 'Tourist',
-                    applicantDetails: {
-                        givenName: data.givenName,
-                        surname: data.surname,
-                        dob: data.dob,
-                        gender: data.gender,
-                        nationality: data.nationality,
-                        maritalStatus: data.maritalStatus,
-                        nationalId: data.nationalId
-                    },
-                    employmentDetails: {
-                        occupation: data.occupation,
-                        employerName: data.employerName,
-                        employerAddress: data.employerAddress,
-                        monthlyIncome: data.monthlyIncome
-                    },
-                    currentAddress: {
-                        houseNo: data.houseNo,
-                        city: data.city,
-                        state: data.state,
-                        country: data.country,
-                        pincode: data.pincode
-                    },
-                    travelDetails: {
-                        destinationCountry: data.destinationCountry,
-                        travelDate: data.travelDate,
-                        returnDate: data.returnDate,
-                        durationOfStay: data.durationOfStay,
-                        purposeOfVisit: data.purposeOfVisit
-                    },
-                    passportDetails: {
-                        passportNumber: data.passportNumber?.toUpperCase(),
-                        issuingAuthority: data.issuingAuthority,
-                        issueDate: data.issueDate,
-                        expiryDate: data.expiryDate
-                    },
-                    sponsorDetails: {
-                        name: data.sponsorName,
-                        relationship: data.sponsorRelationship,
-                        contactNumber: data.sponsorContact,
-                        address: data.sponsorAddress
-                    },
-                    travelHistory: {
-                        hasTraveledBefore: data.hasTraveledBefore,
-                        previousCountriesMentioned: data.previousCountriesMentioned
-                    },
-                    declaration: {
-                        isAccepted: document.getElementById('declarationCheck').checked
-                    },
-                    status: 'Draft' // Always draft unless FinalSubmit is pressed
-                };
-            }
-
-            // Save Draft and Connect to API
-            async function saveDraft() {
-                const payload = collectFormData();
-                localStorage.setItem('visaDraft', JSON.stringify(payload));
-
-                try {
-                    const token = localStorage.getItem('token');
-                    const response = await fetch('https://passport-ia5r.onrender.com/api/visa/create', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify(payload)
-                    });
-
-                    const resData = await response.json();
-                    if (resData.success && resData.data.applicationId) {
-                        const appId = resData.data.applicationId;
-                        // Display it somewhere or keep it in localStorage
-                        localStorage.setItem('visaDraftAppId', appId);
-                        document.querySelector('.form-section-title').innerHTML += ` <span style="font-size:0.8rem; background:#e0e7ff; color:#3730a3; padding:4px 8px; border-radius:5px; margin-left:10px;">ID: ${appId}</span>`;
-                    }
-                } catch (e) {
-                    console.log('API save draft failed', e);
-                }
-
-                return Promise.resolve(true);
-            }
-
-            // Check if draft exists and prefill
-            async function loadDraft() {
-                const token = localStorage.getItem('token');
-                if (!token) return;
-
-                let data = null;
-
-                try {
-                    // Try fetching existing draft from Server first
-                    const res = await fetch('https://passport-ia5r.onrender.com/api/visa/my', {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    const resData = await res.json();
-                    if (resData.success && resData.data.length > 0) {
-                        // Find a draft for tourist visa
-                        const draft = resData.data.find(app => (app.status === 'Draft' || app.status === 'Pending') && app.visaType === 'Tourist');
-                        if (draft) {
-                            data = draft;
-                            document.querySelector('.form-section-title').innerHTML += ` <span style="font-size:0.8rem; background:#e0e7ff; color:#3730a3; padding:4px 8px; border-radius:5px; margin-left:10px;">ID: ${draft.applicationId}</span>`;
-                        }
-                    }
-
-                    // Fallback to Profile Data to fast-fill
-                    if (!data) {
-                        const profRes = await fetch('https://passport-ia5r.onrender.com/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } });
-                        const profData = await profRes.json();
-                        // Only auto-fill if profile is reasonably complete (>70%)
-                        if (profData.success && profData.data.personalInfo && profData.data.completionPercentage > 70) {
-                            const p = profData.data;
-                            data = {
-                                applicantDetails: {
-                                    givenName: p.personalInfo.fullName,
-                                    dob: p.personalInfo.dateOfBirth,
-                                    gender: p.personalInfo.gender,
-                                    nationality: p.personalInfo.nationality,
-                                    maritalStatus: p.personalInfo.maritalStatus,
-                                    nationalId: p.govtIdInfo?.aadhaarNumber
-                                },
-                                currentAddress: {
-                                    city: p.contactInfo?.currentAddress
-                                },
-                                passportDetails: {
-                                    passportNumber: p.passportInfo?.passportNumber,
-                                    issueDate: p.passportInfo?.issueDate,
-                                    expiryDate: p.passportInfo?.expiryDate
-                                }
-                            };
-                        }
-                    }
-                } catch (e) {
-                    console.log('Error fetching draft/profile', e);
-                }
-
-                if (!data) {
-                    const saved = localStorage.getItem('visaDraft');
-                    if (saved) data = JSON.parse(saved);
-                }
-
-                if (data) {
-                    const form = document.getElementById('visaForm');
-
-                    if (data.applicantDetails) {
-                        if (data.applicantDetails.givenName) form.elements['givenName'].value = data.applicantDetails.givenName;
-                        if (data.applicantDetails.surname) form.elements['surname'].value = data.applicantDetails.surname;
-                        if (data.applicantDetails.dob) form.elements['dob'].value = data.applicantDetails.dob.split('T')[0];
-                        if (data.applicantDetails.gender) form.elements['gender'].value = data.applicantDetails.gender;
-                        if (data.applicantDetails.nationality) form.elements['nationality'].value = data.applicantDetails.nationality;
-                        if (data.applicantDetails.maritalStatus) form.elements['maritalStatus'].value = data.applicantDetails.maritalStatus;
-                        if (data.applicantDetails.nationalId) form.elements['nationalId'].value = data.applicantDetails.nationalId;
-                    }
-                    if (data.employmentDetails) {
-                        if (data.employmentDetails.occupation) form.elements['occupation'].value = data.employmentDetails.occupation;
-                        if (data.employmentDetails.employerName) form.elements['employerName'].value = data.employmentDetails.employerName;
-                        if (data.employmentDetails.employerAddress) form.elements['employerAddress'].value = data.employmentDetails.employerAddress;
-                        if (data.employmentDetails.monthlyIncome) form.elements['monthlyIncome'].value = data.employmentDetails.monthlyIncome;
-                    }
-                    if (data.currentAddress) {
-                        if (data.currentAddress.houseNo) form.elements['houseNo'].value = data.currentAddress.houseNo;
-                        if (data.currentAddress.city) form.elements['city'].value = data.currentAddress.city;
-                        if (data.currentAddress.state) form.elements['state'].value = data.currentAddress.state;
-                        if (data.currentAddress.country) form.elements['country'].value = data.currentAddress.country;
-                        if (data.currentAddress.pincode) form.elements['pincode'].value = data.currentAddress.pincode;
-                    }
-                    if (data.travelDetails) {
-                        if (data.travelDetails.destinationCountry) form.elements['destinationCountry'].value = data.travelDetails.destinationCountry;
-                        if (data.travelDetails.travelDate) form.elements['travelDate'].value = data.travelDetails.travelDate.split('T')[0];
-                        if (data.travelDetails.returnDate) form.elements['returnDate'].value = data.travelDetails.returnDate.split('T')[0];
-                        if (data.travelDetails.durationOfStay) form.elements['durationOfStay'].value = data.travelDetails.durationOfStay;
-                        if (data.travelDetails.purposeOfVisit) form.elements['purposeOfVisit'].value = data.travelDetails.purposeOfVisit;
-                    }
-                    if (data.passportDetails) {
-                        if (data.passportDetails.passportNumber) form.elements['passportNumber'].value = data.passportDetails.passportNumber;
-                        if (data.passportDetails.issuingAuthority) form.elements['issuingAuthority'].value = data.passportDetails.issuingAuthority;
-                        if (data.passportDetails.issueDate) form.elements['issueDate'].value = data.passportDetails.issueDate.split('T')[0];
-                        if (data.passportDetails.expiryDate) form.elements['expiryDate'].value = data.passportDetails.expiryDate.split('T')[0];
-                    }
-                    if (data.sponsorDetails) {
-                        if (data.sponsorDetails.name) form.elements['sponsorName'].value = data.sponsorDetails.name;
-                        if (data.sponsorDetails.relationship) form.elements['sponsorRelationship'].value = data.sponsorDetails.relationship;
-                        if (data.sponsorDetails.contactNumber) form.elements['sponsorContact'].value = data.sponsorDetails.contactNumber;
-                        if (data.sponsorDetails.address) form.elements['sponsorAddress'].value = data.sponsorDetails.address;
-                    }
-                    if (data.travelHistory && data.travelHistory.hasTraveledBefore === 'Yes') {
-                        historySelect.value = 'Yes';
-                        historyBlock.style.display = 'block';
-                        if (data.travelHistory.previousCountriesMentioned) form.elements['previousCountriesMentioned'].value = data.travelHistory.previousCountriesMentioned;
-                    }
-
-                    saveStatus.innerText = 'Draft / Profile Pre-filled';
-                }
-            }
-
-            // Fake Payment Modal HTML Injection
-            const paymentModalHTML = `
-            <div id="paymentModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
-                <div style="background:white; padding:30px; border-radius:15px; width:400px; max-width:90%; text-align:center;">
-                    <i class="fas fa-lock" style="font-size:3rem; color:#10b981; margin-bottom:15px;"></i>
-                    <h3>Secure Payment Gateway</h3>
-                    <p style="color:#64748b; font-size:0.9rem;">Application Fee: <strong>$150.00</strong></p>
-                    <div style="margin:20px 0; text-align:left;">
-                        <label>Card Number</label>
-                        <input type="text" value="XXXX-XXXX-XXXX-XXXX" class="form-control" disabled>
-                        <div style="display:flex; gap:10px; margin-top:10px;">
-                            <div><label>Expiry</label><input type="text" value="12/28" class="form-control" disabled></div>
-                            <div><label>CVV</label><input type="text" value="***" class="form-control" disabled></div>
-                        </div>
-                    </div>
-                    <p style="font-size:0.8rem; color:#ef4444; margin-bottom:15px;">This is a simulation. No real money will be deducted.</p>
-                    <button id="payNowBtn" class="btn btn-primary" style="width:100%;">Pay $150.00 & Submit</button>
-                    <button type="button" onclick="document.getElementById('paymentModal').style.display='none'; document.getElementById('submitBtn').disabled=false; document.getElementById('submitBtn').innerHTML='<i class=\\\'fas fa-paper-plane\\\'></i> Final Submit';" class="btn" style="width:100%; margin-top:10px; background:#f1f5f9; color:#0a192f; border:none;">Cancel</button>
-                </div>
-            </div>`;
-            document.body.insertAdjacentHTML('beforeend', paymentModalHTML);
-
-            // Form Submit (FINAL SUBMIT)
-            document.getElementById('visaForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const isAccepted = document.getElementById('declarationCheck').checked;
-                if (!isAccepted) {
-                    alert('You must accept the declaration to submit the application.');
-                    return;
-                }
-
-                // Show modal first
-                document.getElementById('paymentModal').style.display = 'flex';
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            });
-
-            // Handle Actual Pay & Submit
-            document.getElementById('payNowBtn').addEventListener('click', async () => {
-                const payBtn = document.getElementById('payNowBtn');
-                payBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Payment...';
-                payBtn.disabled = true;
-
-                const token = localStorage.getItem('token');
-
-                try {
-                    // Upload files to document Vault (Applicant Photo & Signature)
-                    const photoInput = document.getElementById('applicantPhoto');
-                    const sigInput = document.getElementById('applicantSignature');
-
-                    if (photoInput.files.length > 0) {
-                        const fd1 = new FormData();
-                        fd1.append('document', photoInput.files[0]);
-                        fd1.append('fieldName', 'profilePhoto');
-                        await fetch('https://passport-ia5r.onrender.com/api/profile/upload-document', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd1 });
-                    }
-                    if (sigInput.files.length > 0) {
-                        const fd2 = new FormData();
-                        fd2.append('document', sigInput.files[0]);
-                        fd2.append('fieldName', 'digitalSignature');
-                        await fetch('https://passport-ia5r.onrender.com/api/profile/upload-document', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd2 });
-                    }
-
-                    // Proceed to Final Form Submission
-                    const payload = collectFormData();
-                    payload.status = 'Submitted';
-
-                    const res = await fetch('https://passport-ia5r.onrender.com/api/visa/create', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify(payload)
-                    });
-
-                    const responseData = await res.json();
-
-                    if (responseData.success) {
-                        localStorage.removeItem('visaDraft'); // clear draft
-                        document.getElementById('paymentModal').style.display = 'none';
-                        alert(`Application Submitted & Payment Successful!\nApplication Number: ${responseData.data.applicationId}\nA PDF receipt has been sent to your email.`);
-                        window.location.href = 'profile.html?tab=applications&success=VISA_SUBMITTED';
-                    } else {
-                        alert(responseData.message || "Something went wrong.");
-                        document.getElementById('paymentModal').style.display = 'none';
-                        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Final Submit';
-                        submitBtn.disabled = false;
-                        payBtn.innerHTML = 'Pay $150.00 & Submit';
-                        payBtn.disabled = false;
-                    }
-                } catch (e) {
-                    alert("Network error, please try again");
-                    document.getElementById('paymentModal').style.display = 'none';
-                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Final Submit';
-                    submitBtn.disabled = false;
-                    payBtn.innerHTML = 'Pay $150.00 & Submit';
-                    payBtn.disabled = false;
-                }
-            });
-
-            // Init
-            updateFormSteps();
-            loadDraft();
-        });
+        document.getElementById('prev').onclick = () => { currentStep--; updateUI(); };
+        prefill();
     </script>
 </body>
-
 </html>
-

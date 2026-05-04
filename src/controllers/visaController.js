@@ -16,29 +16,62 @@ const generateApplicationId = () => {
 };
 
 // @desc    Create or Update Visa Application (Draft / Submit)
-// @route   POST https://passport-ia5r.onrender.com/api/visa/create
+// @route   POST /api/visa/create
 // @access  Private
 exports.createVisaApplication = async (req, res) => {
     try {
-        const {
-            visaType, applicantDetails, employmentDetails, currentAddress, travelDetails, passportDetails, sponsorDetails, travelHistory, declaration, status
-        } = req.body;
+        const d = req.body;
+        const files = req.files || {};
 
         const dataPayload = {
             user: req.user.id,
-            visaType: visaType || 'Tourist',
-            applicantDetails,
-            employmentDetails,
-            currentAddress,
-            travelDetails,
-            passportDetails,
-            sponsorDetails,
-            travelHistory,
-            declaration,
-            status: status || 'Draft'
+            visaType: d.visaType || 'Tourist',
+            applicantDetails: {
+                givenName: d.givenName,
+                surname: d.surname,
+                dob: d.dob,
+                gender: d.gender,
+                nationality: d.nationality,
+                maritalStatus: d.maritalStatus
+            },
+            employmentDetails: {
+                occupation: d.occupation,
+                employerName: d.employerName,
+                employerAddress: d.employerAddress,
+                monthlyIncome: d.monthlyIncome
+            },
+            currentAddress: {
+                street: d.street,
+                city: d.city,
+                state: d.state,
+                pincode: d.pincode,
+                mobileNumber: d.mobileNumber,
+                email: d.email
+            },
+            travelDetails: {
+                destinationCountry: d.destinationCountry,
+                travelDate: d.travelDate,
+                durationOfStay: d.durationOfStay,
+                purposeOfVisit: d.purposeOfVisit
+            },
+            passportDetails: {
+                passportNumber: d.passportNumber,
+                issuingAuthority: d.issuingAuthority,
+                issueDate: d.issueDate,
+                expiryDate: d.expiryDate
+            },
+            declaration: { isAccepted: true },
+            status: d.status || 'Draft',
+            documents: {}
         };
 
-        if (status === 'Submitted') {
+        // Handle uploaded files
+        if (files.applicantPhoto) dataPayload.documents['applicantPhoto'] = '/' + files.applicantPhoto[0].path.replace(/\\/g, "/");
+        if (files.applicantSignature) dataPayload.documents['applicantSignature'] = '/' + files.applicantSignature[0].path.replace(/\\/g, "/");
+        if (files.passportFront) dataPayload.documents['passportFront'] = '/' + files.passportFront[0].path.replace(/\\/g, "/");
+        if (files.passportBack) dataPayload.documents['passportBack'] = '/' + files.passportBack[0].path.replace(/\\/g, "/");
+
+        if (d.status === 'Submitted') {
             dataPayload.submissionDate = Date.now();
         }
 
@@ -77,9 +110,9 @@ exports.createVisaApplication = async (req, res) => {
 
                     // Send Email to User
                     await sendEmail({
-                        email: req.user.email, // Provided by protect middleware
-                        subject: `Your ${visaApp.visaType} Visa Application - ${visaApp.applicationId}`,
-                        message: `Dear ${req.user.fullName},\n\nYour application has been successfully submitted. Your Application Number is ${visaApp.applicationId}.\n\nPlease find the PDF receipt attached to this email.\n\nThank you,\nBorderBridge Team`,
+                        email: req.user.email,
+                        subject: `✅ Visa Application Received - ${visaApp.applicationId}`,
+                        message: `Dear ${req.user.fullName},\n\nBorderBridge Consultancy me aane ke liye aapka bahut bahut dhanyavad. Humne aapka ${visaApp.visaType} Visa application successfully receive kar liya hai.\n\nApplication Number: ${visaApp.applicationId}\n\nHumari team jald hi aapke documents verify karke aapko update degi. Aapka application receipt is email ke saath attached hai.\n\nRegards,\nBorderBridge Consultancy Team`,
                         attachments: [
                             {
                                 filename: pdfResult.fileName,
@@ -121,7 +154,7 @@ exports.createVisaApplication = async (req, res) => {
 };
 
 // @desc    Get all visa applications for logged in user
-// @route   GET https://passport-ia5r.onrender.com/api/visa/my
+// @route   GET /api/visa/my
 // @access  Private
 exports.getMyVisaApplications = async (req, res) => {
     try {
@@ -141,7 +174,7 @@ exports.getMyVisaApplications = async (req, res) => {
 };
 
 // @desc    Get single visa application by ID
-// @route   GET https://passport-ia5r.onrender.com/api/visa/:id
+// @route   GET /api/visa/:id
 // @access  Private
 exports.getVisaApplicationById = async (req, res) => {
     try {

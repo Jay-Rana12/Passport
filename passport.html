@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passport Services - BorderBridge</title>
+    <title>Passport Services - Global Consultancy</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -44,125 +44,111 @@
         </div>
     </nav>
 
-    <header class="section page-header header-passport">
+    <header class="section page-header header-passport" style="background: var(--premium-gradient); padding: 100px 0 60px;">
         <div class="container text-center">
-            <h1>Passport Services</h1>
-            <p>Fast and reliable passport assistance for all your needs.</p>
+            <h1 style="color: white; font-size: 3.5rem; font-weight: 900; margin-bottom: 1rem;">Passport Services</h1>
+            <p style="color: rgba(255,255,255,0.8); font-size: 1.2rem;">Quick, verified, and hassle-free passport processing.</p>
         </div>
     </header>
 
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="earth-container">
-            <div class="earth-globe">
-                <div class="passport-inner"></div>
-                <div class="passport-cover"></div>
-            </div>
-        </div>
-        <div class="loading-text">BorderBridge</div>
-    </div>
-
-    <section class="section">
+    <section class="section" style="padding: 0; margin-top: -60px; position: relative; z-index: 10;">
         <div class="container">
-
-            <div class="service-row reveal">
-                <div class="service-image">
-                    <img src="images/banner-world.png" alt="New Passport"
-                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+            <div class="premium-card" style="background: white; border-radius: 30px; padding: 3rem; box-shadow: 0 30px 60px rgba(0,0,0,0.12);">
+                <div class="section-header" style="text-align: center; display: block; margin-bottom: 3rem;">
+                    <h2 style="font-size: 2.2rem; font-weight: 900; color: #0a192f;">Passport Fee Calculator</h2>
+                    <p style="color: #64748b;">Select service type and age group to calculate your fee.</p>
                 </div>
-                <div class="service-info">
-                    <h2 class="text-primary">New Passport Application</h2>
-                    <p style="margin-bottom: 1rem;">Applying for a passport for the first time? We guide you through the
-                        entire process, from document collection to appointment scheduling.</p>
-                    <ul style="list-style-type: none;">
-                        <li><i class="fas fa-check text-accent"></i> Form Filling Assistance</li>
-                        <li><i class="fas fa-check text-accent"></i> Document Verification</li>
-                        <li><i class="fas fa-check text-accent"></i> Slot Booking</li>
-                    </ul>
-                    <a href="apply-passport.html?service=New" class="btn btn-primary" style="margin-top: 1.5rem;">Apply
-                        Now <i class="fas fa-arrow-right"></i></a>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; align-items: flex-end;">
+                    <div class="form-group">
+                        <label class="form-label" style="font-weight: 800;">Service Type</label>
+                        <select id="passService" class="form-control" style="height: 60px; border-radius: 15px;">
+                            <option value="fresh">Fresh Passport</option>
+                            <option value="renewal">Passport Renewal</option>
+                            <option value="tatkal">Tatkal (Urgent)</option>
+                            <option value="lost">Lost/Damaged Passport</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="font-weight: 800;">Applicant Age</label>
+                        <select id="passAge" class="form-control" style="height: 60px; border-radius: 15px;">
+                            <option value="adult">Adult (18+)</option>
+                            <option value="minor">Minor (Below 18)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button onclick="calcPass()" class="btn-gradient" style="height: 60px; width: 100%; justify-content: center;">Calculate</button>
+                    </div>
+                </div>
+
+                <div id="passResult" style="display: none; margin-top: 3rem; padding-top: 3rem; border-top: 2px dashed #e2e8f0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <p style="margin:0; color:#94a3b8; text-transform:uppercase; font-weight:700; font-size:0.85rem;">Total Processing Fee</p>
+                            <h3 style="margin:5px 0 0; font-size:3rem; font-weight:900; color:#ff8c00;" id="passAmount">₹0</h3>
+                        </div>
+                        <button onclick="handlePassApply()" class="btn-gradient" style="padding: 18px 40px; font-size: 1.2rem;">Start Passport Application</button>
+                    </div>
                 </div>
             </div>
-
-            <div class="service-row reveal reveal-delay-1">
-                <div class="service-image">
-                    <img src="images/banner-consult.png" alt="Passport Renewal"
-                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
-                </div>
-                <div class="service-info">
-                    <h2 class="text-primary">Passport Renewal</h2>
-                    <p>Passport expiring or pages exhausted? We help you renew your passport quickly to ensure your
-                        travel plans are not disrupted.</p>
-                    <a href="apply-passport.html?service=Renewal" class="btn btn-primary"
-                        style="margin-top: 1.5rem;">Apply Now <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="service-row reveal reveal-delay-2">
-                <div class="service-image">
-                    <img src="images/banner-travel.png" alt="Tatkal Services"
-                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
-                </div>
-                <div class="service-info">
-                    <h2 class="text-primary">Tatkal Services</h2>
-                    <p>Need a passport urgently? Our Tatkal service assistance ensures you get your passport in the
-                        shortest possible time.</p>
-                    <a href="apply-passport.html?service=Tatkal" class="btn btn-primary"
-                        style="margin-top: 1.5rem;">Apply Now <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="service-row reveal reveal-delay-3">
-                <div class="service-image">
-                    <img src="images/meeting.png" alt="Correction Services"
-                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
-                </div>
-                <div class="service-info">
-                    <h2 class="text-primary">Name/Address Correction</h2>
-                    <p>We assist in correcting or updating personal details in your existing passport with the correct
-                        legal procedure.</p>
-                    <a href="apply-passport.html?service=Correction" class="btn btn-primary"
-                        style="margin-top: 1.5rem;">Apply Now <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
         </div>
     </section>
 
-    <!-- Footer -->
+    <section class="section" style="padding-top: 5rem;">
+        <div class="container">
+            <div class="service-row reveal">
+                <div class="service-image">
+                    <img src="images/banner-world.png" alt="New Passport" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
+                </div>
+                <div class="service-info">
+                    <h2 class="text-primary" style="font-size: 2rem; font-weight: 800;">New Passport Application</h2>
+                    <p>Comprehensive assistance for first-time applicants including slot booking and documentation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer>
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <h4>BorderBridge</h4>
-                    <p style="opacity: 0.8;">Your trusted partner for international travel documentation and immigration
-                        services.</p>
+                    <h4>Global Consultancy</h4>
+                    <p style="opacity: 0.8;">Your trusted partner for international travel documentation.</p>
                 </div>
                 <div class="footer-col">
                     <h4>Quick Links</h4>
                     <ul class="footer-links">
-                        <li><a href="about.html">About Us</a></li>
                         <li><a href="visa.html">Visa Services</a></li>
-                        <li><a href="countries.html">Destinations</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Contact Info</h4>
-                    <ul class="footer-links">
-                        <li><i class="fas fa-map-marker-alt"></i> 401, Gitanjali Complex, Palanpur</li>
-                        <li><i class="fas fa-phone"></i> +91 8200306075 / 8128344519</li>
-                        <li><i class="fas fa-envelope"></i> j.r818430@gmail.com</li>
+                        <li><a href="passport.html">Passport Services</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="copyright">
-                &copy; 2026 BorderBridge. All Rights Reserved.
-            </div>
+            <div class="copyright">&copy; 2026 Global Consultancy. All Rights Reserved.</div>
         </div>
     </footer>
-    <script src="js/script.js?v=1772162207381"></script>
+
+    <script src="js/script.js"></script>
+    <script>
+        function calcPass() {
+            const service = document.getElementById('passService').value;
+            const age = document.getElementById('passAge').value;
+            const resBox = document.getElementById('passResult');
+            const amtEl = document.getElementById('passAmount');
+
+            let price = 1500;
+            if (service === 'tatkal') price = 3500;
+            if (service === 'lost') price = 3000;
+            if (age === 'minor') price -= 500;
+
+            resBox.style.display = 'block';
+            amtEl.innerText = '₹' + price.toLocaleString();
+        }
+
+        async function handlePassApply() {
+            const token = localStorage.getItem('token');
+            if (!token) { window.location.href = 'login.html'; return; }
+            window.location.href = 'apply-passport.html';
+        }
+    </script>
 </body>
-
 </html>
-

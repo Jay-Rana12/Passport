@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply for Family Visa - BorderBridge</title>
+    <title>Apply for Family Visa - Global Consultancy</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -165,10 +165,10 @@
 
 <body>
     <div id="preloader">
-        <div class="loading-text">BorderBridge</div>
+        <div class="loading-text">Global Consultancy</div>
     </div>
     <nav class="navbar">
-        <div class="container nav-container"><a href="index.html" class="logo">Border <span>Bridge</span></a></div>
+        <div class="container nav-container"><a href="index.html" class="logo">Global <span>Consultancy</span></a></div>
     </nav>
 
     <header class="section page-header header-visa">
@@ -302,7 +302,7 @@
             prevBtn.addEventListener('click', () => { currentStep--; updateUI(); });
 
             async function loadData() {
-                const profRes = await (await fetch('https://passport-ia5r.onrender.com/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })).json();
+                const profRes = await (await fetch('/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })).json();
                 if (profRes.success && profRes.data.completionPercentage > 70) {
                     const p = profRes.data;
                     const f = document.getElementById('visaForm');
@@ -321,4 +321,3 @@
 </body>
 
 </html>
-

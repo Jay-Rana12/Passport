@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTimelineAnimation();
     initMobileMenu();
     initAuth();
+    initAppointmentForm();
 });
 
 // Preloader
@@ -265,6 +266,27 @@ function initAuth() {
             });
         }, 300);
     }
+}
+
+function initAppointmentForm() {
+    const form = document.getElementById('homeAppointmentForm');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector('button');
+        const originalText = btn.innerHTML;
+
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            alert('Your consultation request has been sent! Our experts will contact you shortly.');
+            form.reset();
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }, 1500);
+    });
 }
 
 

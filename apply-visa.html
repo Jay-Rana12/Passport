@@ -1,352 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply for Visa - BorderBridge</title>
+    <title>Apply for Visa - Global Consultancy</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .application-form-container {
-            background: white;
-            padding: 3rem;
-            border-radius: 15px;
-            box-shadow: var(--shadow-premium);
-            margin-top: -5rem;
-            position: relative;
-            z-index: 10;
+        :root { --primary: #0a192f; --accent: #ff8c00; }
+        body { background: #f0f4f8; padding-top: 80px; }
+        .app-container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        
+        .stepper { display: flex; justify-content: space-between; margin-bottom: 50px; position: relative; }
+        .stepper::before { content: ''; position: absolute; top: 25px; width: 100%; height: 4px; background: #e2e8f0; z-index: 1; }
+        .p-line { position: absolute; top: 25px; height: 4px; background: var(--color-accent-gradient); z-index: 2; transition: 0.5s; width: 0; }
+        
+        .step { position: relative; z-index: 3; text-align: center; width: 60px; }
+        .s-icon { width: 45px; height: 45px; background: white; border: 3px solid #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; transition: 0.3s; color: #94a3b8; font-size: 0.9rem; }
+        .step.active .s-icon { border-color: #ff8c00; color: #ff8c00; box-shadow: 0 5px 15px rgba(255,140,0,0.3); transform: scale(1.1); }
+        .step.completed .s-icon { background: #10b981; border-color: #10b981; color: white; }
+        .step-label { font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
+
+        .form-card { background: white; border-radius: 24px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); }
+        .form-step { display: none; }
+        .form-step.active { display: block; animation: premiumFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes premiumFadeIn { 
+            from { opacity: 0; transform: translateY(30px) scale(0.98); filter: blur(5px); } 
+            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } 
         }
 
-        .form-section-title {
-            border-left: 4px solid var(--color-accent);
-            padding-left: 1rem;
-            margin: 2rem 0 1.5rem;
-            color: var(--color-primary);
-        }
+        .form-section-title { font-size: 1.5rem; color: var(--primary); margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full { grid-column: 1 / -1; }
+        .input-box { margin-bottom: 20px; }
+        .input-box label { display: block; font-size: 0.8rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase; }
+        .f-input { width: 100%; padding: 12px 18px; border: 2px solid #edf2f7; border-radius: 12px; font-size: 0.95rem; background: #f8fafc; transition: 0.3s; }
+        .f-input:focus { border-color: #ff8c00; background: white; outline: none; box-shadow: 0 0 0 4px rgba(255,140,0,0.1); }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .application-form-container {
-                padding: 1.5rem;
-                margin-top: -2rem;
-            }
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--color-text-main);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--color-light-gray);
-            border-radius: 8px;
-            font-family: var(--font-body);
-            transition: var(--transition-fast);
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--color-accent);
-            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
-        }
-
-        .file-upload-wrapper {
-            border: 2px dashed var(--color-light-gray);
-            padding: 2rem;
-            text-align: center;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-
-        .file-upload-wrapper:hover {
-            border-color: var(--color-accent);
-            background-color: rgba(255, 193, 7, 0.05);
-        }
-
-        .form-header-info {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .visa-icon-large {
-            font-size: 3.5rem;
-            color: var(--color-accent);
-            margin-bottom: 1rem;
-        }
+        .btn-row { display: flex; justify-content: space-between; margin-top: 40px; }
+        .btn-back { background: #f1f5f9; color: #475569; padding: 15px 35px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
+        .btn-next { background: var(--color-accent-gradient); color: white; padding: 15px 45px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(255,140,0,0.2); }
+        
+        .premium-select { cursor: pointer; }
     </style>
 </head>
-
 <body>
-
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="earth-container">
-            <div class="earth-globe">
-                <div class="passport-inner"></div>
-                <div class="passport-cover"></div>
-            </div>
-        </div>
-        <div class="loading-text">BorderBridge</div>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar scrolled">
         <div class="container nav-container">
-            <a href="index.html" class="logo"><i class="fas fa-plane-departure logo-icon"></i> Border
-                <span>Bridge</span></a>
-            <div class="hamburger">
-                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">Services <i class="fas fa-chevron-down"
-                            style="font-size: 0.8rem; margin-left: 5px;"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="visa.html" class="dropdown-link">Visa Services</a></li>
-                        <li><a href="passport.html" class="dropdown-link">Passport Services</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item"><a href="countries.html" class="nav-link">Countries</a></li>
-                <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
-                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
-            </ul>
-            <a href="login.html" class="btn btn-primary btn-nav">Login</a>
+            <a href="index.html" class="logo"><i class="fas fa-passport logo-icon"></i> Global <span>Consultancy</span></a>
         </div>
     </nav>
 
-    <header class="section page-header header-visa">
-        <div class="container text-center">
-            <h1 id="page-title">Visa Application</h1>
-            <p id="page-subtitle">Submit your details for expert visa assistance.</p>
+    <div class="app-container">
+        <div class="stepper">
+            <div class="p-line" id="pLine"></div>
+            <div class="step active" data-step="1"><div class="s-icon">1</div><div class="step-label">Visa</div></div>
+            <div class="step" data-step="2"><div class="s-icon">2</div><div class="step-label">Personal</div></div>
+            <div class="step" data-step="3"><div class="s-icon">3</div><div class="step-label">Passport</div></div>
+            <div class="step" data-step="4"><div class="s-icon">4</div><div class="step-label">Work</div></div>
+            <div class="step" data-step="5"><div class="s-icon">5</div><div class="step-label">Address</div></div>
+            <div class="step" data-step="6"><div class="s-icon">6</div><div class="step-label">Uploads</div></div>
+            <div class="step" data-step="7"><div class="s-icon">7</div><div class="step-label">Submit</div></div>
         </div>
-    </header>
 
-    <section class="section" style="padding-top: 0;">
-        <div class="container" style="max-width: 1000px;">
-            <div class="application-form-container reveal">
-                <div class="form-header-info">
-                    <div id="visa-type-icon" class="visa-icon-large">
-                        <i class="fas fa-file-signature"></i>
+        <form id="vForm" class="form-card">
+            <!-- Step 1: Visa Type & Country -->
+            <div class="form-step active">
+                <h2 class="form-section-title">Visa Category & Destination</h2>
+                <div class="grid">
+                    <div class="input-box">
+                        <label>Visa Type</label>
+                        <select name="visaType" id="visaType" class="f-input" required>
+                            <option value="Tourist">Tourist Visa</option>
+                            <option value="Student">Student Visa</option>
+                            <option value="Work">Work Visa</option>
+                            <option value="Business">Business Visa</option>
+                            <option value="Family">Family / Spouse Visa</option>
+                        </select>
                     </div>
-                    <h2 id="form-title" style="margin-bottom: 0.5rem;">Online Visa Application</h2>
-                    <p class="text-light">Please fill out all the fields below accurately to process your application.
+                    <div class="input-box">
+                        <label>Destination Country</label>
+                        <select name="destinationCountry" class="f-input" required>
+                            <option value="USA">USA</option>
+                            <option value="UK">UK</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Germany">Germany</option>
+                            <option value="France">France</option>
+                            <option value="UAE">UAE</option>
+                        </select>
+                    </div>
+                    <div class="input-box"><label>Expected Travel Date</label><input type="date" name="travelDate" class="f-input" required></div>
+                    <div class="input-box"><label>Planned Stay Duration (Days)</label><input type="number" name="durationOfStay" class="f-input" placeholder="e.g. 30" required></div>
+                    <div class="input-box full"><label>Main Purpose of Visit</label><textarea name="purposeOfVisit" class="f-input" rows="2" placeholder="Describe why you are traveling" required></textarea></div>
+                </div>
+            </div>
+
+            <!-- Step 2: Personal Information -->
+            <div class="form-step">
+                <h2 class="form-section-title">Applicant Details</h2>
+                <div class="grid">
+                    <div class="input-box"><label>Given Name</label><input type="text" name="givenName" class="f-input" placeholder="First Name" required></div>
+                    <div class="input-box"><label>Surname</label><input type="text" name="surname" class="f-input" placeholder="Last Name" required></div>
+                    <div class="input-box"><label>Date of Birth</label><input type="date" name="dob" class="f-input" required></div>
+                    <div class="input-box"><label>Gender</label><select name="gender" class="f-input"><option value="Male">Male</option><option value="Female">Female</option></select></div>
+                    <div class="input-box"><label>Nationality</label><input type="text" name="nationality" class="f-input" value="Indian" required></div>
+                    <div class="input-box"><label>Marital Status</label><select name="maritalStatus" class="f-input"><option value="Single">Single</option><option value="Married">Married</option></select></div>
+                </div>
+            </div>
+
+            <!-- Step 3: Passport Details -->
+            <div class="form-step">
+                <h2 class="form-section-title">Passport Information</h2>
+                <div class="grid">
+                    <div class="input-box"><label>Passport Number</label><input type="text" name="passportNumber" class="f-input" placeholder="Enter passport number" required></div>
+                    <div class="input-box"><label>Issuing Authority</label><input type="text" name="issuingAuthority" class="f-input" placeholder="e.g. Govt. of India" required></div>
+                    <div class="input-box"><label>Date of Issue</label><input type="date" name="issueDate" class="f-input" required></div>
+                    <div class="input-box"><label>Date of Expiry</label><input type="date" name="expiryDate" class="f-input" required></div>
+                </div>
+            </div>
+
+            <!-- Step 4: Employment & Income -->
+            <div class="form-step">
+                <h2 class="form-section-title">Professional Background</h2>
+                <div class="grid">
+                    <div class="input-box"><label>Current Occupation</label><input type="text" name="occupation" class="f-input" placeholder="e.g. Software Engineer" required></div>
+                    <div class="input-box"><label>Employer / Institute Name</label><input type="text" name="employerName" class="f-input" placeholder="Company or University" required></div>
+                    <div class="input-box full"><label>Employer Address</label><input type="text" name="employerAddress" class="f-input" required></div>
+                    <div class="input-box"><label>Monthly Income (INR)</label><input type="number" name="monthlyIncome" class="f-input" placeholder="e.g. 75000" required></div>
+                </div>
+            </div>
+
+            <!-- Step 5: Residence & Contact -->
+            <div class="form-step">
+                <h2 class="form-section-title">Contact & Residential Details</h2>
+                <div class="grid">
+                    <div class="input-box full"><label>Full Current Address</label><input type="text" name="street" class="f-input" required></div>
+                    <div class="input-box"><label>City</label><input type="text" name="city" class="f-input" required></div>
+                    <div class="input-box"><label>State</label><input type="text" name="state" class="f-input" required></div>
+                    <div class="input-box"><label>Pincode</label><input type="text" name="pincode" class="f-input" maxlength="6" required></div>
+                    <div class="input-box"><label>Mobile Number</label><input type="tel" name="mobileNumber" class="f-input" required></div>
+                    <div class="input-box"><label>Email Address</label><input type="email" name="email" class="f-input" required></div>
+                </div>
+            </div>
+
+            <!-- Step 6: Document Uploads -->
+            <div class="form-step">
+                <h2 class="form-section-title">Required Documents</h2>
+                <div class="grid">
+                    <div class="input-box">
+                        <label>Applicant Photo (Passport Size)</label>
+                        <input type="file" name="applicantPhoto" class="f-input" accept="image/*" required>
+                        <small style="color:#64748b;">White background, JPEG/PNG format</small>
+                    </div>
+                    <div class="input-box">
+                        <label>Applicant Signature</label>
+                        <input type="file" name="applicantSignature" class="f-input" accept="image/*" required>
+                        <small style="color:#64748b;">Clear scan of signature on white paper</small>
+                    </div>
+                    <div class="input-box">
+                        <label>Passport Front Page</label>
+                        <input type="file" name="passportFront" class="f-input" accept="image/*,application/pdf" required>
+                    </div>
+                    <div class="input-box">
+                        <label>Passport Back Page</label>
+                        <input type="file" name="passportBack" class="f-input" accept="image/*,application/pdf" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6: Review -->
+            <div class="form-step">
+                <h2 class="form-section-title">Final Submission</h2>
+                <div style="background:#eff6ff; border-left: 5px solid #3b82f6; padding: 25px; border-radius: 12px; margin-bottom: 30px;">
+                    <p style="margin: 0; color: #1e40af; font-size: 0.95rem; line-height: 1.6;">
+                        <strong>Note:</strong> After clicking submit, you will be redirected to the payment gateway. Once payment is confirmed, our experts will review your documents and prepare your visa application file.
                     </p>
                 </div>
-
-                <form id="visaApplicationForm">
-                    <h3 class="form-section-title">Personal Information</h3>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="firstName">First Name</label>
-                            <input type="text" id="firstName" class="form-control" placeholder="John" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">Last Name</label>
-                            <input type="text" id="lastName" class="form-control" placeholder="Doe" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" class="form-control" placeholder="john.doe@example.com"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phoneNumber">Phone Number</label>
-                            <input type="tel" id="phoneNumber" class="form-control" placeholder="+91 12345 67890"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dob">Date of Birth</label>
-                            <input type="date" id="dob" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="gender">Gender</label>
-                            <select id="gender" class="form-control" required>
-                                <option value="" disabled selected>Select Gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
+                <div style="background: white; border: 1px solid #e2e8f0; padding: 25px; border-radius: 15px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <span>Consultancy Fee:</span>
+                        <strong id="visaFeeDisplay">₹2,500</strong>
                     </div>
-
-                    <h3 class="form-section-title">Visa Details</h3>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="visaType">Visa Category</label>
-                            <select id="visaType" class="form-control" required>
-                                <option value="" disabled>Select Category</option>
-                                <option value="tourist">Tourist Visa</option>
-                                <option value="business">Business Visa</option>
-                                <option value="student">Student Visa</option>
-                                <option value="work">Work Visa</option>
-                                <option value="family">Family / Spouse Visa</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="country">Destination Country</label>
-                            <select id="country" class="form-control" required>
-                                <option value="" disabled selected>Select Country</option>
-                                <option value="usa">USA</option>
-                                <option value="uk">UK</option>
-                                <option value="canada">Canada</option>
-                                <option value="australia">Australia</option>
-                                <option value="uae">UAE</option>
-                                <option value="europe">Schengen Area (Europe)</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="travelDate">Expected Travel Date</label>
-                            <input type="date" id="travelDate" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="duration">Stay Duration (Days)</label>
-                            <input type="number" id="duration" class="form-control" placeholder="e.g. 15" required>
-                        </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <span>Govt. Visa Fee:</span>
+                        <strong>Payable at Consulate</strong>
                     </div>
-
-                    <h3 class="form-section-title">Documents</h3>
-                    <div class="form-group">
-                        <label>Upload Passport Copy (Photo Page)</label>
-                        <div class="file-upload-wrapper" onclick="document.getElementById('passportFile').click()">
-                            <i class="fas fa-cloud-upload-alt"
-                                style="font-size: 2rem; color: var(--color-accent); margin-bottom: 1rem;"></i>
-                            <p id="passportFileName">Click to upload or drag and drop</p>
-                            <span style="font-size: 0.8rem; color: var(--color-text-light);">PDF, JPG or PNG (Max
-                                5MB)</span>
-                            <input type="file" id="passportFile" style="display: none;" accept=".pdf,.jpg,.jpeg,.png">
-                        </div>
+                    <hr style="margin: 15px 0; border: 0; border-top: 1px solid #e2e8f0;">
+                    <div style="display:flex; justify-content:space-between; font-size: 1.2rem; font-weight: 800; color: var(--accent);">
+                        <span>Total Payable:</span>
+                        <span id="visaTotalDisplay">₹2,500</span>
                     </div>
-
-                    <div style="margin-top: 3rem; text-align: center;">
-                        <button type="submit" class="btn btn-primary"
-                            style="padding: 15px 50px; font-size: 1.1rem;">Submit Application</button>
-                    </div>
-                </form>
+                </div>
+                <label style="display:flex; gap:15px; cursor:pointer; margin-top: 30px;">
+                    <input type="checkbox" required style="width: 22px; height: 22px;">
+                    <span style="font-size:0.9rem; color: #64748b;">I confirm that I have read the terms and conditions and all provided information is accurate.</span>
+                </label>
             </div>
-        </div>
-    </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h4>BorderBridge</h4>
-                    <p style="opacity: 0.8;">Your trusted partner for international travel documentation and immigration
-                        services.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Quick Links</h4>
-                    <ul class="footer-links">
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="visa.html">Visa Services</a></li>
-                        <li><a href="countries.html">Destinations</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Contact Info</h4>
-                    <ul class="footer-links">
-                        <li><i class="fas fa-map-marker-alt"></i> 401, Gitanjali Complex, Palanpur</li>
-                        <li><i class="fas fa-phone"></i> +91 8200306075 / 8128344519</li>
-                        <li><i class="fas fa-envelope"></i> j.r818430@gmail.com</li>
-                    </ul>
-                </div>
+            <div class="btn-row">
+                <button type="button" id="vPrev" class="btn-back" style="visibility:hidden;">BACK</button>
+                <button type="button" id="vNext" class="btn-next">NEXT STEP</button>
             </div>
-            <div class="copyright">&copy; 2026 BorderBridge. All Rights Reserved.</div>
-        </div>
-    </footer>
+        </form>
+    </div>
 
-    <script src="js/script.js?v=1772162207381"></script>
+    <script src="js/script.js"></script>
+    <script src="js/payment.js"></script>
     <script>
-        // Handle Visa Type from URL
-        document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        if(!token) window.location.href = 'login.html';
+
+        let vStep = 0;
+        const vSteps = document.querySelectorAll('.form-step');
+        const vDots = document.querySelectorAll('.step');
+        const vNext = document.getElementById('vNext');
+        const vPrev = document.getElementById('vPrev');
+        const vForm = document.getElementById('vForm');
+
+        // Handle Visa Type Fee (Simplified logic)
+        document.getElementById('visaType').onchange = (e) => {
+            const fees = { 'Tourist': 2500, 'Business': 4500, 'Student': 3500, 'Work': 6000, 'Family': 4000 };
+            const fee = fees[e.target.value] || 2500;
+            document.getElementById('visaFeeDisplay').innerText = '₹' + fee.toLocaleString();
+            document.getElementById('visaTotalDisplay').innerText = '₹' + fee.toLocaleString();
+        };
+
+        async function prefill() {
+            // Handle URL params for Visa Type
             const urlParams = new URLSearchParams(window.location.search);
             const type = urlParams.get('type');
-
-            const visaTypeSelect = document.getElementById('visaType');
-            const pageTitle = document.getElementById('page-title');
-            const formTitle = document.getElementById('form-title');
-            const iconDiv = document.getElementById('visa-type-icon');
-
-            const typeConfig = {
-                'tourist': {
-                    label: 'Tourist Visa',
-                    icon: 'fa-umbrella-beach'
-                },
-                'business': {
-                    label: 'Business Visa',
-                    icon: 'fa-briefcase'
-                },
-                'student': {
-                    label: 'Student Visa',
-                    icon: 'fa-graduation-cap'
-                },
-                'work': {
-                    label: 'Work Visa',
-                    icon: 'fa-building'
-                },
-                'family': {
-                    label: 'Family / Spouse Visa',
-                    icon: 'fa-users'
+            if(type) {
+                const select = document.getElementById('visaType');
+                // Capitalize first letter to match select values
+                const formattedType = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+                for(let opt of select.options) {
+                    if(opt.value.toLowerCase() === type.toLowerCase()) {
+                        select.value = opt.value;
+                        select.dispatchEvent(new Event('change'));
+                        break;
+                    }
                 }
-            };
-
-            if (type && typeConfig[type]) {
-                visaTypeSelect.value = type;
-                pageTitle.innerText = `Apply for ${typeConfig[type].label}`;
-                formTitle.innerText = `${typeConfig[type].label} Application`;
-                iconDiv.innerHTML = `<i class="fas ${typeConfig[type].icon}"></i>`;
             }
-        });
 
-        // File name display
-        document.getElementById('passportFile').addEventListener('change', function () {
-            if (this.files && this.files.length > 0) {
-                document.getElementById('passportFileName').innerText = this.files[0].name;
-                document.getElementById('passportFileName').style.color = 'var(--color-success)';
+            const res = await fetch('/api/profile/me', { headers: {'Authorization':`Bearer ${token}`} });
+            const { success, data } = await res.json();
+            if(success) {
+                vForm.elements['givenName'].value = data.personalInfo?.fullName?.split(' ')[0] || '';
+                vForm.elements['surname'].value = data.personalInfo?.fullName?.split(' ').slice(1).join(' ') || '';
+                vForm.elements['dob'].value = data.personalInfo?.dateOfBirth?.split('T')[0] || '';
+                vForm.elements['street'].value = data.contactInfo?.currentAddress?.street || '';
+                vForm.elements['city'].value = data.contactInfo?.currentAddress?.city || '';
+                vForm.elements['state'].value = data.contactInfo?.currentAddress?.state || '';
+                vForm.elements['pincode'].value = data.contactInfo?.currentAddress?.pincode || '';
+                vForm.elements['mobileNumber'].value = data.contactInfo?.mobileNumber || '';
+                vForm.elements['email'].value = data.contactInfo?.email || '';
             }
-        });
+        }
 
-        // Form Submission
-        document.getElementById('visaApplicationForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+        function vUI() {
+            vSteps.forEach((s, i) => s.classList.toggle('active', i === vStep));
+            vDots.forEach((d, i) => { d.classList.toggle('active', i === vStep); d.classList.toggle('completed', i < vStep); });
+            document.getElementById('pLine').style.width = (vStep / (vSteps.length - 1)) * 100 + '%';
+            vPrev.style.visibility = vStep === 0 ? 'hidden' : 'visible';
+            vNext.innerText = vStep === vSteps.length - 1 ? 'PAY & SUBMIT' : 'NEXT STEP';
+        }
 
-            // Basic animation for feedback
-            const btn = this.querySelector('button[type="submit"]');
-            const originalText = btn.innerText;
-            btn.innerText = 'Processing...';
-            btn.disabled = true;
+        vNext.onclick = () => {
+            const ins = vSteps[vStep].querySelectorAll('input[required], select[required], textarea[required]');
+            for(let i of ins) if(!i.checkValidity()){ i.reportValidity(); return; }
+            if(vStep < vSteps.length - 1) { vStep++; vUI(); window.scrollTo(0,0); }
+            else { submitVisa(); }
+        };
 
-            setTimeout(() => {
-                alert('Thank you! Your visa application has been submitted successfully. Our consultant will contact you within 24 hours.');
-                window.location.href = 'index.html';
-            }, 2000);
-        });
+        async function submitVisa() {
+            const fd = new FormData(vForm);
+            // Payload is now FormData to support files
+            
+            const feeText = document.getElementById('visaTotalDisplay').innerText.replace('₹','').replace(',','');
+            const amount = parseInt(feeText);
+
+            PaymentGateway.init({
+                amount: amount,
+                itemName: 'Visa Consultancy Fee',
+                onSuccess: async () => {
+                    const res = await fetch('/api/visa/create', {
+                        method: 'POST',
+                        headers: {'Authorization':`Bearer ${token}`},
+                        body: fd
+                    });
+                    const r = await res.json();
+                    if(r.success) {
+                        alert('Visa Application Submitted! Tracking ID: ' + r.data.applicationId);
+                        window.location.href = 'profile.html?tab=apps';
+                    } else {
+                        alert('Error: ' + r.message);
+                    }
+                }
+            });
+        }
+
+        vPrev.onclick = () => { vStep--; vUI(); };
+        prefill();
     </script>
 </body>
-
 </html>
-

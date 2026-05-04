@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply for Business Visa - BorderBridge</title>
+    <title>Apply for Business Visa - Global Consultancy</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -218,7 +218,7 @@
                 <div class="passport-cover"></div>
             </div>
         </div>
-        <div class="loading-text">BorderBridge</div>
+        <div class="loading-text">Global Consultancy</div>
     </div>
 
     <!-- Navigation -->
@@ -520,11 +520,11 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <h4>BorderBridge</h4>
+                    <h4>Global Consultancy</h4>
                     <p style="opacity: 0.8;">Premium Business Immigration & Global Travel Facilitation.</p>
                 </div>
             </div>
-            <div class="copyright">&copy; 2026 BorderBridge.</div>
+            <div class="copyright">&copy; 2026 Global Consultancy.</div>
         </div>
     </footer>
 
@@ -595,7 +595,7 @@
 
             async function saveDraft() {
                 const payload = collectFormData();
-                await fetch('https://passport-ia5r.onrender.com/api/visa/create', {
+                await fetch('/api/visa/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify(payload)
@@ -603,7 +603,7 @@
             }
 
             async function loadData() {
-                const profRes = await (await fetch('https://passport-ia5r.onrender.com/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })).json();
+                const profRes = await (await fetch('/api/profile/me', { headers: { 'Authorization': `Bearer ${token}` } })).json();
                 if (profRes.success && profRes.data.completionPercentage > 70) {
                     const p = profRes.data;
                     const f = document.getElementById('visaForm');
@@ -621,7 +621,7 @@
                 const payload = collectFormData();
                 payload.status = 'Submitted';
                 // Trigger file uploads and final submit
-                await fetch('https://passport-ia5r.onrender.com/api/visa/create', {
+                await fetch('/api/visa/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify(payload)
@@ -637,4 +637,3 @@
 </body>
 
 </html>
-

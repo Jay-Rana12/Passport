@@ -6,7 +6,14 @@ const {
 } = require('../controllers/passportController');
 const { protect } = require('../middlewares/authMiddleware');
 
-router.post('/create', protect, createPassportApplication);
+const upload = require('../middlewares/uploadMiddleware');
+
+router.post('/create', protect, upload.fields([
+    { name: 'applicantPhoto', maxCount: 1 },
+    { name: 'applicantSignature', maxCount: 1 },
+    { name: 'aadhaarDoc', maxCount: 1 },
+    { name: 'birthProof', maxCount: 1 }
+]), createPassportApplication);
 router.get('/my', protect, getMyPassportApplications);
 
 module.exports = router;

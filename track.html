@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Application - Global Passport & Visa Consultancy</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar scrolled">
+        <div class="container nav-container">
+            <a href="index.html" class="logo"><i class="fas fa-passport logo-icon"></i> Global <span>Consultancy</span></a>
+            <div class="hamburger"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Services <i class="fas fa-chevron-down" style="font-size: 0.8rem; margin-left: 5px;"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="visa.html" class="dropdown-link">Visa Services</a></li>
+                        <li><a href="passport.html" class="dropdown-link">Passport Services</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="track.html" class="nav-link active">Track</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="section page-header" style="background: var(--color-primary); padding: 120px 0 60px;">
+        <div class="container text-center">
+            <h1 style="color: white;">Track Your Application</h1>
+            <p style="color: var(--color-accent);">Enter your application ID to check the real-time status.</p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div style="max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: var(--shadow-lg);">
+                <div id="trackForm">
+                    <div style="margin-bottom: 25px;">
+                        <label style="display: block; font-weight: 700; margin-bottom: 10px; color: #1e293b;">Application ID</label>
+                        <input type="text" id="appIdInput" placeholder="e.g. BB-123456" style="width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1.1rem; font-weight: 600; text-transform: uppercase;">
+                    </div>
+                    <button id="trackBtn" class="btn btn-primary" style="width: 100%; justify-content: center; font-size: 1.1rem; padding: 15px;">Track Now</button>
+                </div>
+
+                <div id="trackResult" style="display: none; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 30px;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <span id="statusBadge" class="status-badge" style="font-size: 1rem; padding: 8px 20px;">SUBMITTED</span>
+                        <h2 id="resultAppId" style="margin: 15px 0 5px; color: #0a192f;">BB-123456</h2>
+                        <p id="resultType" style="color: #64748b; font-weight: 600;">Tourist Visa Application</p>
+                    </div>
+
+                    <div class="tracking-timeline" style="margin-top: 30px;">
+                        <!-- Status items will be dynamic -->
+                        <div id="timelineSteps"></div>
+                    </div>
+                </div>
+
+                <div id="trackError" style="display: none; margin-top: 20px; background: #fee2e2; color: #991b1b; padding: 15px; border-radius: 10px; text-align: center; font-weight: 600;">
+                    Application not found. Please check your ID and try again.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background: #0a192f; color: white; padding: 40px 0;">
+        <div class="container text-center">
+            <p>&copy; 2026 Global Passport & Visa Consultancy. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('trackBtn').addEventListener('click', async () => {
+            const appId = document.getElementById('appIdInput').value.trim();
+            if (!appId) return alert('Please enter an Application ID');
+
+            const btn = document.getElementById('trackBtn');
+            const result = document.getElementById('trackResult');
+            const error = document.getElementById('trackError');
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tracking...';
+            btn.disabled = true;
+            result.style.display = 'none';
+            error.style.display = 'none';
+
+            try {
+                // In a real app, we'd hit a public tracking endpoint
+                // For now, we'll try to find it in the applications (requires being logged in or a special tracking API)
+                // Let's assume we have a public tracking API /api/track/:id
+                const res = await fetch(`/api/public/track/${appId}`);
+                const data = await res.json();
+
+                if (data.success) {
+                    showResult(data.data);
+                } else {
+                    error.style.display = 'block';
+                }
+            } catch (err) {
+                error.style.display = 'block';
+            } finally {
+                btn.innerHTML = 'Track Now';
+                btn.disabled = false;
+            }
+        });
+
+        function showResult(app) {
+            const result = document.getElementById('trackResult');
+            document.getElementById('resultAppId').innerText = app.applicationId;
+            document.getElementById('resultType').innerText = `${app.visaType || app.passportType} Application`;
+            
+            const badge = document.getElementById('statusBadge');
+            badge.innerText = app.status.toUpperCase();
+            badge.className = `status-badge status-${app.status}`;
+            
+            // Render Timeline
+            const timeline = document.getElementById('timelineSteps');
+            const statuses = ['Submitted', 'Pending', 'Processing', 'Approved'];
+            const currentIndex = statuses.indexOf(app.status);
+            
+            timeline.innerHTML = statuses.map((s, i) => `
+                <div style="display: flex; gap: 20px; margin-bottom: 20px; opacity: ${i <= currentIndex ? '1' : '0.4'}">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="width: 30px; height: 30px; border-radius: 50%; background: ${i <= currentIndex ? '#10b981' : '#e2e8f0'}; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; z-index: 2;">
+                            ${i < currentIndex ? '<i class="fas fa-check"></i>' : (i === currentIndex ? '<i class="fas fa-clock"></i>' : (i+1))}
+                        </div>
+                        ${i < statuses.length - 1 ? `<div style="width: 2px; height: 40px; background: ${i < currentIndex ? '#10b981' : '#e2e8f0'};"></div>` : ''}
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; color: #1e293b;">${s}</h4>
+                        <p style="margin: 5px 0 0; font-size: 0.8rem; color: #64748b;">${i <= currentIndex ? 'Step completed' : 'Awaiting progress'}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            result.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

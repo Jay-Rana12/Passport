@@ -28,6 +28,10 @@ const UserSchema = new mongoose.Schema({
         enum: ['applicant', 'admin', 'agent'],
         default: 'applicant'
     },
+    profilePhoto: {
+        type: String,
+        default: '/images/default-avatar.png'
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date
 }, { timestamps: true });

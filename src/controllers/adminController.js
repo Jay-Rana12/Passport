@@ -5,7 +5,7 @@ const PassportApplication = require('../models/PassportApplication');
 const StatusHistory = require('../models/StatusHistory');
 
 // @desc    Get all users
-// @route   GET https://passport-ia5r.onrender.com/api/admin/users
+// @route   GET /api/admin/users
 // @access  Private/Admin
 exports.getAllUsers = async (req, res) => {
     try {
@@ -18,7 +18,7 @@ exports.getAllUsers = async (req, res) => {
 };
 
 // @desc    Get all visa and passport applications
-// @route   GET https://passport-ia5r.onrender.com/api/admin/applications
+// @route   GET /api/admin/applications
 // @access  Private/Admin
 exports.getAllApplications = async (req, res) => {
     try {
@@ -50,7 +50,7 @@ exports.getAllApplications = async (req, res) => {
 };
 
 // @desc    Update application status
-// @route   PUT https://passport-ia5r.onrender.com/api/admin/application/status/:id
+// @route   PUT /api/admin/application/status/:id
 // @access  Private/Admin
 exports.updateApplicationStatus = async (req, res) => {
     try {
@@ -101,7 +101,7 @@ exports.updateApplicationStatus = async (req, res) => {
 };
 
 // @desc    Verify profile
-// @route   PUT https://passport-ia5r.onrender.com/api/admin/profile/verify/:userId
+// @route   PUT /api/admin/profile/verify/:userId
 // @access  Private/Admin
 exports.verifyProfile = async (req, res) => {
     try {

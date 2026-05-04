@@ -8,46 +8,60 @@ const ProfileSchema = new mongoose.Schema({
         unique: true
     },
     personalInfo: {
-        fullName: { type: String, required: function () { return this.status && this.status.isSubmitted; } },
+        fullName: { type: String },
         gender: { type: String, enum: ['Male', 'Female', 'Other'] },
         dateOfBirth: { type: Date },
         placeOfBirth: { type: String },
-        nationality: { type: String },
-        maritalStatus: { type: String, enum: ['Single', 'Married', 'Divorced', 'Widowed'] },
+        nationality: { type: String, default: 'Indian' },
+        maritalStatus: { type: String, enum: ['Single', 'Married', 'Divorced', 'Widowed', 'Separated'] },
         fatherName: { type: String },
-        motherName: { type: String }
+        motherName: { type: String },
+        occupation: { type: String },
+        bloodGroup: { type: String },
+        educationalQualification: { type: String }
     },
     contactInfo: {
         email: { type: String },
         phone: { type: String },
-        currentAddress: { type: String },
-        permanentAddress: { type: String }
+        currentAddress: {
+            houseNo: String,
+            street: String,
+            landmark: String,
+            city: String,
+            state: String,
+            pincode: String
+        },
+        permanentAddress: {
+            houseNo: String,
+            street: String,
+            landmark: String,
+            city: String,
+            state: String,
+            pincode: String
+        }
     },
     passportInfo: {
         passportNumber: { type: String, unique: true, sparse: true },
         issueDate: { type: Date },
         expiryDate: { type: Date },
-        placeOfIssue: { type: String },
-        passportType: { type: String, enum: ['Normal', 'Diplomatic', 'Official', 'Tatkal'], default: 'Normal' }
+        placeOfIssue: { type: String }
     },
     govtIdInfo: {
         aadhaarNumber: { type: String, unique: true, sparse: true },
-        panNumber: { type: String }
+        isAadhaarVerified: { type: Boolean, default: false },
+        panNumber: { type: String },
+        isPanVerified: { type: Boolean, default: false },
+        voterId: { type: String }
     },
     emergencyContact: {
         name: { type: String },
         relationship: { type: String },
-        phone: { type: String }
-    },
-    travelDetails: {
-        destinationCountry: { type: String },
-        visaType: { type: String },
-        purposeOfVisit: { type: String },
-        travelDate: { type: Date },
-        durationOfStay: { type: String }
+        phone: { type: String },
+        address: { type: String }
     },
     uploads: {
-        type: mongoose.Schema.Types.Mixed,
+        type: Map,
+        of: String,
         default: {}
     },
     status: {
@@ -62,4 +76,3 @@ const ProfileSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 module.exports = mongoose.model('Profile', ProfileSchema);
-

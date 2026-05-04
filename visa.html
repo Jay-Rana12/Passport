@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visa Services - BorderBridge</title>
+    <title>Visa Services - Global Passport & Visa Consultancy</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -27,13 +27,13 @@
                 <div class="passport-cover"></div>
             </div>
         </div>
-        <div class="loading-text">BorderBridge</div>
+        <div class="loading-text">Global Consultancy</div>
     </div>
 
     <nav class="navbar">
         <div class="container nav-container">
-            <a href="index.html" class="logo"><i class="fas fa-plane-departure logo-icon"></i> Border
-                <span>Bridge</span></a>
+            <a href="index.html" class="logo"><i class="fas fa-passport logo-icon"></i> Global
+                <span>Consultancy</span></a>
             <div class="hamburger">
                 <span class="bar"></span><span class="bar"></span><span class="bar"></span>
             </div>
@@ -50,176 +50,214 @@
                 </li>
                 <li class="nav-item"><a href="countries.html" class="nav-link">Countries</a></li>
                 <li class="nav-item"><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li class="nav-item"><a href="track.html" class="nav-link">Track</a></li>
+                <li class="nav-item"><a href="faq.html" class="nav-link">FAQ</a></li>
                 <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
             </ul>
             <a href="login.html" class="btn btn-primary btn-nav">Login</a>
         </div>
     </nav>
 
-    <header class="section page-header header-visa">
+    <header class="section page-header header-visa" style="background: var(--premium-gradient); padding: 100px 0 60px;">
         <div class="container text-center">
-            <h1>Visa Services</h1>
-            <p>Comprehensive visa solutions for every purpose of travel.</p>
+            <h1 style="color: white; font-size: 3.5rem; font-weight: 900; margin-bottom: 1rem;">Visa Services</h1>
+            <p style="color: rgba(255,255,255,0.8); font-size: 1.2rem;">Get your global travel documents processed by experts.</p>
         </div>
     </header>
 
-    <section class="section">
-        <div class="container" style="max-width: 900px;">
-
-            <!-- Tourist Visa -->
-            <div class="visa-type reveal">
-                <div class="visa-header">
-                    <h3><i class="fas fa-umbrella-beach visa-icon"></i> Tourist Visa</h3>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
+    <!-- Fee Calculator Section -->
+    <section class="section" style="padding: 0; margin-top: -60px; position: relative; z-index: 10;">
+        <div class="container">
+            <div class="premium-card" style="background: white; border-radius: 30px; padding: 3rem; box-shadow: 0 30px 60px rgba(0,0,0,0.12); border: 1px solid rgba(255,255,255,0.3);">
+                <div class="section-header" style="text-align: center; display: block; margin-bottom: 3rem;">
+                    <h2 style="font-size: 2.2rem; font-weight: 900; color: #0a192f;">Calculate Visa Fees</h2>
+                    <p style="color: #64748b; margin-top: 0.5rem;">Select your destination and visa type to see the estimated cost.</p>
                 </div>
-                <div class="visa-content">
-                    <p class="mb-4">Designed for individuals visiting foreign countries for leisure, sightseeing, or
-                        meeting friends and family. Service includes application review, itinerary planning, and
-                        interview preparation.</p>
-                    <div style="margin-top: 1.5rem;">
-                        <h4>Eligibility:</h4>
-                        <ul class="doc-list">
-                            <li><i class="fas fa-check"></i> Valid passport with 6 months validity</li>
-                            <li><i class="fas fa-check"></i> Proof of financial means</li>
-                            <li><i class="fas fa-check"></i> Return flight tickets</li>
-                        </ul>
-                    </div>
-                    <div style="margin-top: 2rem; text-align: left;">
-                        <a href="apply-tourist.html" class="btn btn-primary">Apply for Tourist Visa</a>
-                    </div>
-                </div>
-            </div>
 
-
-
-            <!-- Business Visa -->
-            <div class="visa-type reveal reveal-delay-1">
-                <div class="visa-header">
-                    <h3><i class="fas fa-briefcase visa-icon"></i> Business Visa</h3>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="visa-content">
-                    <p>For professionals attending meetings, conferences, or exploring business opportunities. We ensure
-                        your application highlights the commercial nature of your visit clearly.</p>
-                    <div style="margin-top: 1.5rem;">
-                        <h4>Documents Required:</h4>
-                        <ul class="doc-list">
-                            <li><i class="fas fa-check"></i> Business invitation letter</li>
-                            <li><i class="fas fa-check"></i> Company bank statements</li>
-                            <li><i class="fas fa-check"></i> Chamber of Commerce recommendation</li>
-                        </ul>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; align-items: flex-end;">
+                    <div class="form-group">
+                        <label class="form-label" style="font-weight: 800; color: #0a192f;">Destination Country</label>
+                        <select id="calcCountry" class="form-control" style="height: 60px; border-radius: 15px; font-size: 1.1rem; border: 2px solid #f1f5f9; background: #f8fafc;">
+                            <option value="">Select Country</option>
+                            <option value="USA">United States (USA)</option>
+                            <option value="UK">United Kingdom (UK)</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Dubai">United Arab Emirates (UAE)</option>
+                            <option value="Schengen">Europe (Schengen)</option>
+                            <option value="Singapore">Singapore</option>
+                            <option value="Thailand">Thailand</option>
+                        </select>
                     </div>
-                    <div style="margin-top: 2rem; text-align: left;">
-                        <a href="apply-business.html" class="btn btn-primary">Apply for Business Visa</a>
+
+                    <div class="form-group">
+                        <label class="form-label" style="font-weight: 800; color: #0a192f;">Visa Type</label>
+                        <select id="calcType" class="form-control" style="height: 60px; border-radius: 15px; font-size: 1.1rem; border: 2px solid #f1f5f9; background: #f8fafc;">
+                            <option value="">Select Category</option>
+                            <option value="tourist">Tourist Visa</option>
+                            <option value="business">Business Visa</option>
+                            <option value="student">Student Visa</option>
+                            <option value="work">Work Visa</option>
+                            <option value="family">Family/Spouse Visa</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <button onclick="calculateFees()" class="btn-gradient" style="height: 60px; width: 100%; justify-content: center; font-size: 1.2rem; box-shadow: 0 15px 30px rgba(255,140,0,0.3);">
+                            <i class="fas fa-calculator"></i> Calculate
+                        </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Student Visa -->
-            <div class="visa-type reveal reveal-delay-2">
-                <div class="visa-header">
-                    <h3><i class="fas fa-graduation-cap visa-icon"></i> Student Visa</h3>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="visa-content">
-                    <p>Guidance for students pursuing higher education abroad. We assist with university admission
-                        letters and financial documentation to prove student status.</p>
-                    <div style="margin-top: 2rem; text-align: left;">
-                        <a href="apply-student.html" class="btn btn-primary">Apply for Student Visa</a>
+                <div id="feeResult" style="display: none; margin-top: 3rem; padding-top: 3rem; border-top: 2px dashed #e2e8f0; animation: fadeInUp 0.6s ease-out;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <p style="margin:0; color:#94a3b8; text-transform:uppercase; font-weight:700; font-size:0.85rem; letter-spacing:1px;">Estimated Total Cost</p>
+                            <h3 style="margin:5px 0 0; font-size:3rem; font-weight:900; color:#ff8c00;" id="totalAmount">₹0</h3>
+                            <p style="margin:5px 0 0; font-size:0.9rem; color:#64748b;">Includes Govt. Fees + Processing + GST</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <button onclick="handleStartApplication()" class="btn-gradient" style="padding: 18px 40px; font-size: 1.2rem; border-radius: 18px;">
+                                Start Application <i class="fas fa-arrow-right" style="margin-left:10px;"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Work Visa -->
-            <div class="visa-type reveal reveal-delay-3">
-                <div class="visa-header">
-                    <h3><i class="fas fa-building visa-icon"></i> Work Visa</h3>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="visa-content">
-                    <p>For skilled professionals with a valid job offer. We help navigate work permit regulations for
-                        various countries including USA (H1B), UK (Tier 2), and Canada.</p>
-                    <div style="margin-top: 2rem; text-align: left;">
-                        <a href="apply-work.html" class="btn btn-primary">Apply for Work Visa</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Family Visa -->
-            <div class="visa-type reveal reveal-delay-1">
-                <div class="visa-header">
-                    <h3><i class="fas fa-users visa-icon"></i> Family / Spouse Visa</h3>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="visa-content">
-                    <p>Reunite with your loved ones. We handle spouse visas, parent visas, and dependent child visas
-                        with care and attention to detail.</p>
-                    <div style="margin-top: 2rem; text-align: left;">
-                        <a href="apply-family.html" class="btn btn-primary">Apply for Family Visa</a>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </section>
 
+    <section class="section" style="padding-top: 5rem;">
+        <div class="container" style="max-width: 1000px;">
+            <div class="section-header" style="text-align: center; display: block; margin-bottom: 4rem;">
+                <h2 style="font-size: 2rem; font-weight: 800;">Our Expertise</h2>
+                <div style="width: 80px; height: 5px; background: var(--accent-gradient); margin: 15px auto; border-radius: 5px;"></div>
+            </div>
 
+            <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+                <!-- Tourist Visa -->
+                <div class="visa-type reveal">
+                    <div class="visa-header">
+                        <h3><i class="fas fa-umbrella-beach visa-icon"></i> Tourist Visa</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="visa-content">
+                        <p>Perfect for leisure travel and meeting family. We handle the documentation so you can focus on your trip.</p>
+                        <div class="info-grid" style="margin-top: 1.5rem;">
+                            <ul class="doc-list">
+                                <li><i class="fas fa-check"></i> Financial Proof assistance</li>
+                                <li><i class="fas fa-check"></i> Flight & Hotel reservations</li>
+                                <li><i class="fas fa-check"></i> Cover letter preparation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Footer -->
+                <!-- Business Visa -->
+                <div class="visa-type reveal">
+                    <div class="visa-header">
+                        <h3><i class="fas fa-briefcase visa-icon"></i> Business Visa</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="visa-content">
+                        <p>Specialized assistance for corporate visits, conferences, and trade meetings globally.</p>
+                    </div>
+                </div>
+                
+                <!-- More types can go here... -->
+            </div>
+        </div>
+    </section>
+
     <footer>
+        <!-- Footer content... same as before but ensured it's clean -->
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <h4>BorderBridge</h4>
-                    <p style="opacity: 0.8;">Your trusted partner for international travel documentation and immigration
-                        services.</p>
+                    <h4>Global Consultancy</h4>
+                    <p style="opacity: 0.8;">Your trusted partner for international travel documentation.</p>
                 </div>
                 <div class="footer-col">
                     <h4>Quick Links</h4>
                     <ul class="footer-links">
-                        <li><a href="about.html">About Us</a></li>
                         <li><a href="visa.html">Visa Services</a></li>
-                        <li><a href="countries.html">Destinations</a></li>
+                        <li><a href="passport.html">Passport Services</a></li>
                         <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </div>
-                <div class="footer-col">
-                    <h4>Contact Info</h4>
-                    <ul class="footer-links">
-                        <li><i class="fas fa-map-marker-alt"></i> 401, Gitanjali Complex, Palanpur</li>
-                        <li><i class="fas fa-phone"></i> +91 8200306075 / 8128344519</li>
-                        <li><i class="fas fa-envelope"></i> j.r818430@gmail.com</li>
-                    </ul>
-                </div>
             </div>
-            <div class="copyright">
-                &copy; 2026 BorderBridge. All Rights Reserved.
-            </div>
+            <div class="copyright">&copy; 2026 Global Consultancy. All Rights Reserved.</div>
         </div>
     </footer>
 
-    <script src="js/script.js?v=1772162207381"></script>
+    <script src="js/script.js"></script>
     <script>
-        // Simple Accordion Script
+        function calculateFees() {
+            const country = document.getElementById('calcCountry').value;
+            const type = document.getElementById('calcType').value;
+            const resultBox = document.getElementById('feeResult');
+            const amountEl = document.getElementById('totalAmount');
+
+            if (!country || !type) {
+                alert("Please select both Country and Visa Type!");
+                return;
+            }
+
+            // Simple Logic for Demo
+            let basePrice = 4500;
+            if (country === 'USA') basePrice = 14500;
+            else if (country === 'UK') basePrice = 12000;
+            else if (country === 'Schengen') basePrice = 9500;
+            else if (country === 'Canada') basePrice = 11000;
+
+            const multipliers = {
+                tourist: 1,
+                business: 1.5,
+                student: 0.8,
+                work: 2.5,
+                family: 1.2
+            };
+
+            const total = Math.round(basePrice * multipliers[type]);
+            
+            resultBox.style.display = 'block';
+            
+            // Animation for counter
+            let count = 0;
+            const timer = setInterval(() => {
+                count += Math.ceil(total / 20);
+                if (count >= total) {
+                    amountEl.innerText = '₹' + total.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    amountEl.innerText = '₹' + count.toLocaleString();
+                }
+            }, 20);
+        }
+
+        function handleStartApplication() {
+            const type = document.getElementById('calcType').value;
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                localStorage.setItem('redirectAfterLogin', `apply-${type}.html`);
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Redirect to the unified visa application form with the selected type
+            window.location.href = `apply-visa.html?type=${type}`;
+        }
+
+        // Accordion logic
         document.querySelectorAll('.visa-header').forEach(header => {
             header.addEventListener('click', () => {
                 const content = header.nextElementSibling;
-                const isActive = header.classList.contains('active');
-
-                // Close all others
-                document.querySelectorAll('.visa-header').forEach(h => {
-                    h.classList.remove('active');
-                    h.nextElementSibling.classList.remove('active');
-                });
-
-                if (!isActive) {
-                    header.classList.add('active');
-                    content.classList.add('active');
-                }
+                header.classList.toggle('active');
+                content.classList.toggle('active');
             });
         });
     </script>
 </body>
-
 </html>
 

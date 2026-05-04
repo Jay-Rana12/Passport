@@ -14,6 +14,7 @@ const visaRoutes = require('./src/routes/visaRoutes');
 const passportRoutes = require('./src/routes/passportRoutes');
 const documentRoutes = require('./src/routes/documentRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
+const publicRoutes = require('./src/routes/publicRoutes');
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use('/api/visa', visaRoutes);
 app.use('/api/passport', passportRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/public', publicRoutes);
 
 // 3. Static files and Admin Panel
 app.get('/admin', (req, res) => {

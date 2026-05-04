@@ -118,7 +118,7 @@
 
                         <div class="form-group">
                             <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" class="form-control" placeholder="+1 234 567 8900">
+                            <input type="tel" id="phone" class="form-control" placeholder="8200306075" pattern="[0-9]{10}" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required title="Please enter 10 digit mobile number">
                         </div>
 
                         <div class="form-group">
@@ -150,7 +150,7 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <h4>Global Consultancy</h4>
+                    <h4>Border Bridge</h4>
                     <p style="opacity: 0.8;">Your trusted partner for international travel documentation and immigration
                         services.</p>
                 </div>

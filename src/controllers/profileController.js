@@ -93,26 +93,31 @@ exports.uploadDocument = async (req, res) => {
         // Ensure relative path is correct for static serving
         const filePath = `/uploads/documents/${req.file.filename}`;
         const { fieldName } = req.body;
+        console.log(`[SYS] Uploading document: ${req.file.filename} for field: ${fieldName || 'N/A'}`);
         
         let profile = await Profile.findOne({ user: req.user.id });
         if (!profile) {
-            profile = new Profile({ user: req.user.id });
+            console.log(`[SYS] No profile found for user ${req.user.id}, creating new...`);
+            profile = new Profile({ user: req.user.id, uploads: {} });
         }
         
-        // Use filename as key, sanitize it for MongoDB compatibility
+        // Ensure uploads is a Map
+        if (!profile.uploads || typeof profile.uploads.set !== 'function') {
+            console.log(`[SYS] Initializing uploads Map`);
+            profile.uploads = new Map();
+        }
+        
         const originalName = fieldName || req.file.originalname || `Doc_${Date.now()}`;
         const key = originalName.replace(/\./g, '_').replace(/\$/g, '_'); 
         
-        if (!profile.uploads) profile.uploads = new Map();
         profile.uploads.set(key, filePath);
         
-        console.log(`[SYS] Setting key ${key} to ${filePath}`);
+        console.log(`[SYS] Setting key "${key}" to "${filePath}"`);
         
-        // Crucial for Mongoose Maps to detect changes
         profile.markModified('uploads');
         const savedProfile = await profile.save();
         
-        console.log(`[SYS] Profile saved. Uploads count: ${savedProfile.uploads ? savedProfile.uploads.size : 0}`);
+        console.log(`[SYS] Profile saved successfully. Vault size: ${savedProfile.uploads.size}`);
         
         res.json({ success: true, data: filePath, key: key });
     } catch (err) {

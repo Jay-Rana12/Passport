@@ -1,60 +1,40 @@
-const nodemailer = require('nodemailer');
-const path = require('path');
-const fs = require('fs');
+const axios = require('axios');
 
 const sendEmail = async (options) => {
-    // 1. Create a transporter
-    const transporter = nodemailer.createTransport({
-        service: process.env.EMAIL_SERVICE || 'gmail',
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false, // Use STARTTLS
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-        },
-        connectionTimeout: 10000,
-        greetingTimeout: 5000,
-        socketTimeout: 15000
-    });
+    // Brevo API configuration (Set BREVO_API_KEY in Render Environment Variables)
+    const BREVO_API_KEY = process.env.BREVO_API_KEY;
+    const senderEmail = process.env.EMAIL_USER || 'j.r818430@gmail.com'; 
+    const senderName = 'BorderBridge Consultancy';
 
-    // 2. Define email options
-    let attachments = [];
-    if (options.attachments && options.attachments.length > 0) {
-        attachments = options.attachments.map(a => {
-            if (a.path) {
-                const resolvedPath = path.resolve(a.path);
-                if (fs.existsSync(resolvedPath)) {
-                    return { ...a, path: resolvedPath };
-                }
-                return null;
-            }
-            return a;
-        }).filter(a => a !== null);
+    if (!BREVO_API_KEY) {
+        console.error('❌ BREVO_API_KEY is not set in Environment Variables');
+        throw new Error('Email service configuration missing');
     }
 
-    const mailOptions = {
-        from: `"BorderBridge Support" <${process.env.EMAIL_USER}>`,
-        to: options.email,
+    const data = {
+        sender: { name: senderName, email: senderEmail },
+        to: [{ email: options.email }],
         subject: options.subject,
-        text: options.message,
-        html: options.html || `
-            <div style="font-family: sans-serif; padding: 20px; color: #333;">
-                <h2>BorderBridge Verification</h2>
-                <p>${options.message}</p>
-            </div>
-        `,
-        attachments
+        htmlContent: options.html || options.message,
+        textContent: options.message
     };
 
-    // 3. Actually send the email
     try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log(`[SYS] Email Sent: ${info.messageId}`);
-        return info;
+        const response = await axios.post('https://api.brevo.com/v3/smtp/email', data, {
+            headers: {
+                'accept': 'application/json',
+                'api-key': BREVO_API_KEY,
+                'content-type': 'application/json'
+            }
+        });
+
+        if (response.data && response.data.messageId) {
+            console.log(`✅ Email Sent Successfully via Brevo to: ${options.email}`);
+            return true;
+        }
     } catch (error) {
-        console.error('[SYS] Email Failed:', error.message);
-        throw error;
+        console.error('❌ Brevo Email Error:', error.response?.data?.message || error.message);
+        throw new Error(error.response?.data?.message || 'Failed to send email via Brevo');
     }
 };
 

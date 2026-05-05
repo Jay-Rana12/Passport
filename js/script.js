@@ -230,6 +230,9 @@ function initAuth() {
         const userFirstName = userName.split(' ')[0];
         const profilePic = user.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=ffc107&color=0a192f&rounded=true`;
 
+        // Check if we are on the profile page
+        const isProfilePage = window.location.pathname.includes('profile.html');
+
         // Robustly remove ANY login/get started buttons across all views
         const allLoginBtns = document.querySelectorAll('.btn-nav, .mobile-login-link, .btn-primary, .nav-link');
         allLoginBtns.forEach(btn => {
@@ -239,8 +242,8 @@ function initAuth() {
             }
         });
 
-        // Add Profile Item to navMenu if it doesn't exist
-        if (navMenu && !document.querySelector('.profile-nav-item')) {
+        // Add Profile Item to navMenu ONLY if not on profile page
+        if (navMenu && !document.querySelector('.profile-nav-item') && !isProfilePage) {
             const profileItem = document.createElement('li');
             profileItem.className = 'nav-item profile-nav-item';
             profileItem.innerHTML = `
@@ -252,10 +255,10 @@ function initAuth() {
             navMenu.appendChild(profileItem);
         }
 
-        // Add Logout (visible only on mobile nav or as separate link)
+        // Add Logout (Enforce mobile-only class)
         if (!document.querySelector('.mobile-logout-link')) {
             const logoutLi = document.createElement('li');
-            logoutLi.className = 'nav-item mobile-logout-li';
+            logoutLi.className = 'nav-item mobile-only-item mobile-logout-li'; // Added mobile-only-item class
             logoutLi.innerHTML = `<a href="#" class="nav-link mobile-logout-link" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i> Logout</a>`;
             navMenu.appendChild(logoutLi);
         }

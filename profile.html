@@ -332,6 +332,12 @@
                 if(success) {
                     const displayName = data.personalInfo?.fullName || data.user.name || data.user.email.split('@')[0];
                     
+                    // Sync with localStorage so navbar stays updated
+                    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+                    currentUser.profilePhoto = data.user.profilePhoto;
+                    currentUser.fullName = displayName;
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+
                     document.getElementById('bannerTitle').innerText = displayName + "'s Profile";
                     document.getElementById('welcomeText').innerText = "Welcome back, " + displayName + "!";
                     document.getElementById('sideName').innerText = displayName;
@@ -406,6 +412,12 @@
             if(res.ok) {
                 const result = await res.json();
                 document.getElementById('sideAvatar').src = result.data.profilePhoto;
+                
+                // CRITICAL: Update localStorage immediately so navbar reflects change
+                const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+                currentUser.profilePhoto = result.data.profilePhoto;
+                localStorage.setItem('user', JSON.stringify(currentUser));
+
                 alert('Profile photo updated successfully!');
             }
         }
@@ -471,7 +483,11 @@
             const res = await fetch('/api/profile/update', {
                 method: 'PUT', headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'}, body: JSON.stringify(obj)
             });
-            if(res.ok) { alert('Profile Updated Successfully!'); init(); }
+            if(res.ok) { 
+                alert('Profile Updated Successfully!'); 
+                // Re-init to sync localStorage
+                init(); 
+            }
         };
 
         init();

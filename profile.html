@@ -130,26 +130,35 @@
         .doc-item:hover { border-color: var(--bb-gold); background: white; transform: scale(1.03); }
         .doc-icon { font-size: 2.5rem; color: var(--bb-gold); margin-bottom: 10px; display: block; }
 
-        /* Responsive Mobile Fixes */
+        /* Mobile Specific Overrides */
         @media (max-width: 768px) {
             .dashboard-wrapper { grid-template-columns: 1fr; margin-top: -45px; padding: 0 10px; gap: 15px; }
             .bb-sidebar { display: none; }
+            
+            /* Stats Cards */
             .bb-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .bb-stat-card { padding: 15px 10px; gap: 8px; flex-direction: column; text-align: center; }
+            .bb-stat-card { padding: 15px 10px; gap: 8px; flex-direction: column; text-align: center; border-radius: 15px; }
             .stat-icon { width: 35px; height: 35px; font-size: 1rem; margin: 0 auto; }
             .bb-stat-card h2 { font-size: 1.1rem; margin: 5px 0; }
-            .bb-stat-card p { font-size: 0.6rem; }
+            .bb-stat-card p { font-size: 0.6rem; font-weight: 800; }
+            
+            /* Recent Activity Table -> Card List */
+            .app-table thead { display: none; }
+            .app-table, .app-table tbody, .app-table tr, .app-table td { display: block; width: 100%; }
+            .app-table tr { margin-bottom: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; padding: 10px; }
+            .app-table td { text-align: right; padding: 8px 10px; border: none; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
+            .app-table td::before { content: attr(data-label); font-weight: 800; color: #64748b; text-transform: uppercase; font-size: 0.7rem; }
+            
+            /* Edit Profile Form */
             .form-grid { grid-template-columns: 1fr; gap: 15px; }
             .bb-card { padding: 20px; border-radius: 15px; margin-bottom: 15px; }
-            .bb-card-title { font-size: 1.1rem; margin-bottom: 15px; }
+            .bb-card-title { font-size: 1.1rem; margin-bottom: 20px; }
+            .bb-input { padding: 12px; font-size: 0.95rem; }
+            
             .profile-banner { padding: 100px 0 60px; }
             .profile-banner h1 { font-size: 1.6rem; }
-            .profile-banner p { font-size: 0.9rem; }
-            .btn-update { width: 100%; padding: 12px; }
-            .doc-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .doc-item { padding: 15px; }
-            .table-box { border: 1px solid #eee; }
-            
+            .btn-update { width: 100%; padding: 15px; border-radius: 10px; }
+
             /* Mobile Bottom Nav Fix */
             .mobile-nav {
                 position: fixed; bottom: 0; left: 0; width: 100%; background: white;
@@ -361,11 +370,11 @@
                 } else {
                     tbody.innerHTML = allApps.slice(0, 5).map(app => `
                         <tr>
-                            <td>#${app.applicationId}</td>
-                            <td>${app.model} ${app.visaType || app.passportType}</td>
-                            <td>${new Date(app.createdAt).toLocaleDateString()}</td>
-                            <td><span class="tag tag-${app.status.toLowerCase()}">${app.status}</span></td>
-                            <td><a href="${app.pdfUrl || '#'}" target="_blank" style="color:var(--bb-gold); ${app.pdfUrl ? '' : 'display:none'}"><i class="fas fa-file-pdf"></i> Receipt</a></td>
+                            <td data-label="App ID">#${app.applicationId}</td>
+                            <td data-label="Service Type">${app.model} ${app.visaType || app.passportType}</td>
+                            <td data-label="Date">${new Date(app.createdAt).toLocaleDateString()}</td>
+                            <td data-label="Status"><span class="tag tag-${app.status.toLowerCase()}">${app.status}</span></td>
+                            <td data-label="Action"><a href="${app.pdfUrl || '#'}" target="_blank" style="color:var(--bb-gold); ${app.pdfUrl ? '' : 'display:none'}"><i class="fas fa-file-pdf"></i> Receipt</a></td>
                         </tr>
                     `).join('');
                 }

@@ -52,8 +52,8 @@ app.get('/admin', (req, res) => {
 app.use('/admin', express.static(path.join(__dirname, 'admin')));
 
 // General static files
-app.use(express.static('.', { extensions: ['html'] }));
-app.use('/uploads', express.static('uploads'));
+app.use(express.static(path.join(__dirname, '.'), { extensions: ['html'] }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Health Check
 app.get('/', (req, res) => {

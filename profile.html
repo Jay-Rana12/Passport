@@ -384,7 +384,7 @@
                             <td data-label="Service Type">${app.model} ${app.visaType || app.passportType}</td>
                             <td data-label="Date">${new Date(app.createdAt).toLocaleDateString()}</td>
                             <td data-label="Status"><span class="tag tag-${app.status.toLowerCase()}">${app.status}</span></td>
-                            <td data-label="Action"><a href="${app.pdfUrl || '#'}" target="_blank" style="color:var(--bb-gold); ${app.pdfUrl ? '' : 'display:none'}"><i class="fas fa-file-pdf"></i> Receipt</a></td>
+                            <td data-label="Action"><a href="${app.pdfUrl || '#'}" target="_blank" download="Receipt_${app.applicationId}.pdf" style="color:var(--bb-gold); ${app.pdfUrl ? '' : 'display:none'}"><i class="fas fa-file-pdf"></i> Receipt</a></td>
                         </tr>
                     `).join('');
                 }
@@ -395,7 +395,7 @@
                             <h4 style="margin:0; font-size:1.1rem; color:var(--bb-navy);">${app.model} Service</h4>
                             <p style="margin:5px 0; font-size:0.8rem; color:#64748b;">ID: <strong>${app.applicationId}</strong> | Date: ${new Date(app.createdAt).toLocaleDateString()}</p>
                         </div>
-                        <span class="tag tag-${app.status.toLowerCase()}">${app.status}</span>
+                            <a href="${app.pdfUrl || '#'}" target="_blank" download="Receipt_${app.applicationId}.pdf" class="tag tag-${app.status.toLowerCase()}" style="text-decoration:none;">${app.status}</a>
                     </div>
                 `).join('');
 

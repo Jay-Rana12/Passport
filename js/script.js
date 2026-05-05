@@ -230,24 +230,30 @@ function initAuth() {
         const userFirstName = userName.split(' ')[0];
         const profilePic = user.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=ffc107&color=0a192f&rounded=true`;
 
-        // Desktop Profile Dropdown / Link
-        if (getStartedBtn) {
+        // Clear any existing login/register buttons first to avoid duplicates
+        document.querySelectorAll('.btn-nav, .mobile-login-link, .btn-primary').forEach(btn => {
+            if (btn.innerText.toLowerCase().includes('login') || btn.innerText.toLowerCase().includes('get started')) {
+                btn.remove();
+            }
+        });
+
+        // Add Profile Item to navMenu if it doesn't exist
+        if (navMenu && !document.querySelector('.profile-nav-item')) {
             const profileItem = document.createElement('li');
             profileItem.className = 'nav-item profile-nav-item';
             profileItem.innerHTML = `
-                <a href="profile.html" class="nav-link profile-toggle-link" style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.2);">
+                <a href="profile.html" class="nav-link profile-toggle-link" style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); margin-left: 10px;">
                     <img src="${profilePic}" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--color-accent); object-fit: cover;">
                     <span style="font-weight: 600;">${userFirstName}</span>
                 </a>
             `;
             navMenu.appendChild(profileItem);
-            getStartedBtn.remove();
         }
 
-        // Add Logout to mobile menu if not exists
+        // Add Logout (visible only on mobile nav or as separate link)
         if (!document.querySelector('.mobile-logout-link')) {
             const logoutLi = document.createElement('li');
-            logoutLi.className = 'nav-item mobile-only-item';
+            logoutLi.className = 'nav-item mobile-logout-li';
             logoutLi.innerHTML = `<a href="#" class="nav-link mobile-logout-link" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i> Logout</a>`;
             navMenu.appendChild(logoutLi);
         }

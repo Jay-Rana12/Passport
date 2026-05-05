@@ -31,6 +31,8 @@ exports.createPassportApplication = async (req, res) => {
                 surname: d.surname,
                 dob: d.dob,
                 placeOfBirth: d.placeOfBirth,
+                birthDistrict: d.birthDistrict,
+                birthState: d.birthState,
                 gender: d.gender,
                 maritalStatus: d.maritalStatus,
                 nationality: d.nationality || 'Indian',
@@ -38,7 +40,9 @@ exports.createPassportApplication = async (req, res) => {
                 educationalQualification: d.educationalQualification,
                 aadhaarNumber: d.aadhaarNumber,
                 panNumber: d.panNumber,
-                voterId: d.voterId
+                voterId: d.voterId,
+                visibleMark: d.visibleMark,
+                citizenshipBy: d.citizenshipBy || 'Birth'
             },
             familyDetails: {
                 fatherName: d.fatherName,

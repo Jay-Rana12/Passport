@@ -21,14 +21,18 @@ const PassportApplicationSchema = new mongoose.Schema({
         surname: String,
         dob: Date,
         placeOfBirth: String,
+        birthDistrict: String,
+        birthState: String,
         gender: { type: String, enum: ['Male', 'Female', 'Other'] },
         maritalStatus: { type: String, enum: ['Single', 'Married', 'Divorced', 'Widowed', 'Separated'] },
         nationality: String,
+        citizenshipBy: { type: String, enum: ['Birth', 'Descent', 'Registration', 'Naturalization'], default: 'Birth' },
         employmentType: String,
         educationalQualification: String,
         aadhaarNumber: String,
         panNumber: String,
-        voterId: String
+        voterId: String,
+        visibleMark: String
     },
     familyDetails: {
         fatherName: String,

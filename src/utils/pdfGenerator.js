@@ -33,14 +33,12 @@ exports.generateVisaPDF = async (application, user, profile = null) => {
             let currentY = 120;
 
             // --- HERO SECTION (PHOTO & SUMMARY) ---
-            // QR Code
             try {
                 const qrData = `Visa App: ${application.applicationId}\nApplicant: ${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`;
                 const qrBuffer = await QRCode.toBuffer(qrData, { margin: 1, width: 80 });
                 doc.image(qrBuffer, 480, currentY, { width: 80 });
             } catch (err) {}
 
-            // Photo
             let photoPath = application.documents?.get ? application.documents.get('applicantPhoto') : application.documents?.applicantPhoto;
             if (!photoPath && profile?.uploads) photoPath = profile.uploads.get ? profile.uploads.get('profilePhoto') : profile.uploads.profilePhoto;
 
@@ -54,7 +52,6 @@ exports.generateVisaPDF = async (application, user, profile = null) => {
                 doc.rect(40, currentY, 90, 110).dash(5, { space: 2 }).strokeColor('#cbd5e1').stroke();
             }
 
-            // Summary Header
             doc.fontSize(18).fillColor('#0a192f').font('Helvetica-Bold').text(`${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`, 150, currentY + 5);
             doc.fontSize(11).fillColor('#475569').font('Helvetica').text(`Visa Category: ${application.visaType}`, 150, currentY + 30);
             doc.text(`Passport No: ${application.passportDetails?.passportNumber || 'N/A'}`);
@@ -63,7 +60,6 @@ exports.generateVisaPDF = async (application, user, profile = null) => {
 
             currentY += 130;
 
-            // --- HELPER FOR SECTIONS ---
             const drawSectionHeader = (title, y) => {
                 doc.rect(40, y, 532, 22).fill('#f1f5f9');
                 doc.fontSize(11).fillColor('#0f172a').font('Helvetica-Bold').text(title.toUpperCase(), 50, y + 6);
@@ -89,11 +85,11 @@ exports.generateVisaPDF = async (application, user, profile = null) => {
                 'Full Name': `${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`,
                 'Gender': application.applicantDetails?.gender,
                 'Date of Birth': application.applicantDetails?.dob ? new Date(application.applicantDetails.dob).toLocaleDateString() : 'N/A',
-                'Place of Birth': application.applicantDetails?.placeOfBirth,
+                'Nationality': application.applicantDetails?.nationality,
+                'Prev. Nationality': application.applicantDetails?.previousNationality || 'None',
                 'Marital Status': application.applicantDetails?.maritalStatus,
-                'Educational Qual.': application.applicantDetails?.educationalQualification,
-                'Occupation': application.applicantDetails?.occupation || 'N/A',
-                'Email': application.currentAddress?.email || user?.email
+                'National ID': application.applicantDetails?.nationalId || '-',
+                'Occupation': application.employmentDetails?.occupation || 'N/A'
             }, currentY);
 
             // 2. PASSPORT DETAILS
@@ -101,29 +97,31 @@ exports.generateVisaPDF = async (application, user, profile = null) => {
             currentY = drawFields({
                 'Passport Number': application.passportDetails?.passportNumber,
                 'Issuing Authority': application.passportDetails?.issuingAuthority,
+                'Place of Issue': application.passportDetails?.placeOfIssue || '-',
                 'Issue Date': application.passportDetails?.issueDate ? new Date(application.passportDetails.issueDate).toLocaleDateString() : 'N/A',
-                'Expiry Date': application.passportDetails?.expiryDate ? new Date(application.passportDetails.expiryDate).toLocaleDateString() : 'N/A',
-                'Aadhaar Number': application.applicantDetails?.aadhaarNumber,
-                'PAN Number': application.applicantDetails?.panNumber
+                'Expiry Date': application.passportDetails?.expiryDate ? new Date(application.passportDetails.expiryDate).toLocaleDateString() : 'N/A'
             }, currentY);
 
             // 3. TRAVEL & DESTINATION
             currentY = drawSectionHeader('Travel & Destination Details', currentY);
             currentY = drawFields({
-                'Destination Country': application.travelDetails?.destinationCountry,
-                'Purpose of Visit': application.travelDetails?.purposeOfVisit,
-                'Duration of Stay': `${application.travelDetails?.durationOfStay || 'N/A'} Days`,
-                'Expected Travel Date': application.travelDetails?.expectedTravelDate ? new Date(application.travelDetails.expectedTravelDate).toLocaleDateString() : 'N/A'
+                'Destination': application.travelDetails?.destinationCountry,
+                'Expected Arrival': application.travelDetails?.arrivalDate ? new Date(application.travelDetails.arrivalDate).toLocaleDateString() : 'N/A',
+                'Expected Departure': application.travelDetails?.departureDate ? new Date(application.travelDetails.departureDate).toLocaleDateString() : 'N/A',
+                'Stay Duration': `${application.travelDetails?.durationOfStay || 'N/A'} Days`,
+                'Port of Arrival': application.travelDetails?.portOfArrival || '-',
+                'Number of Entries': application.travelDetails?.numberOfEntries || 'Single',
+                'Purpose of Visit': application.travelDetails?.purposeOfVisit
             }, currentY);
 
-            // 4. ADDRESS DETAILS
-            currentY = drawSectionHeader('Residential Address Details', currentY);
+            // 4. ADDRESS & CONTACT
+            currentY = drawSectionHeader('Contact Details', currentY);
             currentY = drawFields({
-                'Full Address': `${application.currentAddress?.houseNo || ''} ${application.currentAddress?.street || ''}, ${application.currentAddress?.villageTownCity || ''}`,
+                'Full Address': `${application.currentAddress?.houseNo || ''} ${application.currentAddress?.street || ''}, ${application.currentAddress?.city || ''}`,
                 'State': application.currentAddress?.state,
-                'District': application.currentAddress?.district,
                 'PIN Code': application.currentAddress?.pincode,
-                'Mobile Number': application.currentAddress?.mobileNumber
+                'Mobile Number': application.currentAddress?.mobileNumber,
+                'Email': application.currentAddress?.email || user?.email
             }, currentY);
 
             // --- SELF DECLARATION ---
@@ -202,8 +200,7 @@ exports.generatePassportPDF = async (application, user, profile = null) => {
             doc.fontSize(18).fillColor('#064e3b').font('Helvetica-Bold').text(`${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`, 150, currentY + 5);
             doc.fontSize(11).fillColor('#475569').font('Helvetica').text(`Service Type: ${application.passportType}`, 150, currentY + 30);
             doc.text(`Aadhaar No: ${application.applicantDetails?.aadhaarNumber || 'N/A'}`);
-            doc.text(`Booklet Type: ${application.bookletType || '36 Pages'}`);
-            doc.text(`Validity: ${application.validityRequired || '10 Years'}`);
+            doc.text(`Applied On: ${new Date(application.submissionDate || Date.now()).toLocaleDateString()}`);
 
             currentY += 130;
 
@@ -233,10 +230,14 @@ exports.generatePassportPDF = async (application, user, profile = null) => {
                 'Gender': application.applicantDetails?.gender,
                 'DOB': application.applicantDetails?.dob ? new Date(application.applicantDetails.dob).toLocaleDateString() : 'N/A',
                 'Place of Birth': application.applicantDetails?.placeOfBirth,
+                'Birth District': application.applicantDetails?.birthDistrict || '-',
+                'Birth State': application.applicantDetails?.birthState || '-',
+                'Citizenship By': application.applicantDetails?.citizenshipBy || 'Birth',
                 'Marital Status': application.applicantDetails?.maritalStatus,
-                'Nationality': application.applicantDetails?.nationality || 'Indian',
-                'Educational Qualification': application.applicantDetails?.educationalQualification,
-                'Employment Type': application.applicantDetails?.employmentType
+                'Educational Qual.': application.applicantDetails?.educationalQualification,
+                'Employment Type': application.applicantDetails?.employmentType,
+                'Voter ID': application.applicantDetails?.voterId || 'N/A',
+                'Identity Mark': application.applicantDetails?.visibleMark || 'None'
             }, currentY);
 
             // 2. FAMILY DETAILS
@@ -251,28 +252,17 @@ exports.generatePassportPDF = async (application, user, profile = null) => {
             // 3. ADDRESS DETAILS
             currentY = drawSectionHeader('3. Residential Address Details', currentY);
             currentY = drawFields({
-                'House / Street': `${application.presentAddress?.houseNo || ''} ${application.presentAddress?.street || ''}`,
+                'Present Address': `${application.presentAddress?.houseNo || ''} ${application.presentAddress?.street || ''}`,
                 'Village/Town/City': application.presentAddress?.villageTownCity,
-                'Police Station': application.presentAddress?.policeStation,
                 'District': application.presentAddress?.district,
                 'State': application.presentAddress?.state,
                 'PIN Code': application.presentAddress?.pincode,
-                'Mobile No': application.presentAddress?.mobileNumber,
-                'Email ID': application.presentAddress?.email
+                'Mobile No': application.presentAddress?.mobileNumber
             }, currentY);
 
-            // 4. EMERGENCY CONTACT
-            currentY = drawSectionHeader('4. Emergency Contact Details', currentY);
-            currentY = drawFields({
-                'Name': application.emergencyContactDetails?.name,
-                'Relationship': application.emergencyContactDetails?.relationship,
-                'Mobile Number': application.emergencyContactDetails?.mobileNumber,
-                'Full Address': application.emergencyContactDetails?.address
-            }, currentY);
-
-            // 5. SELF DECLARATION
+            // 4. SELF DECLARATION
             if (currentY > 600) doc.addPage(), currentY = 50;
-            currentY = drawSectionHeader('5. Self Declaration', currentY);
+            currentY = drawSectionHeader('4. Self Declaration', currentY);
             doc.fontSize(8.5).fillColor('#475569').font('Helvetica').text(
                 'I, the undersigned, solemnly declare that I am a citizen of India and have not acquired citizenship of any other country. I have not suppressed any information or provided false details. I am fully aware of the legal consequences of providing incorrect information under the Passports Act, 1967. I hereby authorize the verification of my details for processing this application.',
                 50, currentY, { width: 512, align: 'justify', lineGap: 3 }

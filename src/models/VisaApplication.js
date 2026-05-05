@@ -22,6 +22,7 @@ const VisaApplicationSchema = new mongoose.Schema({
         dob: Date,
         gender: { type: String, enum: ['Male', 'Female', 'Other'] },
         nationality: String,
+        previousNationality: String,
         maritalStatus: { type: String, enum: ['Single', 'Married', 'Divorced', 'Widowed', 'Separated'] },
         nationalId: String
     },
@@ -44,15 +45,19 @@ const VisaApplicationSchema = new mongoose.Schema({
     travelDetails: {
         destinationCountry: String,
         travelDate: Date,
-        returnDate: Date,
+        arrivalDate: Date,
+        departureDate: Date,
         durationOfStay: String,
-        purposeOfVisit: String
+        purposeOfVisit: String,
+        portOfArrival: String,
+        numberOfEntries: { type: String, enum: ['Single', 'Double', 'Multiple'], default: 'Single' }
     },
     passportDetails: {
         passportNumber: String,
         issueDate: Date,
         expiryDate: Date,
-        issuingAuthority: String
+        issuingAuthority: String,
+        placeOfIssue: String
     },
     sponsorDetails: {
         name: String,
@@ -92,7 +97,7 @@ const VisaApplicationSchema = new mongoose.Schema({
 VisaApplicationSchema.pre('save', function (next) {
     if (this.status === 'Draft' || this.status === 'Pending') {
         let filledCount = 0;
-        let totalCount = 18; // Approximate main fields
+        let totalCount = 20; // Adjusted for new fields
 
         if (this.applicantDetails?.givenName) filledCount++;
         if (this.applicantDetails?.dob) filledCount++;
@@ -108,7 +113,7 @@ VisaApplicationSchema.pre('save', function (next) {
         if (this.sponsorDetails?.name) filledCount++;
         if (this.travelHistory?.hasTraveledBefore) filledCount++;
         if (this.declaration?.isAccepted) filledCount++;
-        if (this.documents && Object.keys(this.documents).length > 0) filledCount += 4; // simplified approx
+        if (this.documents && Object.keys(this.documents).length > 0) filledCount += 4; 
 
         this.progressPercentage = Math.min(Math.round((filledCount / totalCount) * 100), 100);
     }
@@ -116,4 +121,3 @@ VisaApplicationSchema.pre('save', function (next) {
 });
 
 module.exports = mongoose.model('VisaApplication', VisaApplicationSchema);
-

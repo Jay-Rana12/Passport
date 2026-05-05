@@ -154,13 +154,17 @@
                     <div class="input-box"><label>Given Name</label><input type="text" name="givenName" class="f-input" required></div>
                     <div class="input-box"><label>Surname</label><input type="text" name="surname" class="f-input" required></div>
                     <div class="input-box"><label>Date of Birth</label><input type="date" name="dob" class="f-input" required></div>
-                    <div class="input-box"><label>Place of Birth</label><input type="text" name="placeOfBirth" class="f-input" required></div>
+                    <div class="input-box"><label>Place of Birth (Town/City)</label><input type="text" name="placeOfBirth" class="f-input" required></div>
+                    <div class="input-box"><label>Birth District</label><input type="text" name="birthDistrict" class="f-input" required></div>
+                    <div class="input-box"><label>Birth State</label><input type="text" name="birthState" class="f-input" required></div>
                     <div class="input-box"><label>Gender</label><select name="gender" class="f-input"><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
-                    <div class="input-box"><label>Marital Status</label><select name="maritalStatus" class="f-input"><option value="Single">Single</option><option value="Married">Married</option><option value="Divorced">Divorced</option></select></div>
+                    <div class="input-box"><label>Citizenship by</label><select name="citizenshipBy" class="f-input"><option value="Birth">Birth</option><option value="Descent">Descent</option><option value="Registration">Registration</option><option value="Naturalization">Naturalization</option></select></div>
                     <div class="input-box"><label>Aadhaar Number</label><input type="text" name="aadhaarNumber" class="f-input" maxlength="12" required></div>
                     <div class="input-box"><label>PAN Card (Optional)</label><input type="text" name="panNumber" class="f-input" maxlength="10"></div>
-                    <div class="input-box"><label>Employment Type</label><input type="text" name="employmentType" class="f-input" placeholder="e.g. Government, Private, Self Employed"></div>
-                    <div class="input-box"><label>Education Qualification</label><input type="text" name="educationalQualification" class="f-input" placeholder="e.g. Graduate, 10th Pass"></div>
+                    <div class="input-box"><label>Voter ID (Optional)</label><input type="text" name="voterId" class="f-input" maxlength="15"></div>
+                    <div class="input-box"><label>Employment Type</label><select name="employmentType" class="f-input"><option value="Private">Private</option><option value="Government">Government</option><option value="Self Employed">Self Employed</option><option value="Student">Student</option><option value="Retired">Retired</option><option value="Other">Other</option></select></div>
+                    <div class="input-box"><label>Education Qualification</label><select name="educationalQualification" class="f-input"><option value="Graduate">Graduate and Above</option><option value="10th Pass">10th Pass or Above</option><option value="Below 10th">Below 10th Pass</option></select></div>
+                    <div class="input-box full"><label>Visible Distinguishing Mark (if any)</label><input type="text" name="visibleMark" class="f-input" placeholder="e.g. Mole on right cheek, scar on forehead"></div>
                 </div>
             </div>
 

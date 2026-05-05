@@ -34,7 +34,9 @@ exports.createVisaApplication = async (req, res) => {
                 dob: d.dob,
                 gender: d.gender,
                 nationality: d.nationality,
-                maritalStatus: d.maritalStatus
+                previousNationality: d.previousNationality,
+                maritalStatus: d.maritalStatus,
+                nationalId: d.nationalId
             },
             employmentDetails: {
                 occupation: d.occupation,
@@ -53,14 +55,20 @@ exports.createVisaApplication = async (req, res) => {
             travelDetails: {
                 destinationCountry: d.destinationCountry,
                 travelDate: d.travelDate,
+                arrivalDate: d.arrivalDate,
+                departureDate: d.departureDate,
                 durationOfStay: d.durationOfStay,
-                purposeOfVisit: d.purposeOfVisit
+                purposeOfVisit: d.purposeOfVisit,
+                portOfArrival: d.portOfArrival,
+                numberOfEntries: d.numberOfEntries || 'Single'
             },
             passportDetails: {
                 passportNumber: d.passportNumber,
                 issuingAuthority: d.issuingAuthority,
                 issueDate: d.issueDate,
-                expiryDate: d.expiryDate
+                expiryDate: d.expiryDate,
+                issuingAuthority: d.issuingAuthority,
+                placeOfIssue: d.placeOfIssue
             },
             declaration: { isAccepted: true },
             status: d.status || 'Draft',

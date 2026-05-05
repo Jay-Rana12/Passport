@@ -92,6 +92,10 @@
                     </div>
                     <div class="input-box"><label>Expected Travel Date</label><input type="date" name="travelDate" class="f-input" required></div>
                     <div class="input-box"><label>Planned Stay Duration (Days)</label><input type="number" name="durationOfStay" class="f-input" placeholder="e.g. 30" required></div>
+                    <div class="input-box"><label>Expected Arrival Date</label><input type="date" name="arrivalDate" class="f-input" required></div>
+                    <div class="input-box"><label>Expected Departure Date</label><input type="date" name="departureDate" class="f-input" required></div>
+                    <div class="input-box"><label>Port of Arrival</label><input type="text" name="portOfArrival" class="f-input" placeholder="e.g. JFK Airport, London Heathrow" required></div>
+                    <div class="input-box"><label>Number of Entries</label><select name="numberOfEntries" class="f-input"><option value="Single">Single Entry</option><option value="Double">Double Entry</option><option value="Multiple">Multiple Entry</option></select></div>
                     <div class="input-box full"><label>Main Purpose of Visit</label><textarea name="purposeOfVisit" class="f-input" rows="2" placeholder="Describe why you are traveling" required></textarea></div>
                 </div>
             </div>
@@ -105,7 +109,9 @@
                     <div class="input-box"><label>Date of Birth</label><input type="date" name="dob" class="f-input" required></div>
                     <div class="input-box"><label>Gender</label><select name="gender" class="f-input"><option value="Male">Male</option><option value="Female">Female</option></select></div>
                     <div class="input-box"><label>Nationality</label><input type="text" name="nationality" class="f-input" value="Indian" required></div>
-                    <div class="input-box"><label>Marital Status</label><select name="maritalStatus" class="f-input"><option value="Single">Single</option><option value="Married">Married</option></select></div>
+                    <div class="input-box"><label>Previous Nationality (If any)</label><input type="text" name="previousNationality" class="f-input" placeholder="None"></div>
+                    <div class="input-box"><label>Marital Status</label><select name="maritalStatus" class="f-input"><option value="Single">Single</option><option value="Married">Married</option><option value="Divorced">Divorced</option></select></div>
+                    <div class="input-box"><label>National ID / Voter ID</label><input type="text" name="nationalId" class="f-input" placeholder="Enter ID number"></div>
                 </div>
             </div>
 
@@ -117,6 +123,7 @@
                     <div class="input-box"><label>Issuing Authority</label><input type="text" name="issuingAuthority" class="f-input" placeholder="e.g. Govt. of India" required></div>
                     <div class="input-box"><label>Date of Issue</label><input type="date" name="issueDate" class="f-input" required></div>
                     <div class="input-box"><label>Date of Expiry</label><input type="date" name="expiryDate" class="f-input" required></div>
+                    <div class="input-box full"><label>Place of Issue</label><input type="text" name="placeOfIssue" class="f-input" placeholder="e.g. Ahmedabad, Mumbai" required></div>
                 </div>
             </div>
 

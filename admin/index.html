@@ -419,6 +419,7 @@
             }
         }
 
+        @media (max-width: 768px) {
             .stat-card h3 {
                 font-size: 1.5rem !important;
             }
@@ -447,6 +448,7 @@
             padding: 40px;
             position: relative;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            text-align: center;
         }
         .close-modal {
             position: absolute;
@@ -471,6 +473,7 @@
             letter-spacing: 1px;
             border-bottom: 1px solid #e2e8f0;
             padding-bottom: 8px;
+            text-align: center;
         }
         .detail-grid {
             display: grid;
@@ -488,6 +491,12 @@
         .detail-item span {
             font-weight: 600;
             color: #1e293b;
+            display: block;
+        }
+        .action-flex {
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
     </style>
 </head>
@@ -713,7 +722,7 @@
     <div id="detailModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
-            <div id="modal-header" style="margin-bottom: 30px; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px;">
+            <div id="modal-header" style="margin-bottom: 30px; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; text-align: center;">
                 <h2 id="modal-title" style="margin: 0; color: #0f172a;">Application Details</h2>
                 <p id="modal-subtitle" style="margin: 5px 0 0; color: #64748b;">ID: BB-123456</p>
             </div>
@@ -901,12 +910,14 @@
                     <td>${new Date(app.createdAt).toLocaleDateString()}</td>
                     <td><span class="status-badge status-${app.status}">${app.status}</span></td>
                     <td>
-                        <button onclick="showAppDetails('Visa', '${app._id}')" class="action-btn">Detail</button>
-                        <select onchange="updateAppStatus('${app._id}', 'Visa', this.value)" class="action-btn">
-                            <option value="">Update...</option>
-                            <option value="Processing">Process</option>
-                            <option value="Approved">Approve</option>
-                        </select>
+                        <div class="action-flex">
+                            <button onclick="showAppDetails('Visa', '${app._id}')" class="action-btn">Detail</button>
+                            <select onchange="updateAppStatus('${app._id}', 'Visa', this.value)" class="action-btn">
+                                <option value="">Update...</option>
+                                <option value="Processing">Process</option>
+                                <option value="Approved">Approve</option>
+                            </select>
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -919,12 +930,14 @@
                     <td>${new Date(app.createdAt).toLocaleDateString()}</td>
                     <td><span class="status-badge status-${app.status}">${app.status}</span></td>
                     <td>
-                        <button onclick="showAppDetails('Passport', '${app._id}')" class="action-btn">Detail</button>
-                        <select onchange="updateAppStatus('${app._id}', 'Passport', this.value)" class="action-btn">
-                            <option value="">Update...</option>
-                            <option value="Processing">Process</option>
-                            <option value="Approved">Approve</option>
-                        </select>
+                        <div class="action-flex">
+                            <button onclick="showAppDetails('Passport', '${app._id}')" class="action-btn">Detail</button>
+                            <select onchange="updateAppStatus('${app._id}', 'Passport', this.value)" class="action-btn">
+                                <option value="">Update...</option>
+                                <option value="Processing">Process</option>
+                                <option value="Approved">Approve</option>
+                            </select>
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -986,4 +999,3 @@
 </body>
 
 </html>
-

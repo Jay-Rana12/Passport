@@ -59,6 +59,26 @@
         .btn-back { background: #f1f5f9; color: #475569; padding: 18px 40px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .btn-next { background: linear-gradient(135deg, var(--accent), #059669); color: white; padding: 18px 50px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(16,185,129,0.25); transition: 0.4s; }
         .btn-next:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(16,185,129,0.35); }
+
+        /* Responsive Fixes */
+        @media (max-width: 768px) {
+            body { padding-top: 70px; }
+            .app-container { margin: 20px auto; padding: 0 15px; }
+            .stepper { margin-bottom: 30px; }
+            .step-label { display: none; } /* Hide labels on mobile to save space */
+            .s-icon { width: 40px; height: 40px; font-size: 0.9rem; }
+            .stepper::before, .p-line { top: 20px; }
+            
+            .form-card { padding: 25px 20px; border-radius: 20px; }
+            .section-header h2 { font-size: 1.4rem; }
+            
+            .grid, .grid-3 { grid-template-columns: 1fr; gap: 15px; }
+            .input-box label { font-size: 0.75rem; margin-bottom: 6px; }
+            .f-input { padding: 12px 15px; font-size: 0.95rem; }
+            
+            .btn-row { flex-direction: column-reverse; gap: 15px; margin-top: 30px; }
+            .btn-next, .btn-back { width: 100%; padding: 15px; }
+        }
     </style>
 </head>
 <body>

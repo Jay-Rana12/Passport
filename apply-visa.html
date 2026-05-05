@@ -42,6 +42,26 @@
         .btn-next { background: var(--color-accent-gradient); color: white; padding: 15px 45px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(255,140,0,0.2); }
         
         .premium-select { cursor: pointer; }
+
+        /* Responsive Fixes */
+        @media (max-width: 768px) {
+            body { padding-top: 70px; }
+            .app-container { margin: 20px auto; padding: 0 15px; }
+            .stepper { margin-bottom: 30px; }
+            .step-label { display: none; }
+            .s-icon { width: 38px; height: 38px; font-size: 0.8rem; }
+            .stepper::before, .p-line { top: 19px; }
+            
+            .form-card { padding: 25px 20px; border-radius: 20px; }
+            .form-section-title { font-size: 1.25rem; margin-bottom: 20px; }
+            
+            .grid { grid-template-columns: 1fr; gap: 15px; }
+            .input-box { margin-bottom: 15px; }
+            .f-input { padding: 12px 15px; }
+            
+            .btn-row { flex-direction: column-reverse; gap: 12px; margin-top: 30px; }
+            .btn-next, .btn-back { width: 100%; padding: 15px; }
+        }
     </style>
 </head>
 <body>

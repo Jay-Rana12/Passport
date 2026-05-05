@@ -23,8 +23,8 @@ exports.generateVisaPDF = async (application, user, profile = null) => {
 
             // --- HEADER ---
             doc.rect(0, 0, 612, 100).fill('#0a192f');
-            doc.fontSize(26).fillColor('#ffffff').font('Helvetica-Bold').text('BorderBridge Consultancy', 40, 30);
-            doc.fontSize(10).fillColor('#ffc107').font('Helvetica').text('PREMIUM VISA & IMMIGRATION SERVICES • SINCE 2026', 40, 65);
+            doc.fontSize(22).fillColor('#ffffff').font('Helvetica-Bold').text('BorderBridge Consultancy', 40, 32, { width: 280 });
+            doc.fontSize(9).fillColor('#ffc107').font('Helvetica').text('PREMIUM VISA & IMMIGRATION SERVICES • SINCE 2026', 40, 62, { width: 280 });
 
             doc.fontSize(14).fillColor('#ffffff').font('Helvetica-Bold').text('VISA APPLICATION FORM', 300, 40, { width: 270, align: 'right' });
             doc.fontSize(10).fillColor('#94a3b8').font('Helvetica').text(`ID: ${application.applicationId || 'N/A'}`, 300, 65, { width: 270, align: 'right' });
@@ -170,8 +170,8 @@ exports.generatePassportPDF = async (application, user, profile = null) => {
 
             // --- HEADER ---
             doc.rect(0, 0, 612, 100).fill('#064e3b');
-            doc.fontSize(26).fillColor('#ffffff').font('Helvetica-Bold').text('BorderBridge Consultancy', 40, 30);
-            doc.fontSize(10).fillColor('#10b981').font('Helvetica').text('GOVERNMENT PASSPORT SERVICES PARTNER • ISO CERTIFIED', 40, 65);
+            doc.fontSize(22).fillColor('#ffffff').font('Helvetica-Bold').text('BorderBridge Consultancy', 40, 32, { width: 280 });
+            doc.fontSize(9).fillColor('#10b981').font('Helvetica').text('GOVERNMENT PASSPORT SERVICES PARTNER • ISO CERTIFIED', 40, 62, { width: 280 });
 
             doc.fontSize(14).fillColor('#ffffff').font('Helvetica-Bold').text('PASSPORT APPLICATION FORM', 300, 40, { width: 270, align: 'right' });
             doc.fontSize(10).fillColor('#a7f3d0').font('Helvetica').text(`REG: ${application.applicationId || 'N/A'}`, 300, 65, { width: 270, align: 'right' });

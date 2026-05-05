@@ -230,9 +230,11 @@ function initAuth() {
         const userFirstName = userName.split(' ')[0];
         const profilePic = user.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=ffc107&color=0a192f&rounded=true`;
 
-        // Clear any existing login/register buttons first to avoid duplicates
-        document.querySelectorAll('.btn-nav, .mobile-login-link, .btn-primary').forEach(btn => {
-            if (btn.innerText.toLowerCase().includes('login') || btn.innerText.toLowerCase().includes('get started')) {
+        // Robustly remove ANY login/get started buttons across all views
+        const allLoginBtns = document.querySelectorAll('.btn-nav, .mobile-login-link, .btn-primary, .nav-link');
+        allLoginBtns.forEach(btn => {
+            const txt = btn.innerText.toLowerCase();
+            if (txt === 'login' || txt === 'get started' || txt.includes('login / register')) {
                 btn.remove();
             }
         });

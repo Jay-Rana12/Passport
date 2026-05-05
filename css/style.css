@@ -811,8 +811,13 @@ footer {
     }
 }
 
+/* Navbar Visibility Fixes */
+.mobile-only-item { display: none !important; }
+
 /* Mobile Devices & Tablets (Portrait) */
 @media (max-width: 991px) {
+    .mobile-only-item { display: block !important; }
+    
     .btn-nav {
         display: none !important;
     }

@@ -4,12 +4,12 @@ const path = require('path');
 const QRCode = require('qrcode');
 
 /**
- * Professional PDF Generator with Photo, Signature and QR Code
+ * Professional PDF Generator with Detail Grid (Inspired by Govt. Forms)
  */
 exports.generateVisaPDF = async (application, user, profile = null) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(`[PDF] Generating Visa PDF for ${application.applicationId}`);
+            console.log(`[PDF] Generating Detailed Visa PDF for ${application.applicationId}`);
             const doc = new PDFDocument({ margin: 40, size: 'A4' });
 
             const dirPath = path.join(__dirname, '../../uploads/pdfs');
@@ -21,93 +21,132 @@ exports.generateVisaPDF = async (application, user, profile = null) => {
             const stream = fs.createWriteStream(filePath);
             doc.pipe(stream);
 
-            // HEADER
-            doc.rect(0, 0, 612, 120).fill('#0a192f');
-            doc.fontSize(28).fillColor('#ffffff').font('Helvetica-Bold').text('BorderBridge Consultancy', 40, 35);
-            doc.fontSize(12).fillColor('#ffc107').font('Helvetica').text('PREMIUM VISA & IMMIGRATION SERVICES', 40, 75);
+            // --- HEADER ---
+            doc.rect(0, 0, 612, 100).fill('#0a192f');
+            doc.fontSize(26).fillColor('#ffffff').font('Helvetica-Bold').text('BorderBridge Consultancy', 40, 30);
+            doc.fontSize(10).fillColor('#ffc107').font('Helvetica').text('PREMIUM VISA & IMMIGRATION SERVICES • SINCE 2026', 40, 65);
 
-            doc.fontSize(16).fillColor('#ffffff').font('Helvetica-Bold').text('VISA APPLICATION FORM', 350, 45, { align: 'right' });
-            doc.fontSize(11).fillColor('#94a3b8').font('Helvetica').text(`App No: ${application.applicationId || 'N/A'}`, 350, 70, { align: 'right' });
+            doc.fontSize(14).fillColor('#ffffff').font('Helvetica-Bold').text('VISA APPLICATION FORM', 350, 40, { align: 'right' });
+            doc.fontSize(10).fillColor('#94a3b8').font('Helvetica').text(`ID: ${application.applicationId || 'N/A'}`, 350, 60, { align: 'right' });
 
-            // QR
+            doc.fillColor('#000000'); // Reset
+            let currentY = 120;
+
+            // --- HERO SECTION (PHOTO & SUMMARY) ---
+            // QR Code
             try {
                 const qrData = `Visa App: ${application.applicationId}\nApplicant: ${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`;
                 const qrBuffer = await QRCode.toBuffer(qrData, { margin: 1, width: 80 });
-                doc.image(qrBuffer, 480, 140, { width: 80 });
+                doc.image(qrBuffer, 480, currentY, { width: 80 });
             } catch (err) {}
 
-            // PHOTO
-            const topY = 140;
+            // Photo
             let photoPath = application.documents?.get ? application.documents.get('applicantPhoto') : application.documents?.applicantPhoto;
             if (!photoPath && profile?.uploads) photoPath = profile.uploads.get ? profile.uploads.get('profilePhoto') : profile.uploads.profilePhoto;
 
             if (photoPath) {
                 const fullPath = path.isAbsolute(photoPath) ? photoPath : path.join(__dirname, '../../', photoPath);
                 if (fs.existsSync(fullPath)) {
-                    doc.image(fullPath, 40, topY, { width: 100, height: 120 });
-                    doc.rect(40, topY, 100, 120).strokeColor('#0a192f').lineWidth(1).stroke();
+                    doc.image(fullPath, 40, currentY, { width: 90, height: 110 });
+                    doc.rect(40, currentY, 90, 110).strokeColor('#0a192f').lineWidth(1).stroke();
                 }
             } else {
-                doc.rect(40, topY, 100, 120).dash(5, { space: 2 }).strokeColor('#cbd5e1').stroke();
+                doc.rect(40, currentY, 90, 110).dash(5, { space: 2 }).strokeColor('#cbd5e1').stroke();
             }
 
-            // INFO
-            doc.fontSize(20).fillColor('#0a192f').font('Helvetica-Bold').text(`${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`, 160, topY + 5);
-            doc.fontSize(13).fillColor('#475569').font('Helvetica').text(`Visa Category: ${application.visaType}`, 160, topY + 35);
+            // Summary Header
+            doc.fontSize(18).fillColor('#0a192f').font('Helvetica-Bold').text(`${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`, 150, currentY + 5);
+            doc.fontSize(11).fillColor('#475569').font('Helvetica').text(`Visa Category: ${application.visaType}`, 150, currentY + 30);
             doc.text(`Passport No: ${application.passportDetails?.passportNumber || 'N/A'}`);
             doc.text(`Nationality: ${application.applicantDetails?.nationality || 'Indian'}`);
+            doc.text(`Applied On: ${new Date(application.createdAt || Date.now()).toLocaleDateString()}`);
 
-            doc.moveDown(4);
+            currentY += 130;
 
-            const drawSection = (title, data) => {
-                if (doc.y > 650) doc.addPage();
-                const currentY = doc.y;
-                doc.rect(40, currentY, 532, 28).fill('#f8fafc');
-                doc.fontSize(14).fillColor('#0a192f').font('Helvetica-Bold').text(title, 50, currentY + 7);
-                doc.moveDown(1);
-                
-                doc.fontSize(11).fillColor('#334155');
-                let count = 0;
-                let rowY = doc.y;
-                Object.entries(data).forEach(([label, value]) => {
-                    const x = count % 2 === 0 ? 50 : 310;
-                    doc.font('Helvetica-Bold').text(`${label}: `, x, rowY, { continued: true }).font('Helvetica').text(value || 'N/A');
-                    if (count % 2 !== 0) rowY = doc.y + 8;
-                    count++;
-                });
-                doc.moveDown(2);
+            // --- HELPER FOR SECTIONS ---
+            const drawSectionHeader = (title, y) => {
+                doc.rect(40, y, 532, 22).fill('#f1f5f9');
+                doc.fontSize(11).fillColor('#0f172a').font('Helvetica-Bold').text(title.toUpperCase(), 50, y + 6);
+                return y + 32;
             };
 
-            drawSection('Personal Details', {
-                'Full Name': `${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`,
-                'DOB': application.applicantDetails?.dob ? new Date(application.applicantDetails.dob).toLocaleDateString() : 'N/A',
-                'Gender': application.applicantDetails?.gender,
-                'Email': application.currentAddress?.email || user?.email,
-                'Phone': application.currentAddress?.mobileNumber || user?.phone,
-                'Marital Status': application.applicantDetails?.maritalStatus
-            });
+            const drawFields = (fields, y) => {
+                doc.fontSize(9).fillColor('#334155');
+                let count = 0;
+                let startY = y;
+                Object.entries(fields).forEach(([label, value]) => {
+                    const x = count % 2 === 0 ? 50 : 310;
+                    doc.font('Helvetica-Bold').text(`${label}: `, x, startY, { continued: true }).font('Helvetica').text(value || '-');
+                    if (count % 2 !== 0) startY = doc.y + 6;
+                    count++;
+                });
+                return startY + 15;
+            };
 
-            drawSection('Passport & Travel', {
+            // 1. PERSONAL DETAILS
+            currentY = drawSectionHeader('Applicant\'s Personal Details', currentY);
+            currentY = drawFields({
+                'Full Name': `${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`,
+                'Gender': application.applicantDetails?.gender,
+                'Date of Birth': application.applicantDetails?.dob ? new Date(application.applicantDetails.dob).toLocaleDateString() : 'N/A',
+                'Place of Birth': application.applicantDetails?.placeOfBirth,
+                'Marital Status': application.applicantDetails?.maritalStatus,
+                'Educational Qual.': application.applicantDetails?.educationalQualification,
+                'Occupation': application.applicantDetails?.occupation || 'N/A',
+                'Email': application.currentAddress?.email || user?.email
+            }, currentY);
+
+            // 2. PASSPORT DETAILS
+            currentY = drawSectionHeader('Passport & Identity Details', currentY);
+            currentY = drawFields({
                 'Passport Number': application.passportDetails?.passportNumber,
                 'Issuing Authority': application.passportDetails?.issuingAuthority,
-                'Travel Destination': application.travelDetails?.destinationCountry,
-                'Purpose of Visit': application.travelDetails?.purposeOfVisit,
-                'Duration of Stay': application.travelDetails?.durationOfStay + ' Days'
-            });
+                'Issue Date': application.passportDetails?.issueDate ? new Date(application.passportDetails.issueDate).toLocaleDateString() : 'N/A',
+                'Expiry Date': application.passportDetails?.expiryDate ? new Date(application.passportDetails.expiryDate).toLocaleDateString() : 'N/A',
+                'Aadhaar Number': application.applicantDetails?.aadhaarNumber,
+                'PAN Number': application.applicantDetails?.panNumber
+            }, currentY);
 
-            // SIGNATURE
-            const sigY = 720;
+            // 3. TRAVEL & DESTINATION
+            currentY = drawSectionHeader('Travel & Destination Details', currentY);
+            currentY = drawFields({
+                'Destination Country': application.travelDetails?.destinationCountry,
+                'Purpose of Visit': application.travelDetails?.purposeOfVisit,
+                'Duration of Stay': `${application.travelDetails?.durationOfStay || 'N/A'} Days`,
+                'Expected Travel Date': application.travelDetails?.expectedTravelDate ? new Date(application.travelDetails.expectedTravelDate).toLocaleDateString() : 'N/A'
+            }, currentY);
+
+            // 4. ADDRESS DETAILS
+            currentY = drawSectionHeader('Residential Address Details', currentY);
+            currentY = drawFields({
+                'Full Address': `${application.currentAddress?.houseNo || ''} ${application.currentAddress?.street || ''}, ${application.currentAddress?.villageTownCity || ''}`,
+                'State': application.currentAddress?.state,
+                'District': application.currentAddress?.district,
+                'PIN Code': application.currentAddress?.pincode,
+                'Mobile Number': application.currentAddress?.mobileNumber
+            }, currentY);
+
+            // --- SELF DECLARATION ---
+            if (currentY > 600) doc.addPage(), currentY = 50;
+            currentY = drawSectionHeader('Self Declaration', currentY);
+            doc.fontSize(8.5).fillColor('#475569').font('Helvetica').text(
+                'I owe allegiance to the sovereignty, unity & integrity of India, and have not voluntarily acquired citizenship of any other country. I have not suppressed any material information and all details provided in this form are true and correct. I am aware that providing false information is a punishable offense under the Passports Act, 1967.',
+                50, currentY, { width: 512, align: 'justify', lineGap: 3 }
+            );
+
+            // --- SIGNATURE ---
+            const sigY = 740;
             let sigPath = application.documents?.get ? application.documents.get('applicantSignature') : application.documents?.applicantSignature;
             if (sigPath) {
                 const fullPath = path.isAbsolute(sigPath) ? sigPath : path.join(__dirname, '../../', sigPath);
-                if (fs.existsSync(fullPath)) doc.image(fullPath, 60, sigY - 50, { width: 140 });
+                if (fs.existsSync(fullPath)) doc.image(fullPath, 60, sigY - 60, { width: 130 });
             }
             doc.strokeColor('#0a192f').lineWidth(1).moveTo(40, sigY).lineTo(220, sigY).stroke();
-            doc.fontSize(10).fillColor('#64748b').text('Applicant Signature', 40, sigY + 5, { width: 180, align: 'center' });
+            doc.fontSize(9).fillColor('#64748b').text('Applicant Digital Signature', 40, sigY + 5, { width: 180, align: 'center' });
 
-            // FOOTER
-            doc.fontSize(11).fillColor('#0a192f').font('Helvetica-Bold').text('BorderBridge Consultancy me aane ke liye aapka bahut bahut dhanyavad.', 40, 770, { align: 'center' });
-            doc.fontSize(9).fillColor('#94a3b8').font('Helvetica').text('This is an electronically generated document. Please keep it for your records.', 40, 790, { align: 'center' });
+            // --- FOOTER ---
+            doc.fontSize(10).fillColor('#0a192f').font('Helvetica-Bold').text('BorderBridge Consultancy me aane ke liye aapka bahut bahut dhanyavad.', 40, 785, { align: 'center' });
+            doc.fontSize(8).fillColor('#94a3b8').font('Helvetica').text('This is an electronically generated receipt for your Visa application record. Internal Use Only.', 40, 800, { align: 'center' });
 
             doc.end();
             stream.on('finish', () => resolve({ filePath, fileName, relativePath: `/uploads/pdfs/${fileName}` }));
@@ -119,7 +158,7 @@ exports.generateVisaPDF = async (application, user, profile = null) => {
 exports.generatePassportPDF = async (application, user, profile = null) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(`[PDF] Generating Passport PDF for ${application.applicationId}`);
+            console.log(`[PDF] Generating Detailed Passport PDF for ${application.applicationId}`);
             const doc = new PDFDocument({ margin: 40, size: 'A4' });
 
             const dirPath = path.join(__dirname, '../../uploads/pdfs');
@@ -131,137 +170,127 @@ exports.generatePassportPDF = async (application, user, profile = null) => {
             const stream = fs.createWriteStream(filePath);
             doc.pipe(stream);
 
-            // HEADER
-            doc.rect(0, 0, 612, 120).fill('#064e3b');
-            doc.fontSize(28).fillColor('#ffffff').font('Helvetica-Bold').text('BorderBridge Consultancy', 40, 35);
-            doc.fontSize(12).fillColor('#10b981').font('Helvetica').text('GOVERNMENT PASSPORT SERVICES PARTNER', 40, 75);
+            // --- HEADER ---
+            doc.rect(0, 0, 612, 100).fill('#064e3b');
+            doc.fontSize(26).fillColor('#ffffff').font('Helvetica-Bold').text('BorderBridge Consultancy', 40, 30);
+            doc.fontSize(10).fillColor('#10b981').font('Helvetica').text('GOVERNMENT PASSPORT SERVICES PARTNER • ISO CERTIFIED', 40, 65);
 
-            doc.fontSize(16).fillColor('#ffffff').font('Helvetica-Bold').text('PASSPORT APPLICATION FORM', 350, 45, { align: 'right' });
-            doc.fontSize(11).fillColor('#a7f3d0').font('Helvetica').text(`Reg No: ${application.applicationId || 'N/A'}`, 350, 70, { align: 'right' });
+            doc.fontSize(14).fillColor('#ffffff').font('Helvetica-Bold').text('PASSPORT APPLICATION FORM', 350, 40, { align: 'right' });
+            doc.fontSize(10).fillColor('#a7f3d0').font('Helvetica').text(`REG: ${application.applicationId || 'N/A'}`, 350, 60, { align: 'right' });
 
-            // QR
+            doc.fillColor('#000000');
+            let currentY = 120;
+
+            // --- HERO SECTION ---
             try {
-                const qrData = `Passport App: ${application.applicationId}\nType: ${application.passportType}\nApplicant: ${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`;
+                const qrData = `Passport App: ${application.applicationId}\nApplicant: ${application.applicantDetails?.givenName}`;
                 const qrBuffer = await QRCode.toBuffer(qrData, { margin: 1, width: 80 });
-                doc.image(qrBuffer, 480, 140, { width: 80 });
+                doc.image(qrBuffer, 480, currentY, { width: 80 });
             } catch (err) {}
 
-            // PHOTO
-            const topY = 140;
             let photoPath = application.documents?.get ? application.documents.get('applicantPhoto') : application.documents?.applicantPhoto;
             if (photoPath) {
                 const fullPath = path.isAbsolute(photoPath) ? photoPath : path.join(__dirname, '../../', photoPath);
                 if (fs.existsSync(fullPath)) {
-                    doc.image(fullPath, 40, topY, { width: 100, height: 120 });
-                    doc.rect(40, topY, 100, 120).strokeColor('#064e3b').lineWidth(1).stroke();
+                    doc.image(fullPath, 40, currentY, { width: 90, height: 110 });
+                    doc.rect(40, currentY, 90, 110).strokeColor('#064e3b').lineWidth(1).stroke();
                 }
             } else {
-                doc.rect(40, topY, 100, 120).dash(5, { space: 2 }).strokeColor('#cbd5e1').stroke();
+                doc.rect(40, currentY, 90, 110).dash(5, { space: 2 }).strokeColor('#cbd5e1').stroke();
             }
 
-            // INFO
-            doc.fontSize(22).fillColor('#064e3b').font('Helvetica-Bold').text(`${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`, 160, topY + 5);
-            doc.fontSize(14).fillColor('#475569').font('Helvetica').text(`Service Type: ${application.passportType}`, 160, topY + 40);
+            doc.fontSize(18).fillColor('#064e3b').font('Helvetica-Bold').text(`${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`, 150, currentY + 5);
+            doc.fontSize(11).fillColor('#475569').font('Helvetica').text(`Service Type: ${application.passportType}`, 150, currentY + 30);
             doc.text(`Aadhaar No: ${application.applicantDetails?.aadhaarNumber || 'N/A'}`);
-            doc.text(`Date of App: ${new Date(application.submissionDate || Date.now()).toLocaleDateString()}`);
+            doc.text(`Booklet Type: ${application.bookletType || '36 Pages'}`);
+            doc.text(`Validity: ${application.validityRequired || '10 Years'}`);
 
-            doc.moveDown(4);
+            currentY += 130;
 
-            const drawSection = (title, data) => {
-                if (doc.y > 650) doc.addPage();
-                const currentY = doc.y;
-                doc.rect(40, currentY, 532, 28).fill('#f0fdf4');
-                doc.fontSize(14).fillColor('#064e3b').font('Helvetica-Bold').text(title, 50, currentY + 7);
-                doc.moveDown(1);
-                
-                doc.fontSize(12).fillColor('#334155');
-                let count = 0;
-                let rowY = doc.y;
-                Object.entries(data).forEach(([label, value]) => {
-                    const x = count % 2 === 0 ? 50 : 310;
-                    doc.font('Helvetica-Bold').text(`${label}: `, x, rowY, { continued: true }).font('Helvetica').text(value || 'N/A');
-                    if (count % 2 !== 0) rowY = doc.y + 8;
-                    count++;
-                });
-                doc.moveDown(2);
+            const drawSectionHeader = (title, y) => {
+                doc.rect(40, y, 532, 22).fill('#f0fdf4');
+                doc.fontSize(11).fillColor('#064e3b').font('Helvetica-Bold').text(title.toUpperCase(), 50, y + 6);
+                return y + 32;
             };
 
-            // SECTIONS
-            drawSection('Applicant Details', {
+            const drawFields = (fields, y) => {
+                doc.fontSize(9).fillColor('#334155');
+                let count = 0;
+                let startY = y;
+                Object.entries(fields).forEach(([label, value]) => {
+                    const x = count % 2 === 0 ? 50 : 310;
+                    doc.font('Helvetica-Bold').text(`${label}: `, x, startY, { continued: true }).font('Helvetica').text(value || '-');
+                    if (count % 2 !== 0) startY = doc.y + 6;
+                    count++;
+                });
+                return startY + 15;
+            };
+
+            // 1. APPLICANT DETAILS
+            currentY = drawSectionHeader('1. Applicant Details', currentY);
+            currentY = drawFields({
                 'Full Name': `${application.applicantDetails?.givenName} ${application.applicantDetails?.surname}`,
                 'Gender': application.applicantDetails?.gender,
                 'DOB': application.applicantDetails?.dob ? new Date(application.applicantDetails.dob).toLocaleDateString() : 'N/A',
                 'Place of Birth': application.applicantDetails?.placeOfBirth,
                 'Marital Status': application.applicantDetails?.maritalStatus,
                 'Nationality': application.applicantDetails?.nationality || 'Indian',
-                'Educational Qual.': application.applicantDetails?.educationalQualification,
+                'Educational Qualification': application.applicantDetails?.educationalQualification,
                 'Employment Type': application.applicantDetails?.employmentType
-            });
+            }, currentY);
 
-            drawSection('Family & Guardian Details', {
+            // 2. FAMILY DETAILS
+            currentY = drawSectionHeader('2. Family Details', currentY);
+            currentY = drawFields({
                 'Father Name': application.familyDetails?.fatherName,
                 'Mother Name': application.familyDetails?.motherName,
-                'Legal Guardian': application.familyDetails?.legalGuardianName || 'N/A',
-                'Spouse Name': application.familyDetails?.spouseName || 'N/A'
-            });
+                'Spouse Name': application.familyDetails?.spouseName || 'N/A',
+                'Legal Guardian': application.familyDetails?.legalGuardianName || 'N/A'
+            }, currentY);
 
-            drawSection('Address & Contact', {
-                'Present Address': `${application.presentAddress?.houseNo || ''} ${application.presentAddress?.street}, ${application.presentAddress?.villageTownCity}`,
+            // 3. ADDRESS DETAILS
+            currentY = drawSectionHeader('3. Residential Address Details', currentY);
+            currentY = drawFields({
+                'House / Street': `${application.presentAddress?.houseNo || ''} ${application.presentAddress?.street || ''}`,
+                'Village/Town/City': application.presentAddress?.villageTownCity,
                 'Police Station': application.presentAddress?.policeStation,
                 'District': application.presentAddress?.district,
                 'State': application.presentAddress?.state,
                 'PIN Code': application.presentAddress?.pincode,
-                'Mobile Number': application.presentAddress?.mobileNumber,
-                'Email Address': application.presentAddress?.email
-            });
+                'Mobile No': application.presentAddress?.mobileNumber,
+                'Email ID': application.presentAddress?.email
+            }, currentY);
 
-            // Conditional Sections based on Passport Type
-            if (application.passportType === 'Renewal') {
-                drawSection('Renewal Details', {
-                    'Old Passport No': application.previousPassportDetails?.oldPassportNumber,
-                    'Issue Date': application.previousPassportDetails?.issueDate ? new Date(application.previousPassportDetails.issueDate).toLocaleDateString() : 'N/A',
-                    'Renewal Reason': application.renewalDetails?.reason,
-                    'Updates Requested': application.renewalDetails?.updateRequired?.join(', ') || 'None'
-                });
-            }
+            // 4. EMERGENCY CONTACT
+            currentY = drawSectionHeader('4. Emergency Contact Details', currentY);
+            currentY = drawFields({
+                'Name': application.emergencyContactDetails?.name,
+                'Relationship': application.emergencyContactDetails?.relationship,
+                'Mobile Number': application.emergencyContactDetails?.mobileNumber,
+                'Full Address': application.emergencyContactDetails?.address
+            }, currentY);
 
-            if (application.passportType === 'Correction') {
-                drawSection('Correction Details', {
-                    'Correction In': application.correctionDetails?.correctionType?.join(', '),
-                    'Other Details': application.correctionDetails?.details
-                });
-            }
+            // 5. SELF DECLARATION
+            if (currentY > 600) doc.addPage(), currentY = 50;
+            currentY = drawSectionHeader('5. Self Declaration', currentY);
+            doc.fontSize(8.5).fillColor('#475569').font('Helvetica').text(
+                'I, the undersigned, solemnly declare that I am a citizen of India and have not acquired citizenship of any other country. I have not suppressed any information or provided false details. I am fully aware of the legal consequences of providing incorrect information under the Passports Act, 1967. I hereby authorize the verification of my details for processing this application.',
+                50, currentY, { width: 512, align: 'justify', lineGap: 3 }
+            );
 
-            if (application.passportType === 'Lost/Reissue') {
-                drawSection('Lost/Reissue Details', {
-                    'FIR Number': application.lostDetails?.firNumber,
-                    'FIR Date': application.lostDetails?.firDate ? new Date(application.lostDetails.firDate).toLocaleDateString() : 'N/A',
-                    'Loss Location': application.lostDetails?.lossLocation,
-                    'Lost Details': application.lostDetails?.lossDetails
-                });
-            }
-
-            if (application.passportType === 'Minor') {
-                drawSection('Minor Information', {
-                    'Father Consent': application.minorDetails?.fatherConsent ? 'Yes' : 'No',
-                    'Mother Consent': application.minorDetails?.motherConsent ? 'Yes' : 'No',
-                    'School ID Provided': application.minorDetails?.schoolId ? 'Yes' : 'No'
-                });
-            }
-
-            // SIGNATURE
-            const sigY = 720;
+            // --- SIGNATURE ---
+            const sigY = 740;
             let sigPath = application.documents?.get ? application.documents.get('applicantSignature') : application.documents?.applicantSignature;
             if (sigPath) {
                 const fullPath = path.isAbsolute(sigPath) ? sigPath : path.join(__dirname, '../../', sigPath);
-                if (fs.existsSync(fullPath)) doc.image(fullPath, 60, sigY - 50, { width: 140 });
+                if (fs.existsSync(fullPath)) doc.image(fullPath, 60, sigY - 60, { width: 130 });
             }
             doc.strokeColor('#064e3b').lineWidth(1).moveTo(40, sigY).lineTo(220, sigY).stroke();
-            doc.fontSize(10).fillColor('#64748b').text('Applicant Signature', 40, sigY + 5, { width: 180, align: 'center' });
+            doc.fontSize(9).fillColor('#64748b').text('Applicant Signature', 40, sigY + 5, { width: 180, align: 'center' });
 
-            // FOOTER
-            doc.fontSize(11).fillColor('#064e3b').font('Helvetica-Bold').text('BorderBridge Consultancy me aane ke liye aapka bahut bahut dhanyavad.', 40, 770, { align: 'center' });
-            doc.fontSize(9).fillColor('#94a3b8').font('Helvetica').text('This is an electronically generated acknowledgment for passport application. Please keep this for reference.', 40, 790, { align: 'center' });
+            // --- FOOTER ---
+            doc.fontSize(10).fillColor('#064e3b').font('Helvetica-Bold').text('BorderBridge Consultancy me aane ke liye aapka bahut bahut dhanyavad.', 40, 785, { align: 'center' });
+            doc.fontSize(8).fillColor('#94a3b8').font('Helvetica').text('This is an electronically generated application form. Original signature and documents may be required during verification.', 40, 800, { align: 'center' });
 
             doc.end();
             stream.on('finish', () => resolve({ filePath, fileName, relativePath: `/uploads/pdfs/${fileName}` }));

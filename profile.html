@@ -3,272 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile - BorderBridge Consultancy</title>
+    <title>My Dashboard - Border Bridge</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-dark: #0a192f;
-            --primary-blue: #1e3a8a;
-            --accent-orange: #ff8c00;
-            --bg-gray: #f8fafc;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --sidebar-w: 280px;
-            --card-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            --bb-navy: #0a192f;
+            --bb-gold: #ffc107;
+            --bb-gold-grad: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+            --bb-bg: #f8f9fa;
         }
-        body { background: var(--bg-gray); font-family: 'Outfit', sans-serif; margin: 0; padding-top: 80px; color: var(--text-main); }
+        body { background: var(--bb-bg); padding-top: 0; }
         
-        .dashboard-container { max-width: 1440px; margin: 0 auto; display: grid; grid-template-columns: var(--sidebar-w) 1fr; gap: 30px; padding: 30px; }
+        .profile-banner {
+            background: linear-gradient(rgba(10, 25, 47, 0.9), rgba(10, 25, 47, 0.8)), url('images/hero-bg.png');
+            background-size: cover;
+            background-position: center;
+            padding: 120px 0 60px;
+            color: white;
+            text-align: center;
+        }
 
-        /* SIDEBAR */
-        .sidebar { background: white; border-radius: 24px; padding: 40px 0; box-shadow: var(--card-shadow); height: fit-content; position: sticky; top: 110px; }
-        .user-info { text-align: center; padding: 0 30px 30px; border-bottom: 1px solid #f1f5f9; }
-        .avatar-wrapper { width: 110px; height: 110px; margin: 0 auto 15px; position: relative; border-radius: 50%; padding: 4px; background: linear-gradient(135deg, #3b82f6, #10b981); }
-        .avatar-wrapper img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid white; }
-        .verify-badge { background: #dcfce7; color: #15803d; font-size: 0.7rem; font-weight: 800; padding: 4px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; }
+        .dashboard-wrapper {
+            max-width: 1300px;
+            margin: -40px auto 60px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Sidebar Styling - Border Bridge Original */
+        .bb-sidebar {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+        .sidebar-user {
+            background: var(--bb-navy);
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+        }
+        .user-photo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid var(--bb-gold);
+            margin: 0 auto 15px;
+            overflow: hidden;
+            background: white;
+        }
+        .user-photo img { width: 100%; height: 100%; object-fit: cover; }
         
-        .nav-menu { list-style: none; padding: 20px 0; }
-        .nav-link { display: flex; align-items: center; gap: 15px; padding: 14px 35px; color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: 0.3s; border-left: 4px solid transparent; }
-        .nav-link:hover { background: #f8fafc; color: var(--primary-blue); }
-        .nav-link.active { background: #eff6ff; color: var(--primary-blue); border-left-color: var(--primary-blue); }
-        .nav-link i { width: 20px; font-size: 1.1rem; }
+        .sidebar-menu { list-style: none; padding: 15px 0; }
+        .menu-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--bb-navy);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+        }
+        .menu-item:hover, .menu-item.active {
+            background: #fff9e6;
+            color: #bfa100;
+            border-left-color: var(--bb-gold);
+        }
+        .menu-item i { font-size: 1.1rem; width: 20px; }
 
-        /* CONTENT AREA */
-        .content-area { display: flex; flex-direction: column; gap: 30px; }
-        .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .content-header h1 { font-size: 1.8rem; font-weight: 800; color: var(--primary-dark); margin: 0; }
-        .breadcrumbs { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
-        .breadcrumbs span { color: var(--primary-blue); }
-
-        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
-
-        /* CARDS */
-        .card { background: white; border-radius: 24px; padding: 30px; box-shadow: var(--card-shadow); border: 1px solid rgba(0,0,0,0.02); }
-        .card-title { font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        /* Content Sections */
+        .dashboard-content { display: flex; flex-direction: column; gap: 30px; }
         
-        /* PERSONAL INFO */
-        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .info-item label { display: block; font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
-        .info-item p { font-size: 0.95rem; font-weight: 600; margin: 0; color: var(--text-main); }
-
-        /* VERIFIED STATUS */
-        .status-card { background: #f0fdf4; border: 1.5px solid #dcfce7; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; }
-        .status-icon { width: 60px; height: 60px; background: #22c55e; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 15px; box-shadow: 0 10px 20px rgba(34,197,94,0.2); }
+        /* Stats Cards - Border Bridge Themed */
+        .bb-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .bb-stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            border-bottom: 3px solid transparent;
+        }
+        .bb-stat-card.total { border-bottom-color: var(--bb-navy); }
+        .bb-stat-card.pending { border-bottom-color: var(--bb-gold); }
+        .bb-stat-card.approved { border-bottom-color: #10b981; }
+        .bb-stat-card.rejected { border-bottom-color: #ef4444; }
         
-        /* SUMMARY STATS */
-        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        .stat-card { background: white; border-radius: 20px; padding: 25px; display: flex; align-items: center; gap: 20px; border: 1px solid #f1f5f9; transition: 0.3s; }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
-        .stat-icon { width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
-        .icon-blue { background: #eff6ff; color: #3b82f6; }
-        .icon-orange { background: #fff7ed; color: #f97316; }
-        .icon-green { background: #f0fdf4; color: #22c55e; }
-        .icon-red { background: #fef2f2; color: #ef4444; }
-        .stat-val { font-size: 1.6rem; font-weight: 900; margin: 0; }
-        .stat-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+        .stat-icon-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: #f1f5f9;
+        }
 
-        /* RECENT APPLICATIONS TABLE */
-        .table-responsive { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 15px; font-size: 0.75rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; border-bottom: 2px solid #f1f5f9; }
-        td { padding: 18px 15px; font-size: 0.9rem; font-weight: 600; border-bottom: 1px solid #f8fafc; }
-        .status-pill { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; }
-        .pill-pending { background: #fff7ed; color: #ea580c; }
-        .pill-approved { background: #f0fdf4; color: #16a34a; }
-        .pill-rejected { background: #fef2f2; color: #dc2626; }
+        /* Tables & Lists */
+        .bb-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .bb-card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--bb-navy);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .bb-card-title i { color: var(--bb-gold); }
+
+        .app-table { width: 100%; border-collapse: collapse; }
+        .app-table th { text-align: left; padding: 15px; background: #f8f9fa; font-size: 0.8rem; color: #64748b; }
+        .app-table td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-weight: 500; font-size: 0.9rem; }
         
-        .btn-view { background: #f1f5f9; color: var(--primary-blue); padding: 8px 15px; border-radius: 10px; text-decoration: none; font-size: 0.8rem; font-weight: 800; transition: 0.3s; }
-        .btn-view:hover { background: var(--primary-blue); color: white; }
+        .status-tag {
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .tag-pending { background: #fff7ed; color: #ea580c; }
+        .tag-approved { background: #f0fdf4; color: #16a34a; }
+        .tag-processing { background: #eff6ff; color: #2563eb; }
 
-        /* QUICK LINKS */
-        .quick-links { list-style: none; padding: 0; }
-        .quick-link-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #f8fafc; cursor: pointer; transition: 0.2s; }
-        .quick-link-item:hover { transform: translateX(5px); color: var(--primary-blue); }
-        .quick-link-item span { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; font-weight: 600; }
-        .quick-link-item i { color: var(--text-muted); font-size: 0.9rem; }
+        /* Vault Grid */
+        .vault-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .folder-card {
+            background: #f8f9fa;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .folder-card:hover { border-color: var(--bb-gold); background: #fffdf5; transform: translateY(-5px); }
+        .folder-icon { font-size: 2.5rem; color: var(--bb-gold); margin-bottom: 10px; }
 
-        .btn-edit { background: white; border: 1.5px solid #e2e8f0; color: var(--primary-blue); padding: 8px 16px; border-radius: 10px; font-size: 0.85rem; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .btn-edit:hover { background: #f8fafc; border-color: var(--primary-blue); }
+        /* Form Controls */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .bb-input-group { margin-bottom: 15px; }
+        .bb-input-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; color: #475569; }
+        .bb-input { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; transition: 0.3s; }
+        .bb-input:focus { border-color: var(--bb-gold); outline: none; box-shadow: 0 0 0 4px rgba(255,193,7,0.1); }
 
-        @media (max-width: 1024px) {
-            .dashboard-container { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
-            .dashboard-grid { grid-template-columns: 1fr; }
-            .stats-row { grid-template-columns: repeat(2, 1fr); }
+        .btn-gold { background: var(--bb-gold-grad); color: var(--bb-navy); border: none; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,193,7,0.2); }
+
+        @media (max-width: 968px) {
+            .dashboard-wrapper { grid-template-columns: 1fr; margin-top: 20px; }
+            .bb-sidebar { display: none; }
+            .bb-stats { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
+    <!-- Navbar from main site -->
     <nav class="navbar scrolled">
         <div class="container nav-container">
             <a href="index.html" class="logo"><i class="fas fa-passport logo-icon"></i> Border<span>Bridge</span></a>
             <ul class="nav-menu" id="navMenu"></ul>
-            <a href="apply-passport.html" class="btn btn-primary" style="padding: 12px 25px; border-radius: 12px;">Apply Now</a>
+            <a href="apply-passport.html" class="btn-nav">Apply Now</a>
         </div>
     </nav>
 
-    <div class="dashboard-container">
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-            <div class="user-info">
-                <div class="avatar-wrapper">
-                    <img id="sideAvatar" src="images/default-avatar.png" alt="Profile">
+    <!-- Dashboard Banner -->
+    <div class="profile-banner">
+        <div class="container">
+            <h1 style="margin:0; font-size: 2.5rem;">User Dashboard</h1>
+            <p style="color: var(--bb-gold); margin-top: 10px; font-weight: 600;">Welcome back, <span id="welcomeName">Applicant</span></p>
+        </div>
+    </div>
+
+    <div class="dashboard-wrapper">
+        <!-- Sidebar -->
+        <aside class="bb-sidebar">
+            <div class="sidebar-user">
+                <div class="user-photo">
+                    <img id="sideAvatar" src="images/default-avatar.png">
                 </div>
-                <h3 id="sideName" style="margin-bottom: 5px;">Loading...</h3>
-                <p id="sideEmail" style="margin:0; font-size: 0.85rem; color: var(--text-muted);">email@example.com</p>
-                <div class="verify-badge">
-                    <i class="fas fa-check-circle"></i> Verified
-                </div>
+                <h4 id="sideName" style="margin:0;">User Name</h4>
+                <p id="sideEmail" style="font-size:0.75rem; color:rgba(255,255,255,0.7); margin:5px 0 0;">email@example.com</p>
             </div>
-            <ul class="nav-menu">
-                <li><a href="#" class="nav-link active" onclick="switchTab('profile', this)"><i class="fas fa-user-circle"></i> My Profile</a></li>
-                <li><a href="#" class="nav-link" onclick="switchTab('apps', this)"><i class="fas fa-file-alt"></i> My Applications</a></li>
-                <li><a href="#" class="nav-link" onclick="switchTab('vault', this)"><i class="fas fa-shield-alt"></i> Documents</a></li>
-                <li><a href="#" class="nav-link"><i class="fas fa-calendar-check"></i> Appointments</a></li>
-                <li><a href="#" class="nav-link"><i class="fas fa-credit-card"></i> Payments</a></li>
-                <li><a href="#" class="nav-link"><i class="fas fa-envelope"></i> Messages <span style="background: #ef4444; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; margin-left: auto;">2</span></a></li>
-                <li><a href="#" class="nav-link"><i class="fas fa-ticket-alt"></i> Support Tickets</a></li>
-                <li><a href="#" class="nav-link" onclick="logout()" style="color: #ef4444; margin-top: 30px;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <ul class="sidebar-menu">
+                <li class="menu-item active" onclick="switchTab('dashboard', this)"><i class="fas fa-th-large"></i> Dashboard</li>
+                <li class="menu-item" onclick="switchTab('profile', this)"><i class="fas fa-user-edit"></i> Edit Profile</li>
+                <li class="menu-item" onclick="switchTab('apps', this)"><i class="fas fa-file-invoice"></i> My Applications</li>
+                <li class="menu-item" onclick="switchTab('vault', this)"><i class="fas fa-vault"></i> Document Vault</li>
+                <li class="menu-item" onclick="logout()" style="color:#ef4444; margin-top:30px;"><i class="fas fa-power-off"></i> Logout</li>
             </ul>
         </aside>
 
-        <!-- MAIN CONTENT -->
-        <main class="content-area">
-            <div class="content-header">
-                <div class="breadcrumbs">Home > <span>My Profile</span></div>
-                <h1 id="pageTitle">My Profile</h1>
-            </div>
-
-            <div id="profileTab" class="tab-content">
-                <div class="dashboard-grid">
-                    <!-- PERSONAL INFO -->
-                    <div class="card">
-                        <div class="card-title">
-                            Personal Information
-                            <button class="btn-edit" onclick="window.location.href='#edit'"><i class="fas fa-edit"></i> Edit Profile</button>
-                        </div>
-                        <div class="info-grid">
-                            <div class="info-item"><label>Full Name</label><p id="pName">-</p></div>
-                            <div class="info-item"><label>Date of Birth</label><p id="pDob">-</p></div>
-                            <div class="info-item"><label>Gender</label><p id="pGender">-</p></div>
-                            <div class="info-item"><label>Nationality</label><p id="pNationality">Indian</p></div>
-                            <div class="info-item"><label>Email Address</label><p id="pEmail">-</p></div>
-                            <div class="info-item"><label>Mobile Number</label><p id="pPhone">-</p></div>
-                            <div class="info-item full-row"><label>Address</label><p id="pAddress">-</p></div>
-                        </div>
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            
+            <!-- SECTION: DASHBOARD HOME -->
+            <div id="dashboardTab" class="tab-pane">
+                <div class="bb-stats reveal">
+                    <div class="bb-stat-card total">
+                        <div class="stat-icon-circle" style="color:var(--bb-navy);"><i class="fas fa-list-ul"></i></div>
+                        <div><h2 id="statTotal" style="margin:0;">0</h2><p style="margin:0; font-size:0.75rem; font-weight:800; color:#64748b;">TOTAL APPS</p></div>
                     </div>
-
-                    <!-- VERIFIED BOX -->
-                    <div class="card status-card">
-                        <div class="status-icon"><i class="fas fa-check"></i></div>
-                        <h3 style="margin-bottom: 10px;">Profile Verified</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">Your profile is completely verified and ready for applications.</p>
+                    <div class="bb-stat-card pending">
+                        <div class="stat-icon-circle" style="color:var(--bb-gold);"><i class="fas fa-clock"></i></div>
+                        <div><h2 id="statPending" style="margin:0;">0</h2><p style="margin:0; font-size:0.75rem; font-weight:800; color:#64748b;">PENDING</p></div>
+                    </div>
+                    <div class="bb-stat-card approved">
+                        <div class="stat-icon-circle" style="color:#10b981;"><i class="fas fa-check-circle"></i></div>
+                        <div><h2 id="statApproved" style="margin:0;">0</h2><p style="margin:0; font-size:0.75rem; font-weight:800; color:#64748b;">APPROVED</p></div>
+                    </div>
+                    <div class="bb-stat-card rejected">
+                        <div class="stat-icon-circle" style="color:#ef4444;"><i class="fas fa-times-circle"></i></div>
+                        <div><h2 id="statRejected" style="margin:0;">0</h2><p style="margin:0; font-size:0.75rem; font-weight:800; color:#64748b;">REJECTED</p></div>
                     </div>
                 </div>
 
-                <!-- APPLICATION SUMMARY -->
-                <div class="card" style="margin-top: 30px;">
-                    <div class="card-title">
-                        Application Summary
-                        <a href="#" onclick="switchTab('apps', document.querySelectorAll('.nav-link')[1])" style="font-size: 0.8rem; color: var(--primary-blue); font-weight: 800;">View All Applications</a>
-                    </div>
-                    <div class="stats-row">
-                        <div class="stat-card">
-                            <div class="stat-icon icon-blue"><i class="fas fa-copy"></i></div>
-                            <div>
-                                <h3 class="stat-val" id="statTotal">0</h3>
-                                <p class="stat-label">Total Apps</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon icon-orange"><i class="fas fa-clock"></i></div>
-                            <div>
-                                <h3 class="stat-val" id="statPending">0</h3>
-                                <p class="stat-label">Pending</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon icon-green"><i class="fas fa-check-circle"></i></div>
-                            <div>
-                                <h3 class="stat-val" id="statApproved">0</h3>
-                                <p class="stat-label">Approved</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon icon-red"><i class="fas fa-times-circle"></i></div>
-                            <div>
-                                <h3 class="stat-val" id="statRejected">0</h3>
-                                <p class="stat-label">Rejected</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="dashboard-grid" style="margin-top: 30px;">
-                    <!-- RECENT APPLICATIONS -->
-                    <div class="card">
-                        <div class="card-title">Recent Applications</div>
-                        <div class="table-responsive">
-                            <table id="recentAppsTable">
-                                <thead>
-                                    <tr>
-                                        <th>App ID</th>
-                                        <th>Service Type</th>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Loading applications...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- QUICK LINKS -->
-                    <div class="card">
-                        <div class="card-title">Quick Links</div>
-                        <ul class="quick-links">
-                            <li class="quick-link-item" onclick="window.location.href='apply-passport.html'">
-                                <span><i class="fas fa-passport" style="color:#f97316;"></i> Apply for Passport</span>
-                                <i class="fas fa-chevron-right"></i>
-                            </li>
-                            <li class="quick-link-item" onclick="window.location.href='apply-visa.html'">
-                                <span><i class="fas fa-plane" style="color:#3b82f6;"></i> Apply for Visa</span>
-                                <i class="fas fa-chevron-right"></i>
-                            </li>
-                            <li class="quick-link-item">
-                                <span><i class="fas fa-calendar-alt" style="color:#8b5cf6;"></i> Book Appointment</span>
-                                <i class="fas fa-chevron-right"></i>
-                            </li>
-                            <li class="quick-link-item">
-                                <span><i class="fas fa-search-location" style="color:#10b981;"></i> Track Application</span>
-                                <i class="fas fa-chevron-right"></i>
-                            </li>
-                        </ul>
+                <div class="bb-card reveal" style="margin-top:30px;">
+                    <div class="bb-card-title"><i class="fas fa-history"></i> Recent Activity</div>
+                    <div style="overflow-x:auto;">
+                        <table class="app-table" id="recentTable">
+                            <thead>
+                                <tr><th>App ID</th><th>Service</th><th>Date</th><th>Status</th><th>Receipt</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="5" style="text-align:center; padding:30px;">Loading activity...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- PLACEHOLDERS FOR OTHER TABS -->
-            <div id="appsTab" class="tab-content" style="display:none;">
-                <div class="card">
-                    <div class="card-title">All Applications</div>
-                    <div id="fullAppsList"></div>
+            <!-- SECTION: EDIT PROFILE -->
+            <div id="profileTab" class="tab-pane" style="display:none;">
+                <div class="bb-card reveal">
+                    <div class="bb-card-title"><i class="fas fa-id-card"></i> Personal Information</div>
+                    <form id="profileForm">
+                        <div class="form-grid">
+                            <div class="bb-input-group"><label>Full Name</label><input type="text" name="fullName" class="bb-input"></div>
+                            <div class="bb-input-group"><label>Mobile Number</label><input type="text" name="phone" class="bb-input"></div>
+                            <div class="bb-input-group"><label>Date of Birth</label><input type="date" name="dateOfBirth" class="bb-input"></div>
+                            <div class="bb-input-group"><label>Gender</label><select name="gender" class="bb-input"><option>Male</option><option>Female</option><option>Other</option></select></div>
+                            <div class="bb-input-group" style="grid-column: span 2;"><label>Current Address</label><textarea name="currentAddress.street" class="bb-input" rows="2"></textarea></div>
+                        </div>
+                        <div style="text-align:right; margin-top:20px;">
+                            <button type="submit" class="btn-gold">Update Profile</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <div id="vaultTab" class="tab-content" style="display:none;">
-                <div class="card">
-                    <div class="card-title">Document Vault</div>
-                    <div id="vaultGrid" class="info-grid"></div>
+            <!-- SECTION: DOCUMENTS -->
+            <div id="vaultTab" class="tab-pane" style="display:none;">
+                <div class="bb-card reveal">
+                    <div class="bb-card-title"><i class="fas fa-shield-halved"></i> Secured Document Vault</div>
+                    <div style="background:#f1f5f9; padding:20px; border-radius:12px; text-align:center; border:2px dashed #cbd5e1; margin-bottom:30px; cursor:pointer;" onclick="document.getElementById('docInput').click()">
+                        <i class="fas fa-upload" style="font-size:2rem; color:var(--bb-gold); margin-bottom:10px;"></i>
+                        <p style="font-weight:700; margin:0;">Upload New Document</p>
+                        <input type="file" id="docInput" style="display:none" onchange="handleUpload(this)">
+                    </div>
+                    <div id="vaultGrid" class="vault-grid"></div>
+                </div>
+            </div>
+
+            <!-- SECTION: APPLICATIONS -->
+            <div id="appsTab" class="tab-pane" style="display:none;">
+                <div class="bb-card reveal">
+                    <div class="bb-card-title"><i class="fas fa-file-invoice"></i> All Applications</div>
+                    <div id="fullAppsList" style="display:grid; gap:15px;"></div>
                 </div>
             </div>
 
         </main>
     </div>
+
+    <!-- Footer from main site -->
+    <footer style="margin-top:100px;">
+        <div class="container copyright">
+            <p>&copy; 2026 Border Bridge Consultancy. All Rights Reserved.</p>
+        </div>
+    </footer>
 
     <script src="js/script.js"></script>
     <script>
@@ -280,22 +309,22 @@
                 const res = await fetch('/api/profile/me', { headers: {'Authorization': `Bearer ${token}`} });
                 const { success, data } = await res.json();
                 if(success) {
-                    // Sidebar
+                    // Update UI
                     document.getElementById('sideName').innerText = data.user.name;
+                    document.getElementById('welcomeName').innerText = data.user.name;
                     document.getElementById('sideEmail').innerText = data.user.email;
                     if(data.user.profilePhoto) document.getElementById('sideAvatar').src = data.user.profilePhoto;
 
-                    // Personal Info
-                    document.getElementById('pName').innerText = data.personalInfo?.fullName || data.user.name;
-                    document.getElementById('pDob').innerText = data.personalInfo?.dateOfBirth ? new Date(data.personalInfo.dateOfBirth).toLocaleDateString() : 'Not Set';
-                    document.getElementById('pGender').innerText = data.personalInfo?.gender || 'Not Set';
-                    document.getElementById('pEmail').innerText = data.user.email;
-                    document.getElementById('pPhone').innerText = data.contactInfo?.phone || data.user.phone || '-';
-                    document.getElementById('pAddress').innerText = data.contactInfo?.currentAddress ? 
-                        `${data.contactInfo.currentAddress.street}, ${data.contactInfo.currentAddress.city}` : 'Not Set';
+                    // Fill Form
+                    const form = document.getElementById('profileForm');
+                    form.elements['fullName'].value = data.personalInfo?.fullName || data.user.name;
+                    form.elements['phone'].value = data.contactInfo?.phone || data.user.phone || '';
+                    form.elements['dateOfBirth'].value = data.personalInfo?.dateOfBirth?.split('T')[0] || '';
+                    form.elements['gender'].value = data.personalInfo?.gender || 'Male';
+                    form.elements['currentAddress.street'].value = data.contactInfo?.currentAddress?.street || '';
                 }
 
-                // Load Applications for stats and table
+                // Load Applications
                 const [vRes, pRes] = await Promise.all([
                     fetch('/api/visa/my', { headers: {'Authorization': `Bearer ${token}`} }),
                     fetch('/api/passport/my', { headers: {'Authorization': `Bearer ${token}`} })
@@ -308,52 +337,106 @@
                     ...(pData.data || []).map(a => ({...a, model: 'Passport'}))
                 ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-                // Stats
+                // Update Stats
                 document.getElementById('statTotal').innerText = allApps.length;
-                document.getElementById('statPending').innerText = allApps.filter(a => a.status === 'Pending' || a.status === 'Processing').length;
+                document.getElementById('statPending').innerText = allApps.filter(a => ['Pending', 'Processing'].includes(a.status)).length;
                 document.getElementById('statApproved').innerText = allApps.filter(a => a.status === 'Approved').length;
                 document.getElementById('statRejected').innerText = allApps.filter(a => a.status === 'Rejected').length;
 
-                // Recent Apps Table (Top 3)
-                const tbody = document.querySelector('#recentAppsTable tbody');
+                // Activity Table
+                const tbody = document.querySelector('#recentTable tbody');
                 if(allApps.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No applications found.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">No applications yet. Start by applying for Visa or Passport!</td></tr>';
                 } else {
-                    tbody.innerHTML = allApps.slice(0, 3).map(app => `
+                    tbody.innerHTML = allApps.slice(0, 5).map(app => `
                         <tr>
                             <td>${app.applicationId}</td>
                             <td>${app.model} ${app.visaType || app.passportType}</td>
                             <td>${new Date(app.createdAt).toLocaleDateString()}</td>
-                            <td><span class="status-pill pill-${app.status.toLowerCase()}">${app.status}</span></td>
-                            <td><a href="${app.pdfUrl || '#'}" target="_blank" class="btn-view">View</a></td>
+                            <td><span class="status-tag tag-${app.status.toLowerCase()}">${app.status}</span></td>
+                            <td><a href="${app.pdfUrl || '#'}" target="_blank" class="text-accent" style="${app.pdfUrl ? '' : 'display:none'}"><i class="fas fa-file-pdf"></i> Receipt</a></td>
                         </tr>
                     `).join('');
                 }
 
+                // Full List
+                document.getElementById('fullAppsList').innerHTML = allApps.map(app => `
+                    <div class="bb-card" style="padding:15px; border:1px solid #eee; box-shadow:none;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <h4 style="margin:0;">${app.model} Application</h4>
+                                <p style="margin:5px 0; font-size:0.8rem; color:#666;">ID: ${app.applicationId} | Date: ${new Date(app.createdAt).toLocaleDateString()}</p>
+                            </div>
+                            <span class="status-tag tag-${app.status.toLowerCase()}">${app.status}</span>
+                        </div>
+                    </div>
+                `).join('');
+
+                renderVault(data.uploads || {});
+
             } catch (e) { console.error(e); }
         }
 
+        function renderVault(uploads) {
+            const grid = document.getElementById('vaultGrid');
+            grid.innerHTML = Object.keys(uploads).length ? '' : '<p style="text-align:center; grid-column:1/-1; color:#999;">No documents uploaded yet.</p>';
+            Object.keys(uploads).forEach(key => {
+                const card = document.createElement('div');
+                card.className = 'folder-card';
+                card.innerHTML = `
+                    <i class="fas fa-file-pdf folder-icon"></i>
+                    <p style="font-weight:700; margin:5px 0; font-size:0.85rem; overflow:hidden; text-overflow:ellipsis;">${key}</p>
+                    <div style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
+                        <a href="${uploads[key]}" target="_blank" style="color:var(--bb-navy);"><i class="fas fa-eye"></i></a>
+                        <i class="fas fa-trash" style="color:#ef4444; cursor:pointer;" onclick="deleteDoc('${key}')"></i>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        async function handleUpload(input) {
+            if(!input.files[0]) return;
+            const fd = new FormData();
+            fd.append('document', input.files[0]);
+            fd.append('fieldName', input.files[0].name);
+            const res = await fetch('/api/profile/upload-document', {
+                method: 'POST', headers: {'Authorization': `Bearer ${token}`}, body: fd
+            });
+            if(res.ok) init();
+        }
+
+        async function deleteDoc(name) {
+            if(!confirm('Delete this document?')) return;
+            await fetch(`/api/profile/document/${name}`, { method: 'DELETE', headers: {'Authorization': `Bearer ${token}`} });
+            init();
+        }
+
         function switchTab(tabId, btn) {
-            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            
-            if(tabId === 'profile') {
-                document.getElementById('profileTab').style.display = 'block';
-                document.getElementById('pageTitle').innerText = 'My Profile';
-            } else if(tabId === 'apps') {
-                document.getElementById('appsTab').style.display = 'block';
-                document.getElementById('pageTitle').innerText = 'My Applications';
-            } else if(tabId === 'vault') {
-                document.getElementById('vaultTab').style.display = 'block';
-                document.getElementById('pageTitle').innerText = 'Document Vault';
-            }
+            document.querySelectorAll('.tab-pane').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            document.getElementById(tabId + 'Tab').style.display = 'block';
             btn.classList.add('active');
         }
 
-        function logout() {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
+        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+        document.getElementById('profileForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const obj = {};
+            fd.forEach((v, k) => {
+                if(k.includes('.')) {
+                    const [p, c] = k.split('.');
+                    obj[p] = obj[p] || {};
+                    obj[p][c] = v;
+                } else obj[k] = v;
+            });
+            const res = await fetch('/api/profile/update', {
+                method: 'PUT', headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'}, body: JSON.stringify(obj)
+            });
+            if(res.ok) { alert('Profile Updated!'); init(); }
+        };
 
         init();
     </script>

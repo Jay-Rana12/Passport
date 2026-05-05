@@ -217,55 +217,59 @@ function initAuth() {
     try {
         user = JSON.parse(localStorage.getItem('user'));
     } catch (e) {
-        console.error('Failed to parse user from localStorage');
         localStorage.removeItem('user');
         localStorage.removeItem('token');
     }
     const token = localStorage.getItem('token');
+    const navMenu = document.querySelector('.nav-menu');
+    const getStartedBtn = document.querySelector('.btn-nav');
 
     if (token && user) {
-        // Find existing Get Started button
-        const getStartedBtn = document.querySelector('.btn-nav');
-        if (getStartedBtn) {
-            // Create Profile Item
-            const profileItem = document.createElement('li');
-            profileItem.className = 'nav-item dropdown profile-dropdown';
-            const userName = user.fullName || 'User';
-            const userFirstName = userName.split(' ')[0];
-            const profilePic = user.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=ff8c00&color=fff&rounded=true`;
+        // --- LOGGED IN STATE ---
+        const userName = user.fullName || user.name || 'User';
+        const userFirstName = userName.split(' ')[0];
+        const profilePic = user.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=ffc107&color=0a192f&rounded=true`;
 
+        // Desktop Profile Dropdown / Link
+        if (getStartedBtn) {
+            const profileItem = document.createElement('li');
+            profileItem.className = 'nav-item profile-nav-item';
             profileItem.innerHTML = `
-                <a href="profile.html" style="display: flex; align-items: center; gap: 10px; padding: 6px 16px; background: rgba(255, 255, 255, 0.1); border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s; text-decoration: none;">
-                    <div class="nav-avatar-wrapper" style="position: relative; display: flex; align-items: center;">
-                        <img src="${profilePic}" alt="${userName}" class="nav-avatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #ff8c00; background: white; flex-shrink: 0;">
-                        <span class="status-online-dot" style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; background: #10b981; border: 1.5px solid #0a192f; border-radius: 50%;"></span>
-                    </div>
-                    <span class="user-name-nav" style="font-weight: 600; font-family: 'Outfit', sans-serif; color: white; font-size: 0.95rem; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;">${userFirstName}</span>
+                <a href="profile.html" class="nav-link profile-toggle-link" style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.2);">
+                    <img src="${profilePic}" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--color-accent); object-fit: cover;">
+                    <span style="font-weight: 600;">${userFirstName}</span>
                 </a>
             `;
-
-            // Replace button with profile link
-            const navMenu = document.querySelector('.nav-menu');
-            if (navMenu) {
-                // If the ul has a specific structure preventing proper layout, let's append adjacent to container if possible
-                // OR we just append to the end of the menu but ensure flex layout is ok
-                navMenu.appendChild(profileItem);
-                getStartedBtn.remove();
-            }
+            navMenu.appendChild(profileItem);
+            getStartedBtn.remove();
         }
 
-        // Handle Logout for all possible buttons (e.g. Navigation & Profile sidebar)
-        setTimeout(() => {
-            document.querySelectorAll('#logoutBtn, .logout-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    localStorage.removeItem('user');
-                    localStorage.removeItem('token');
-                    window.location.href = 'index.html';
-                });
-            });
-        }, 300);
+        // Add Logout to mobile menu if not exists
+        if (!document.querySelector('.mobile-logout-link')) {
+            const logoutLi = document.createElement('li');
+            logoutLi.className = 'nav-item mobile-only-item';
+            logoutLi.innerHTML = `<a href="#" class="nav-link mobile-logout-link" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i> Logout</a>`;
+            navMenu.appendChild(logoutLi);
+        }
+    } else {
+        // --- LOGGED OUT STATE ---
+        // Ensure Login button is visible in mobile menu
+        if (navMenu && !document.querySelector('.mobile-login-link')) {
+            const loginLi = document.createElement('li');
+            loginLi.className = 'nav-item mobile-only-item';
+            loginLi.innerHTML = `<a href="login.html" class="nav-link mobile-login-link"><i class="fas fa-sign-in-alt"></i> Login / Register</a>`;
+            navMenu.appendChild(loginLi);
+        }
     }
+
+    // Global Logout Handler
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('mobile-logout-link') || e.target.closest('.mobile-logout-link')) {
+            e.preventDefault();
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+    });
 }
 
 function initAppointmentForm() {
